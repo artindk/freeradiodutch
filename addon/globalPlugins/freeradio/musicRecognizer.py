@@ -113,6 +113,17 @@ def _resolve_to_audio_url(url, timeout=10, _depth=0):
             ct = (resp.headers.get("content-type") or "").lower().split(";")[0].strip()
             data = resp.read(65536).decode("utf-8", errors="replace")
     except Exception as exc:
+        exc_str = str(exc)
+        # ICY 200 OK: SHOUTcast/Icecast sunucuları standart HTTP yerine ICY
+        # protokolüyle yanıt verir. Python urllib bunu geçersiz HTTP sayar ve
+        # exception fırlatır — ancak URL zaten doğrudan ses akışıdır, olduğu
+        # gibi kullanılabilir.
+        if "ICY" in exc_str or "icy" in exc_str.lower():
+            log.info(
+                "FreeRadio Recognizer: ICY/SHOUTcast stream detected, "
+                "using original URL directly: %s", url
+            )
+            return url
         log.warning("FreeRadio Recognizer: resolve failed: %s", exc)
         return None
 
