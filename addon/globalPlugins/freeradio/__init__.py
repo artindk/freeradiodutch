@@ -553,7 +553,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		ui.message(_("Added to favourites: %s") % station.get("name", "").strip())
 
 	@script(
-		description=_("Announce currently playing station. Press twice for full details."),
+		description=_("Announce currently playing station. Press twice for full details, three times to copy track info, four times to force music recognition."),
 		category=_("FreeRadio"),
 		gesture="kb:control+windows+i",
 	)
@@ -641,12 +641,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		elif repeat == 2:
 			# Third press: cancel dialog timer.
 			# If ICY metadata is available → copy to clipboard; otherwise start Shazam recognition.
-			self._whats_playing_token = None
+			import time as _time
+			token = _time.monotonic()
+			self._whats_playing_token = token
 			dlg_timer = getattr(self, "_whats_playing_dlg_timer", None)
 			if dlg_timer:
 				dlg_timer.Stop()
 				self._whats_playing_dlg_timer = None
-			def _copy_or_recognize():
+			def _copy_or_recognize(tok=token):
 				from . import radioPlayer as _rp
 				icy = self._player.get_icy_title()
 				if not icy:
@@ -656,6 +658,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					)
 					if url:
 						icy = _rp._read_icy_title(url)
+
+				# 4× basıldıysa token değişmiştir — işlemi iptal et
+				if getattr(self, "_whats_playing_token", None) != tok:
+					return
 
 				if icy:
 					# ICY info available — copy to clipboard
@@ -676,6 +682,23 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					self._start_music_recognition(stream_url)
 
 			threading.Thread(target=_copy_or_recognize, daemon=True).start()
+
+		elif repeat == 3:
+			# Fourth press: force Shazam recognition regardless of ICY metadata.
+			self._whats_playing_token = None
+			dlg_timer = getattr(self, "_whats_playing_dlg_timer", None)
+			if dlg_timer:
+				dlg_timer.Stop()
+				self._whats_playing_dlg_timer = None
+			stream_url = (
+				getattr(self._player, "_current_url_resolved", None)
+				or getattr(self._player, "_current_url", None)
+			)
+			if not stream_url:
+				ui.message(_("No track info available"))
+			else:
+				ui.message(_("Starting music recognition…"))
+				self._start_music_recognition(stream_url)
 
 	@script(
 		description=_("Increase FreeRadio volume by 10"),
@@ -1187,26 +1210,38 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				wx.CallAfter(_up_to_date)
 
 	def _check_internet(self, timeout=3):
-		"""More reliable internet control - multi-target."""
+		"""Internet connectivity check - all targets tested in parallel.
+		Returns True as soon as any host responds; waits at most `timeout` seconds.
+		Falls back to HTTP requests only if all socket probes fail.
+		"""
 		import socket
 		import urllib.request
-		
+
 		test_hosts = [
-			("8.8.8.8", 53),        # Google DNS
-			("1.1.1.1", 53),        # Cloudflare DNS  
-			("208.67.222.222", 53), # OpenDNS
+			("8.8.8.8", 53),         # Google DNS
+			("1.1.1.1", 53),         # Cloudflare DNS
+			("208.67.222.222", 53),  # OpenDNS
 		]
-		
-		for host, port in test_hosts:
+
+		success = threading.Event()
+
+		def _probe(host, port):
 			try:
 				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				s.settimeout(timeout)
 				s.connect((host, port))
 				s.close()
-				return True
+				success.set()
 			except Exception:
-				continue
-		
+				pass
+
+		for host, port in test_hosts:
+			threading.Thread(target=_probe, args=(host, port), daemon=True).start()
+
+		# Return immediately when the first probe succeeds; give up after timeout.
+		if success.wait(timeout=timeout):
+			return True
+
 		# Last resort: Try HTTP request (to Radio Browser API)
 		try:
 			req = urllib.request.Request(
@@ -1217,7 +1252,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				return resp.status == 200
 		except Exception:
 			pass
-		
+
 		# Try an HTTP site (for broader compatibility)
 		try:
 			req = urllib.request.Request(

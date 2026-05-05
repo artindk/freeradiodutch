@@ -355,12 +355,17 @@ class _SignatureGenerator:
             self._process_chunk(chunk)
             self._processed += 128
 
-        # Reset ring buffers for next segment (matches shazamio behaviour)
-        self._ring   = _RingBuffer(2048, 0)
-        self._fft_out = _RingBuffer(256, [0.0] * 1025)
-        self._spread  = _RingBuffer(256, [0.0] * 1025)
+        # Sonucu al
+        result = (self._peaks, self._num_samples)
 
-        return self._peaks, self._num_samples
+        # Ring buffer'ları ve state'i sıfırla (bir sonraki segment için)
+        self._ring        = _RingBuffer(2048, 0)
+        self._fft_out     = _RingBuffer(256, [0.0] * 1025)
+        self._spread      = _RingBuffer(256, [0.0] * 1025)
+        self._peaks       = {}
+        self._num_samples = 0
+
+        return result
 
     # ── internal ──────────────────────────────────────────────────────────────
 
