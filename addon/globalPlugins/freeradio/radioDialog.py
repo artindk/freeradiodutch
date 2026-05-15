@@ -1037,8 +1037,12 @@ class RadioDialog(wx.Dialog):
 		self._stations = []
 
 
-	def _on_text_changed(self, event):
-		# Cancel previous timer
+	def _schedule_search(self, query):
+		"""Cancel any pending search timer and schedule a new debounced API search.
+
+		Reads the currently selected country from the combo box so the results
+		are always scoped to whatever country is active at call time.
+		"""
 		if self._search_debounce_timer:
 			try:
 				self._search_debounce_timer.Stop()
@@ -1046,23 +1050,11 @@ class RadioDialog(wx.Dialog):
 				pass
 			self._search_debounce_timer = None
 
-		query = self._search.GetValue().strip()
-		if not query:
-			# If search box is empty, clear API results and apply local filter only
-			self._search_stations = []
-			self._apply_filters()
-			event.Skip()
-			return
-
-		# Start a debounced API search
 		self._search_fetch_id += 1
 		fetch_id = self._search_fetch_id
-		
-		# Get if there is a selected country
-		selected_country = None
+
 		ci = self._country_cb.GetSelection()
-		if ci > 0:
-			selected_country = name_to_code(self._country_cb.GetString(ci))
+		selected_country = name_to_code(self._country_cb.GetString(ci)) if ci > 0 else None
 
 		def _do_search():
 			self._search_debounce_timer = None
@@ -1078,6 +1070,22 @@ class RadioDialog(wx.Dialog):
 			wx.CallAfter(self._on_search_results, stations, status, fetch_id)
 
 		self._search_debounce_timer = wx.CallLater(500, _do_search)
+
+	def _on_text_changed(self, event):
+		query = self._search.GetValue().strip()
+		if not query:
+			# Search box cleared: cancel any pending timer and show unfiltered results.
+			if self._search_debounce_timer:
+				try:
+					self._search_debounce_timer.Stop()
+				except Exception:
+					pass
+				self._search_debounce_timer = None
+			self._search_stations = []
+			self._apply_filters()
+			event.Skip()
+			return
+		self._schedule_search(query)
 		event.Skip()
 
 	def _typeahead(self, ch, get_count, get_string, get_sel, set_sel, fire_evt, state_attr, fire_on_reset=False):
@@ -1285,7 +1293,17 @@ class RadioDialog(wx.Dialog):
 					pass
 				self._combo_debounce_timer = None
 			self._extra_stations = []
-			self._apply_filters(announce=True)
+			# If there is an active search query, re-run it without a country filter.
+			# Suppress the intermediate announce here; _on_search_results will announce
+			# the final result once the new search completes, avoiding double/triple
+			# NVDA speech (e.g. "35 stations" → "All" → '"blues": 462').
+			query = self._search.GetValue().strip()
+			if query:
+				self._search_stations = []
+				self._apply_filters(announce=False)
+				self._schedule_search(query)
+			else:
+				self._apply_filters(announce=True)
 			event.Skip()
 			return
 
@@ -1329,13 +1347,20 @@ class RadioDialog(wx.Dialog):
 	def _on_combo_fetch_done(self, new_stations, fetch_id):
 		if not self or fetch_id != self._combo_fetch_id:
 			return
+		# If a search query is active, suppress the intermediate country-level
+		# announce here; _on_search_results will announce the final result once
+		# the rescoped search completes, avoiding double NVDA speech.
+		query = self._search.GetValue().strip()
+		has_query = bool(query)
 		if not new_stations:
-			# If empty results are returned, extra_stations is already empty, just filter
-			self._apply_filters(announce=True)
-			return
-		# Assign new stations directly (duplicates will be filtered)
-		self._extra_stations = new_stations
-		self._apply_filters(announce=True)
+			self._apply_filters(announce=not has_query)
+		else:
+			self._extra_stations = new_stations
+			self._apply_filters(announce=not has_query)
+		# If there is an active search query, re-run it scoped to the new country.
+		if has_query:
+			self._search_stations = []
+			self._schedule_search(query)
 
 	def _on_search_results(self, stations, status_text, fetch_id=None):
 		if not self:
