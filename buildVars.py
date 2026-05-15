@@ -35,6 +35,11 @@ addon_info = AddonInfo(
 - Error messages, favourites feedback, music recognition results, and update notifications are intentionally unaffected.
 - Added an unassigned script_toggleMuteNotifications input gesture that toggles the setting on the fly. Assign a key combination via NVDA's Input Gestures dialog under the FreeRadio category.
 - Two module-level helpers (_notify, _notify_on_demand) centralise the mute check, keeping call sites clean.
+**Changed: Search now filters by selected country automatically**
+- Search queries are now scoped to the selected country. When a country is chosen in the combo box, results are fetched from the API already filtered by that country rather than searching globally and filtering locally afterward.
+- The Search button has been removed. Results update automatically as you type (debounced, 500 ms delay), so a manual trigger is no longer needed.
+- Removed the Enter key and Alt+A shortcuts that previously triggered a manual search.
+- The search status message has been shortened. It now reads `"query": N in Country` instead of the previous `Search "query": N results (N in Country)`.
 """),
 	
 	# Author(s)

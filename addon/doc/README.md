@@ -44,7 +44,7 @@ FreeRadio also adds a **FreeRadio** submenu to the NVDA Tools menu. From there y
 
 The window opened with `Ctrl+Win+R` contains five tabs: All Stations, Favourites, Recording, Timer, and Liked Songs. You can navigate between tabs with `Ctrl+Tab`.
 
-When the All Stations tab opens, the top 1,000 most-voted stations are automatically loaded from Radio Browser. Selecting a country from the dropdown updates the list to show that country's stations. Typing in the search field instantly filters the loaded list; pressing `Enter` or the Search button performs a full search across the entire Radio Browser database simultaneously by name, country and genre.
+When the All Stations tab opens, the top 1,000 most-voted stations are automatically loaded from Radio Browser. Selecting a country from the dropdown updates the list to show that country's stations. Typing in the search field instantly  performs a full search across the entire Radio Browser database simultaneously by name, country and genre.
 
 The **Output Device** dropdown at the bottom of the browser window — outside the tabs — lists all BASS-recognised audio output devices. Selecting a device immediately redirects audio output to it and saves the choice permanently; the same device is used automatically in the next session. If the selected device is not connected, the add-on falls back to the system default automatically. This control is only functional when the BASS backend is active.
 
@@ -94,8 +94,7 @@ The following keys work only while the Station Browser window is active.
 
 | Shortcut | Function | Description |
 |---|---|---|
-| `Alt+R` | Go to search field | Moves focus to the search text box. |
-| `Alt+A` | Search online | Searches Radio Browser with the text in the search field; name, country and genre are searched simultaneously. |
+| `Alt+R` | Go to search field | Moves focus to the search text box. Searches Radio Browser with the text in the search field; name, country and genre are searched simultaneously. |
 | `Alt+V` | Add / remove favourite | Adds the selected station to favourites; removes it if already in the list. |
 | `Alt+1` | All Stations | Switches to the All Stations tab. |
 | `Alt+2` | Favourites | Switches to the Favourites tab. |

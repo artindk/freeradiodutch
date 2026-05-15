@@ -38,8 +38,8 @@ REQUEST_TIMEOUT = 10
 COUNTRY_STATION_LIMIT = 1000
 SEARCH_LIMIT = 1000
 
-# Bir mirror bu kadar ardışık hata verirse cache sıfırlanır ve
-# bir sonraki istekte en sağlıklı mirror yeniden belirlenir.
+# If a mirror gives this many consecutive errors, the cache is reset and
+# The healthiest mirror is determined again on the next request.
 _MIRROR_FAIL_THRESHOLD = 3
 
 
@@ -184,16 +184,17 @@ class StationManager:
 			"Please check your internet connection."
 		) from last_error
 
-	def search_stations(self, query, limit=SEARCH_LIMIT):
+	def search_stations(self, query, limit=SEARCH_LIMIT, countrycode=None):
 		"""Search stations by name, country, and tag simultaneously.
-
-		Üç alt sorgu (isim, ülke, etiket) ThreadPoolExecutor ile paralel
-		çalıştırılır; sonuçlar birleştirilip vote sırasına göre döner.
+		
+		If countrycode is provided, results are filtered to that country.
 		Raises RadioBrowserError subclasses on network/API failure.
 		"""
 		encoded = urllib.parse.quote(query)
 		path = "/stations/search"
 		base_params = f"limit={limit}&order=votes&reverse=true"
+		if countrycode:
+			base_params += f"&countrycode={urllib.parse.quote(countrycode.upper())}"
 
 		sub_queries = [
 			("name",    f"{base_params}&name={encoded}"),

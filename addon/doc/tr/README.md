@@ -44,7 +44,7 @@ FreeRadio ayrıca NVDA Araçlar menüsüne **FreeRadio** adlı bir alt menü ekl
 
 `Ctrl+Win+R` ile açılan pencerede beş sekme bulunur: Tüm İstasyonlar, Favoriler, Kayıt, Zamanlayıcı ve Beğenilen Şarkılar. Sekmeler arasında `Ctrl+Tab` ile dolaşılabilir.
 
-Tüm İstasyonlar sekmesi açıldığında Radio Browser'dan en çok oylanan 1000 istasyon otomatik olarak yüklenir. Ülke açılır listesinden bir ülke seçildiğinde liste o ülkenin istasyonlarıyla güncellenir. Arama alanına harf girilmesi yüklü listeyi anlık olarak filtreler; `Enter` tuşuna veya Ara düğmesine basılması ise Radio Browser'ın tamamında ad, ülke ve tür üzerinden eş zamanlı arama yapar.
+Tüm İstasyonlar sekmesi açıldığında Radio Browser'dan en çok oylanan 1000 istasyon otomatik olarak yüklenir. Ülke açılır listesinden bir ülke seçildiğinde liste o ülkenin istasyonlarıyla güncellenir. Arama alanına harf girilmesi anlık olarak   Radio Browser'ın tamamında ad, ülke ve tür üzerinden eş zamanlı arama yapar.
 
 Tarayıcı penceresinin alt kısmında sekmelerin dışında yer alan **Çıkış Cihazı** açılır listesi, o an BASS tarafından tanınan ses çıkış aygıtlarını listeler. Listeden bir aygıt seçildiğinde ses çıkışı anında o aygıta yönlendirilir ve seçim kalıcı olarak kaydedilir; bir sonraki oturumda aynı aygıt otomatik olarak kullanılır. Seçili aygıt sisteme bağlı değilse otomatik olarak sistem varsayılanına dönülür. Bu denetim yalnızca BASS arka ucu aktifken işlev görür.
 
@@ -94,8 +94,7 @@ Aşağıdaki tuşlar yalnızca İstasyon Tarayıcısı penceresi etkinken çalı
 
 | Kısayol | İşlev | Açıklama |
 |---|---|---|
-| `Alt+R` | Arama alanına git | Odağı arama metin kutusuna taşır. |
-| `Alt+A` | Çevrimiçi ara | Arama alanındaki metinle Radio Browser'da arama yapar; ad, ülke ve tür eş zamanlı aranır. |
+| `Alt+R` | Arama alanına git | Odağı arama metin kutusuna taşır. Yazıldıkça ad, ülke ve tür eş zamanlı aranır. |
 | `Alt+V` | Favori ekle / kaldır | Seçili istasyonu favorilere ekler; zaten listedeyse kaldırır. |
 | `Alt+1` | Tüm İstasyonlar | Tüm İstasyonlar sekmesine geçer. |
 | `Alt+2` | Favoriler | Favoriler sekmesine geçer. |

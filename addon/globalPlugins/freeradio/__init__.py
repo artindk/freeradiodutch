@@ -768,7 +768,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		vol = min(200, self._player.get_volume() + 10)
 		self._player.set_volume(vol)
 		config.conf["freeradio"]["volume"] = min(100, vol)
-		ui.message(_("Volume %d") % vol)
+		_notify(_("Volume %d") % vol)
 		self._sync_dialog_volume(vol)
 
 	@script(
@@ -780,7 +780,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		vol = max(0, self._player.get_volume() - 10)
 		self._player.set_volume(vol)
 		config.conf["freeradio"]["volume"] = min(100, vol)
-		ui.message(_("Volume %d") % vol)
+		_notify(_("Volume %d") % vol)
 		self._sync_dialog_volume(vol)
 
 	def _sync_dialog_volume(self, vol):

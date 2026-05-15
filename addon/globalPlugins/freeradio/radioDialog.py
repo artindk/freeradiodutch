@@ -79,6 +79,8 @@ class RadioDialog(wx.Dialog):
 		self._combo_fetch_id = 0
 		self._moving_station_index = -1  # Index of the item picked for X-based reordering
 		self._combo_debounce_timer = None  # wx.CallLater for country combo debounce
+		self._search_debounce_timer = None
+		self._search_fetch_id = 0
 
 		self._build_ui()
 		self._prepopulate_country_combo()
@@ -308,16 +310,12 @@ class RadioDialog(wx.Dialog):
 
 		sizer.Add(wx.StaticText(self._all_panel, label=_("Search:")),
 		          0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
-		search_row = wx.BoxSizer(wx.HORIZONTAL)
-		self._search     = wx.TextCtrl(self._all_panel)
-		self._search_btn = wx.Button(self._all_panel, label=_("&Search"))
-		search_row.Add(self._search,     1, wx.RIGHT, 5)
-		search_row.Add(self._search_btn, 0)
-		sizer.Add(search_row, 0, wx.EXPAND | wx.ALL, 5)
+		self._search = wx.TextCtrl(self._all_panel)
+		sizer.Add(self._search, 0, wx.EXPAND | wx.ALL, 5)
 
 		hint = wx.StaticText(
 			self._all_panel,
-			label=_("Type to filter · Enter or Search to search all stations online"),
+			label=_("Type to search · results update automatically"),
 		)
 		hint.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_GRAYTEXT))
 		sizer.Add(hint, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 4)
@@ -333,7 +331,6 @@ class RadioDialog(wx.Dialog):
 
 		self._search.Bind(wx.EVT_TEXT,         self._on_text_changed)
 		self._search.Bind(wx.EVT_KEY_DOWN,     self._on_search_key)
-		self._search_btn.Bind(wx.EVT_BUTTON,   self._on_api_search)
 		self._country_cb.Bind(wx.EVT_COMBOBOX, self._on_combo_changed)
 		self._country_cb.Bind(wx.EVT_CHAR,     self._on_country_char)
 
@@ -342,7 +339,6 @@ class RadioDialog(wx.Dialog):
 		self._all_list.Bind(wx.EVT_LISTBOX_DCLICK, self._on_play_clicked)
 		self._all_list.Bind(wx.EVT_KEY_DOWN,       self._on_list_key)
 		self._all_list.Bind(wx.EVT_SET_FOCUS,      lambda e: (self._play_btn.SetDefault(), e.Skip()))
-		self._search_btn.Bind(wx.EVT_SET_FOCUS,    self._on_button_focused)
 
 	def _build_rec_tab(self):
 		sizer = wx.BoxSizer(wx.VERTICAL)
@@ -944,7 +940,7 @@ class RadioDialog(wx.Dialog):
 			self._all_list.Append(_station_label(s))
 
 		if sel_country and status_override:
-			label = _("%s (%d in %s)") % (status_override, len(result), sel_country)
+			label = _("%s in %s") % (status_override, sel_country)
 		elif sel_country:
 			label = _("%d stations in %s") % (len(result), sel_country)
 		elif status_override:
@@ -1042,11 +1038,46 @@ class RadioDialog(wx.Dialog):
 
 
 	def _on_text_changed(self, event):
-		if self._all_stations:
-			if not self._search.GetValue().strip():
-				self._extra_stations  = []
-				self._search_stations = []
+		# Cancel previous timer
+		if self._search_debounce_timer:
+			try:
+				self._search_debounce_timer.Stop()
+			except Exception:
+				pass
+			self._search_debounce_timer = None
+
+		query = self._search.GetValue().strip()
+		if not query:
+			# If search box is empty, clear API results and apply local filter only
+			self._search_stations = []
 			self._apply_filters()
+			event.Skip()
+			return
+
+		# Start a debounced API search
+		self._search_fetch_id += 1
+		fetch_id = self._search_fetch_id
+		
+		# Get if there is a selected country
+		selected_country = None
+		ci = self._country_cb.GetSelection()
+		if ci > 0:
+			selected_country = name_to_code(self._country_cb.GetString(ci))
+
+		def _do_search():
+			self._search_debounce_timer = None
+			if not self or fetch_id != self._search_fetch_id:
+				return
+			try:
+				stations = self._manager.search_stations(query, limit=1000, countrycode=selected_country)
+			except Exception:
+				stations = []
+			if not self or fetch_id != self._search_fetch_id:
+				return
+			status = _("\"%s\": %d") % (query, len(stations))
+			wx.CallAfter(self._on_search_results, stations, status, fetch_id)
+
+		self._search_debounce_timer = wx.CallLater(500, _do_search)
 		event.Skip()
 
 	def _typeahead(self, ch, get_count, get_string, get_sel, set_sel, fire_evt, state_attr, fire_on_reset=False):
@@ -1247,7 +1278,6 @@ class RadioDialog(wx.Dialog):
 		sel_country = "" if ci <= 0 else self._country_cb.GetString(ci)
 
 		if not sel_country:
-			# If there is a debounce timer, cancel it
 			if self._combo_debounce_timer is not None:
 				try:
 					self._combo_debounce_timer.Stop()
@@ -1259,10 +1289,10 @@ class RadioDialog(wx.Dialog):
 			event.Skip()
 			return
 
-		# Debounce: cancel previous delay, start new one.
-# HTTP request for each item as the user quickly scrolls through the list
-		# instead of starting, _COMBO_DEBOUNCE_MS pauses for ms
-		# a single request is sent.
+		# New country selected: clear old country stations first
+		self._extra_stations = []
+
+		# Debounce: cancel previous timer
 		if self._combo_debounce_timer is not None:
 			try:
 				self._combo_debounce_timer.Stop()
@@ -1271,8 +1301,8 @@ class RadioDialog(wx.Dialog):
 			self._combo_debounce_timer = None
 
 		self._combo_fetch_id += 1
-		fetch_id     = self._combo_fetch_id
-		country_snap = sel_country  # hard copy for lambda
+		fetch_id = self._combo_fetch_id
+		country_snap = sel_country
 
 		def _do_fetch():
 			self._combo_debounce_timer = None
@@ -1283,10 +1313,9 @@ class RadioDialog(wx.Dialog):
 				RadioBrowserError = _radio_browser_error()
 				country_code = name_to_code(country_snap)
 				try:
-					data    = self._manager.get_stations_by_country(country_code)
+					data = self._manager.get_stations_by_country(country_code)
 					results = data or []
 				except RadioBrowserError:
-					# Network error: freeze silently, do not touch the current list.
 					return
 				if not self or fetch_id != self._combo_fetch_id:
 					return
@@ -1301,49 +1330,19 @@ class RadioDialog(wx.Dialog):
 		if not self or fetch_id != self._combo_fetch_id:
 			return
 		if not new_stations:
-# Network error or empty result: do not touch the current list and status.
-			# The user will already get the result on the next try;
-			# Showing unnecessary error messages would be annoying.
+			# If empty results are returned, extra_stations is already empty, just filter
+			self._apply_filters(announce=True)
 			return
-		seen_all   = {s.get("stationuuid") for s in self._all_stations}
-		seen_extra = {s.get("stationuuid") for s in self._extra_stations}
-		for s in new_stations:
-			uid = s.get("stationuuid", "")
-			if uid and uid not in seen_all and uid not in seen_extra:
-				self._extra_stations.append(s)
-				seen_extra.add(uid)
+		# Assign new stations directly (duplicates will be filtered)
+		self._extra_stations = new_stations
 		self._apply_filters(announce=True)
 
-	def _on_api_search(self, event=None):
-		query = self._search.GetValue().strip()
-		if not query:
-			return
-		self._status.SetLabel(_("Searching online for \"%s\"...") % query)
-		threading.Thread(target=self._fetch_api_search, args=(query,), daemon=True).start()
-
-	def _fetch_api_search(self, query):
-		RadioBrowserError = _radio_browser_error()
-		try:
-			stations = self._manager.search_stations(query)
-		except RadioBrowserError:
-			stations = None
-		if not self or not self.IsShown():
-			return
-		if stations is None:
-			wx.CallAfter(self._show_error)
-			return
-		status = _("Search \"%s\": %d results") % (query, len(stations))
-		wx.CallAfter(self._on_search_results, stations, status)
-
-	def _on_search_results(self, stations, status_text):
-		"""Put search results in separate list; Do not touch country data."""
+	def _on_search_results(self, stations, status_text, fetch_id=None):
 		if not self:
 			return
-		self._search_stations = []
-		for s in stations:
-			uid = s.get("stationuuid", "")
-			if uid:
-				self._search_stations.append(s)
+		if fetch_id is not None and fetch_id != self._search_fetch_id:
+			return
+		self._search_stations = stations
 		self._apply_filters(status_text, announce=True)
 		self._refresh_fav_list()
 
@@ -1817,9 +1816,6 @@ class RadioDialog(wx.Dialog):
 			return
 
 		if key in (wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER):
-			if focused == self._search:
-				self._on_api_search()
-				return
 			if focused == self._fav_btn and self._fav_btn.IsEnabled():
 				self._on_toggle_favorite(event)
 				return
@@ -1873,9 +1869,6 @@ class RadioDialog(wx.Dialog):
 					self._apply_tab_side_effects(0)
 				self._search.SetFocus()
 				self._search.SelectAll()
-				return
-			if key == ord("A"):
-				self._on_api_search()
 				return
 			if key == ord("V"):
 				if self._fav_btn.IsEnabled():
@@ -1989,8 +1982,6 @@ class RadioDialog(wx.Dialog):
 			self._all_list.SetFocus()
 			if self._all_list.GetCount() > 0 and self._all_list.GetSelection() == wx.NOT_FOUND:
 				self._all_list.SetSelection(0)
-		elif key in (wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER):
-			self._on_api_search()
 		else:
 			event.Skip()
 
