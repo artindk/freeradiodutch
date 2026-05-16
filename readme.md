@@ -70,6 +70,7 @@ The following keys work only while the Station Browser window is active.
 | `F6` | Volume up | Increases volume by 10 (maximum 200). |
 | `F7` | Pause / resume | Pauses if a station is playing; resumes if paused and media is loaded. |
 | `F8` | Stop | Fully stops the current station and resets the player. |
+| `F9` | Rename | Opens rename dialog for focused station in favorits tab. |
 
 ### List and Navigation Shortcuts
 

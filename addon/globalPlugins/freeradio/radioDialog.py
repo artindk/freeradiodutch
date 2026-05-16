@@ -1881,6 +1881,10 @@ class RadioDialog(wx.Dialog):
 			if focused == self._play_btn:
 				self._on_play_clicked(event)
 				return
+			# For any other widget (country combo, search box, fav filter,
+			# timer/sched/liked lists, SpinCtrl, RadioButton, etc.) Enter must
+			# NOT bubble up to the default button (Play/Pause).  Consume it here.
+			return
 
 		if event.ControlDown() and not event.AltDown() and not event.ShiftDown():
 			if key == wx.WXK_UP:
