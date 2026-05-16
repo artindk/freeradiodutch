@@ -114,7 +114,7 @@ Favoriler listesinden bir istasyonu silmek için istasyonu seçip **İstasyonu S
 
 ### Favorileri Yeniden Sıralama
 
-Favoriler sekmesinde bir istasyon seçiliyken `X` tuşuna basarak taşıma moduna girin — bir bip sesi duyarsınız. Ok tuşlarıyla hedef konuma gidin, ardından `X` tuşuna tekrar basın. İstasyon seçilen konuma yerleştirilir ve yeni sıra anında kaydedilir. Aynı konumda tekrar `X` tuşuna basılması taşımayı iptal eder.
+Favoriler sekmesinde bir istasyon seçiliyken `*` tuşuna basarak taşıma moduna girin — bir bip sesi duyarsınız. Ok tuşlarıyla hedef konuma gidin, ardından `*` tuşuna tekrar basın. İstasyon seçilen konuma yerleştirilir ve yeni sıra anında kaydedilir. Aynı konumda tekrar `*` tuşuna basılması taşımayı iptal eder.
 
 ### Özel İstasyon Ekleme
 

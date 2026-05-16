@@ -40,6 +40,7 @@ addon_info = AddonInfo(
 - The Search button has been removed. Results update automatically as you type (debounced, 500 ms delay), so a manual trigger is no longer needed.
 - Removed the Enter key and Alt+A shortcuts that previously triggered a manual search.
 - The search status message has been shortened. It now reads `"query": N in Country` instead of the previous `Search "query": N results (N in Country)`.
+- The key used for reordering favorites was changed from X to * (star).
 """),
 	
 	# Author(s)

@@ -647,7 +647,7 @@ class RadioDialog(wx.Dialog):
 		if self._fav_list.GetSelection() == wx.NOT_FOUND and self._fav_list.GetCount() > 0:
 			self._fav_list.SetSelection(0)
 		if not getattr(self, "_tab_just_switched", False):
-			ui.message(_("Press X to pick a station, navigate to the target position, then press X again to drop."))
+			ui.message(_("Press * to pick a station, navigate to the target position, then press * again to drop."))
 		self._tab_just_switched = False
 		event.Skip()
 
@@ -1745,7 +1745,7 @@ class RadioDialog(wx.Dialog):
 			self.Hide()
 			return
 
-		if key == ord("X") and focused == self._fav_list:
+		if key == ord("*") and focused == self._fav_list:
 			self._handle_fav_move_x()
 			return
 
@@ -1976,7 +1976,7 @@ class RadioDialog(wx.Dialog):
 			self._moving_station_index = idx
 			station_name = filtered[idx].get("name", "").strip()
 			winsound.Beep(440, 100)  # Mid tone: item picked
-			ui.message(_("%s selected. Navigate to the target position and press X again to drop.") % station_name)
+			ui.message(_("%s selected. Navigate to the target position and press * again to drop.") % station_name)
 
 		else:
 			if self._moving_station_index == idx:

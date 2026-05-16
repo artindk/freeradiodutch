@@ -113,7 +113,7 @@ Os favoritos podem ser reproduzidos com `Ctrl+Win+→` e `Ctrl+Win+←`; estes a
 
 ### Reordenar Favoritos
 
-Com uma estação selecionada no separador Favoritos, prima `X` para entrar no modo de mover — ouvirá um sinal sonoro. Navegue até à posição pretendida com as teclas de seta e prima `X` novamente. A estação é colocada na posição escolhida e a nova ordem é guardada imediatamente. Premir `X` novamente na mesma posição cancela a operação.
+Com uma estação selecionada no separador Favoritos, prima `*` para entrar no modo de mover — ouvirá um sinal sonoro. Navegue até à posição pretendida com as teclas de seta e prima `*` novamente. A estação é colocada na posição escolhida e a nova ordem é guardada imediatamente. Premir `*` novamente na mesma posição cancela a operação.
 
 ### Adicionar Estação Personalizada
 
