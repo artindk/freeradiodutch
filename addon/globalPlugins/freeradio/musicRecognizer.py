@@ -325,8 +325,6 @@ class _SignatureGenerator:
     get_next_signature() imza verisi döndürür.
     """
     SAMPLE_RATE  = 16000
-    MAX_TIME_SEC = 3.1
-    MAX_PEAKS    = 255
 
     def __init__(self):
         self._pending       = []
@@ -347,10 +345,6 @@ class _SignatureGenerator:
             return None
 
         while len(self._pending) - self._processed >= 128:
-            time_so_far = self._num_samples / self.SAMPLE_RATE
-            peak_count  = sum(len(v) for v in self._peaks.values())
-            if time_so_far >= self.MAX_TIME_SEC and peak_count >= self.MAX_PEAKS:
-                break
             chunk = self._pending[self._processed: self._processed + 128]
             self._process_chunk(chunk)
             self._processed += 128
@@ -582,8 +576,8 @@ def _compute_signature_uri(pcm_bytes):
     if not peaks_by_band:
         raise ValueError(_("No frequency peaks found — audio may be silence"))
 
-    binary  = _encode_signature_binary(peaks_by_band, num_samples)
-    uri     = DATA_URI_PREFIX + b64encode(binary).decode("ascii")
+    binary    = _encode_signature_binary(peaks_by_band, num_samples)
+    uri       = DATA_URI_PREFIX + b64encode(binary).decode("ascii")
     sample_ms = (num_samples * 1000) // 16000
     return uri, sample_ms
 
@@ -591,7 +585,7 @@ def _compute_signature_uri(pcm_bytes):
 # ── Shazam HTTP isteği ────────────────────────────────────────────────────────
 
 _SHAZAM_ENDPOINT = (
-    "https://amp.shazam.com/discovery/v5/tr/TR/android/-/tag/{uuid1}/{uuid2}"
+    "https://amp.shazam.com/discovery/v5/en/US/android/-/tag/{uuid1}/{uuid2}"
 )
 _SHAZAM_HEADERS = {
     "Content-Type":    "application/json",

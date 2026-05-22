@@ -80,7 +80,7 @@ As teclas seguintes funcionam apenas quando a janela do Navegador de Estações 
 | Atalho | Função | Descrição |
 |---|---|---|
 | `F1` | Guia de ajuda | Abre o ficheiro de ajuda do complemento no browser predefinido. É pesquisado primeiro o guia para o idioma do NVDA ativo; se não for encontrado, abre o guia predefinido. |
-| `F2` | A reproduzir agora | Anuncia o nome da estação atual e as informações da faixa dos metadados ICY, se disponíveis. |
+| `F2` | Informação da estação | Anuncia o nome da estação em reprodução. Premir duas vezes mostra detalhes como país, género e bitrate numa caixa de diálogo. Premir três vezes copia as informações da faixa atual (metadados ICY) para a área de transferência, se disponíveis; se não existirem metadados, inicia o reconhecimento musical Shazam. Premir quatro vezes força o reconhecimento musical em caso de metadados ICY incorretos. |
 | `F3` | Estação anterior | Recua para a estação anterior no separador Todas as Estações ou Favoritos e inicia a reprodução imediatamente. Salta para o fim quando está no início da lista. |
 | `F4` | Próxima estação | Avança para a próxima estação no separador Todas as Estações ou Favoritos e inicia a reprodução imediatamente. Volta ao início no final da lista. |
 | `F5` | Diminuir volume | Diminui o volume em 10 (mínimo 0). |

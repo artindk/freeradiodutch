@@ -78,7 +78,7 @@ The following keys work only while the Station Browser window is active.
 | Shortcut | Function | Description |
 |---|---|---|
 | `F1` | Help guide | Opens the add-on's help file in the default browser. The guide for the active NVDA language is searched first; if not found, the default guide is opened. |
-| `F2` | Now playing | Announces the current station name and ICY metadata track info if available. |
+| `F2` | what's playing | Announces the currently playing station and track name. Press twice to show details such as country, genre and bitrate in a dialog. Press three times to copy the current track info (ICY metadata) to the clipboard if available; if no metadata is present, starts Shazam music recognition instead. Press four times to force music recognition in case of wrong ICY metadata. |
 | `F3` | Previous station | Moves to the previous station in the All Stations or Favourites tab and starts playing immediately. Jumps to the end when at the beginning of the list. |
 | `F4` | Next station | Moves to the next station in the All Stations or Favourites tab and starts playing immediately. Wraps to the beginning at the end of the list. |
 | `F5` | Volume down | Decreases volume by 10 (minimum 0). |

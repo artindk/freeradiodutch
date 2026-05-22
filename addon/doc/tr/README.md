@@ -78,7 +78,7 @@ Aşağıdaki tuşlar yalnızca İstasyon Tarayıcısı penceresi etkinken çalı
 | Kısayol | İşlev | Açıklama |
 |---|---|---|
 | `F1` | Yardım kılavuzu | Eklentinin yardım dosyasını varsayılan tarayıcıda açar. Önce etkin NVDA diline ait kılavuz aranır; yoksa varsayılan kılavuz açılır. |
-| `F2` | Ne çalıyor | Çalan istasyon adını ve varsa ICY metadata parça bilgisini seslendirir. |
+| `F2` | ne çalıyor | Çalan istasyonu seslendirir. İki kez basıldığında ülke, tür, bit hızı gibi ayrıntıları bir iletişim kutusunda gösterir. Üç kez basıldığında çalan parça bilgisi (ICY metadata) varsa panoya kopyalar; yoksa Shazam ile müzik tanıma başlatır. Dört kez basıldığında çalan parça bilgisi (ICY metadata) yanlışsa müzik tanıma servisini başlatmaya zorlar. |
 | `F3` | Önceki istasyon | Tüm İstasyonlar veya Favoriler sekmesinde bir önceki istasyona geçer ve hemen çalmaya başlar. Listenin başındayken sona atlar. |
 | `F4` | Sonraki istasyon | Tüm İstasyonlar veya Favoriler sekmesinde bir sonraki istasyona geçer ve hemen çalmaya başlar. Liste sonuna gelindiğinde başa döner. |
 | `F5` | Ses azalt | Ses seviyesini 10 birim düşürür (asgari 0). |

@@ -818,13 +818,24 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				pass
 
 	def _whats_playing_from_dialog(self):
-		"""It is called up from the station window when F2 is pressed.
-		First press → announce player, second press → detail dialog, third press → copy to clipboard / Shazam."""
+		"""Called from the station browser when F2 is pressed.
+
+		Mirrors script_whatsPlaying exactly:
+		  1× → announce what is playing
+		  2× → open station details dialog (delayed so a 3rd press can cancel)
+		  3× → copy ICY track to clipboard, or start Shazam if no metadata
+		  4× → force Shazam recognition regardless of ICY metadata
+
+		A manual time-based counter is used instead of getLastScriptRepeatCount()
+		because F2 is a dialog-local key, not an NVDA script gesture.
+		Presses within 600 ms of each other are counted as multi-press.
+		"""
 		import time as _time
 
 		active_sched = self._recorder.get_active_scheduled()
 
 		if not self._player.has_media():
+			# Radio inactive — report any active scheduled recordings.
 			if active_sched:
 				parts = [_("Radio inactive. Active scheduled recordings:")]
 				for sched_rec in active_sched:
@@ -836,8 +847,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 		name = self._player.get_current_name()
 
-		# Counter: increase the counter if pressed again within 600 ms from the last press time
-		now = _time.monotonic()
+		# --- Multi-press counter (time-based) ---
+		now   = _time.monotonic()
 		last_t = getattr(self, "_f2_last_time", 0)
 		count  = getattr(self, "_f2_count", 0)
 
@@ -849,9 +860,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		self._f2_last_time = now
 		self._f2_count     = count
 
+		# --- 1st press: announce what is playing ---
 		if count == 0:
-			# First press: announce what's playing
 			if self._player.is_playing():
+				# Generate a token so the background thread can detect a follow-up press.
 				token = _time.monotonic()
 				self._whats_playing_token = token
 
@@ -865,6 +877,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 						)
 						if url:
 							icy = _rp._read_icy_title(url)
+					# Abort if a later press has already changed the token.
 					if getattr(self, "_whats_playing_token", None) != tok:
 						return
 					if icy:
@@ -887,8 +900,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					msg += ". " + _("Scheduled recording: %s") % sched_rec.station.get("name", "").strip()
 				ui.message(msg)
 
+		# --- 2nd press: open station details dialog (delayed, cancelable) ---
 		elif count == 1:
-			# Second press: details dialogue
 			self._whats_playing_token = None
 			old_dlg_timer = getattr(self, "_whats_playing_dlg_timer", None)
 			if old_dlg_timer:
@@ -900,15 +913,16 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					self._show_station_details_dialog()
 			self._whats_playing_dlg_timer = wx.CallLater(350, _open_details)
 
-		elif count >= 2:
-			# Third press: copy to clipboard / Shazam
-			self._whats_playing_token = None
+		# --- 3rd press: copy ICY track to clipboard, or start Shazam if no metadata ---
+		elif count == 2:
+			token = _time.monotonic()
+			self._whats_playing_token = token
 			dlg_timer = getattr(self, "_whats_playing_dlg_timer", None)
 			if dlg_timer:
 				dlg_timer.Stop()
 				self._whats_playing_dlg_timer = None
 
-			def _copy_or_recognize():
+			def _copy_or_recognize(tok=token):
 				from . import radioPlayer as _rp
 				icy = self._player.get_icy_title()
 				if not icy:
@@ -918,6 +932,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					)
 					if url:
 						icy = _rp._read_icy_title(url)
+				# If a 4th press arrived the token has already changed — abort.
+				if getattr(self, "_whats_playing_token", None) != tok:
+					return
 				if icy:
 					wx.CallAfter(self._copy_to_clipboard, icy)
 				else:
@@ -930,9 +947,26 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 						return
 					wx.CallAfter(ui.message, _("No track metadata found. Starting music recognition…"))
 					self._start_music_recognition(stream_url)
-				self._f2_count = 0  # reset counter
-
 			threading.Thread(target=_copy_or_recognize, daemon=True).start()
+
+		# --- 4th press: force Shazam recognition regardless of ICY metadata ---
+		elif count == 3:
+			self._whats_playing_token = None
+			dlg_timer = getattr(self, "_whats_playing_dlg_timer", None)
+			if dlg_timer:
+				dlg_timer.Stop()
+				self._whats_playing_dlg_timer = None
+			stream_url = (
+				getattr(self._player, "_current_url_resolved", None)
+				or getattr(self._player, "_current_url", None)
+			)
+			if not stream_url:
+				ui.message(_("No track info available"))
+			else:
+				ui.message(_("Starting music recognition…"))
+				self._start_music_recognition(stream_url)
+			# Reset counter so a further press starts from 1× again.
+			self._f2_count = 0
 
 	def _stop_from_dialog(self):
 		"""Called from the station window when F8 is pressed — same logic as script_stop."""
@@ -1716,8 +1750,16 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					recordings_dir = os.path.join(os.path.expanduser("~"), "Documents", "FreeRadio Recordings")
 				os.makedirs(recordings_dir, exist_ok=True)
 				liked_path = os.path.join(recordings_dir, "likedSongs.txt")
-				with open(liked_path, "a", encoding="utf-8") as fh:
-					fh.write("%s\n" % text)
+				# Mükerrerlik kontrolü: aynı şarkı zaten listede varsa ekleme
+				existing = []
+				if os.path.isfile(liked_path):
+					with open(liked_path, encoding="utf-8") as fh:
+						existing = [l.rstrip("\n") for l in fh if l.strip()]
+				if text in existing:
+					ui.message(_("Already in liked songs: %s") % text)
+				else:
+					with open(liked_path, "a", encoding="utf-8") as fh:
+						fh.write("%s\n" % text)
 			except Exception as e:
 				log.error("FreeRadio: could not save liked song: %s", e)
 
