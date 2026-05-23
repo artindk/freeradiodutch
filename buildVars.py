@@ -34,6 +34,8 @@ addon_info = AddonInfo(
 - Previously the handler merged the 3rd and all subsequent presses into a single `elif count >= 2` branch, so the 4th press was never reached. A cancellation token is now also passed into the 3rd-press background thread so that a 4th press arriving while the thread is still running correctly aborts the clipboard/Shazam action before the forced-recognition path takes over.
 **Music Recognizer: improved recognition of non-mainstream tracks**
 - Previously, the signature generator stopped processing audio after ~3.1 seconds or 255 peaks, whichever came first. The full 12-second audio sample is now used to build the fingerprint, sending significantly richer data to Shazam. This hopefully improves recognition accuracy for folk, regional, and other non-mainstream music.
+**All Stations tab: Sort combo box**
+- Added a *Sort* combo box to the All Stations tab, placed before the Country filter. Options are **Alphabetical** (default) and **By Rating** (sorted by vote count, highest first). Changing the sort order instantly re-sorts the current station list without triggering a new network request.
 """),
 	
 	# Author(s)
@@ -52,7 +54,7 @@ addon_info = AddonInfo(
 	addon_minimumNVDAVersion="2024.1.0",
 	
 	# Last NVDA version supported/tested
-	addon_lastTestedNVDAVersion="2026.1.0",
+	addon_lastTestedNVDAVersion="2026.1.1",
 	
 	# Add-on update channel (None denotes stable releases)
 	addon_updateChannel=None,

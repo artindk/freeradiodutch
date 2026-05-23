@@ -342,6 +342,20 @@ class RadioDialog(wx.Dialog):
 		sizer = wx.BoxSizer(wx.VERTICAL)
 
 		filter_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+		# Sort combo
+		filter_sizer.Add(wx.StaticText(self._all_panel, label=_("Sort:")),
+		                 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 4)
+		self._sort_cb = wx.ComboBox(
+			self._all_panel,
+			style=wx.CB_READONLY,
+			choices=[_("Alphabetical"), _("By Rating")],
+		)
+		self._sort_cb.SetName(_("Sort:"))
+		self._sort_cb.SetSelection(0)
+		filter_sizer.Add(self._sort_cb, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 12)
+
+		# Country combo
 		filter_sizer.Add(wx.StaticText(self._all_panel, label=_("Country:")),
 		                 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 4)
 		_all_country_names = sorted(country_name(code) for code in _COUNTRY_NAMES)
@@ -373,6 +387,7 @@ class RadioDialog(wx.Dialog):
 
 		self._search.Bind(wx.EVT_TEXT,         self._on_text_changed)
 		self._search.Bind(wx.EVT_KEY_DOWN,     self._on_search_key)
+		self._sort_cb.Bind(wx.EVT_COMBOBOX,    self._on_sort_changed)
 		self._country_cb.Bind(wx.EVT_COMBOBOX, self._on_combo_changed)
 		self._country_cb.Bind(wx.EVT_CHAR,     self._on_country_char)
 
@@ -975,7 +990,10 @@ class RadioDialog(wx.Dialog):
 					continue
 			result.append(s)
 
-		result.sort(key=_tr_sort_key)
+		if getattr(self, "_sort_cb", None) and self._sort_cb.GetSelection() == 1:
+			result.sort(key=lambda s: s.get("votes", 0), reverse=True)
+		else:
+			result.sort(key=_tr_sort_key)
 		self._stations = result
 		self._all_list.Clear()
 		for s in result:
@@ -1318,6 +1336,10 @@ class RadioDialog(wx.Dialog):
 	def _reset_list_search(self):
 		self._list_search_str   = ""
 		self._list_search_timer = None
+
+	def _on_sort_changed(self, event):
+		"""Re-apply filters with the newly selected sort order."""
+		self._apply_filters()
 
 	def _on_combo_changed(self, event):
 		if not self._all_stations:
