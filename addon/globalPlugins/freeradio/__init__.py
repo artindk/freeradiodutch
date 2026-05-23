@@ -65,6 +65,116 @@ def _notify_on_demand(msg):
 		_speak_on_demand(msg)
 
 
+def _sapi5_speak(msg):
+	"""Speak *msg* using the selected SAPI5 voice on a background thread.
+
+	Respects the mute-notifications setting — does nothing when muted.
+	Tries two methods in order:
+	1. win32com.client — synchronous speak (flag=0) so the SpVoice object stays
+	   alive until speech finishes.  CoInitialize is called explicitly because
+	   NVDA addon threads may not have a COM apartment set up.
+	2. PowerShell fallback — works even without win32com (uses default voice).
+	"""
+	if _notifications_muted():
+		return
+	def _speak():
+		import config as _config
+		voice_name = _config.conf["freeradio"].get("sapi5_voice_name", "")
+		text = msg.replace('"', "'")  # PowerShell fallback: avoid quote issues
+
+		# --- Method 1: comtypes (bundled with NVDA, preferred) ---
+		try:
+			import comtypes.client
+			spk = comtypes.client.CreateObject("SAPI.SpVoice")
+			if voice_name:
+				voices = spk.GetVoices()
+				for i in range(voices.Count):
+					v = voices.Item(i)
+					if v.GetDescription() == voice_name:
+						spk.Voice = v
+						break
+			spk.Speak(msg, 0)  # 0 = SVSFlagDefault (synchronous)
+			return
+		except Exception as e:
+			log.warning("FreeRadio: comtypes SAPI5 speak failed: %s", e)
+
+		# --- Method 2: win32com ---
+		try:
+			import pythoncom
+			import win32com.client
+			pythoncom.CoInitialize()
+			try:
+				spk = win32com.client.Dispatch("SAPI.SpVoice")
+				if voice_name:
+					for v in spk.GetVoices():
+						if v.GetDescription() == voice_name:
+							spk.Voice = v
+							break
+				spk.Speak(msg, 0)
+			finally:
+				pythoncom.CoUninitialize()
+			return
+		except Exception as e:
+			log.warning("FreeRadio: win32com SAPI5 speak failed: %s", e)
+
+		# --- Method 2: PowerShell fallback (default voice only) ---
+		try:
+			import subprocess
+			voice_line = (
+				f'$s.SelectVoice("{voice_name}");' if voice_name else ""
+			)
+			script = (
+				"Add-Type -AssemblyName System.Speech;"
+				"$s=New-Object System.Speech.Synthesis.SpeechSynthesizer;"
+				f'{voice_line}$s.Speak("{text}");'
+			)
+			subprocess.Popen(
+				["powershell", "-WindowStyle", "Hidden", "-Command", script],
+				creationflags=0x08000000,  # CREATE_NO_WINDOW
+			)
+		except Exception:
+			pass
+
+	import threading as _threading
+	_threading.Thread(target=_speak, daemon=True).start()
+
+
+def _list_sapi5_voices():
+	"""Return a list of available SAPI5 voice description strings.
+
+	Uses comtypes (bundled with NVDA) instead of win32com.
+	Returns an empty list if SAPI is unavailable or broken.
+	"""
+	try:
+		import comtypes.client
+		import comtypes.gen.SpeechLib as SpeechLib
+		spk = comtypes.client.CreateObject("SAPI.SpVoice")
+		voices = spk.GetVoices()
+		result = []
+		for i in range(voices.Count):
+			try:
+				result.append(voices.Item(i).GetDescription())
+			except Exception:
+				pass
+		log.info("FreeRadio: found %d SAPI5 voices: %s", len(result), result)
+		return result
+	except Exception as e:
+		log.warning("FreeRadio: _list_sapi5_voices failed: %s", e)
+
+	# Fallback: comtypes without pre-generated SpeechLib
+	try:
+		import comtypes.client
+		spk = comtypes.client.CreateObject("SAPI.SpVoice")
+		# GetVoices returns an ISpeechObjectTokens collection
+		voices = spk.GetVoices()
+		result = [voices.Item(i).GetDescription() for i in range(voices.Count)]
+		log.info("FreeRadio: SAPI5 voices (fallback): %s", result)
+		return result
+	except Exception as e:
+		log.warning("FreeRadio: _list_sapi5_voices fallback failed: %s", e)
+		return []
+
+
 try:
 	_ = globals()['_']
 except KeyError:
@@ -97,6 +207,8 @@ def _init_config():
 		"audio_device":      "integer(default=-1)",
 		"disable_bass":          "boolean(default=False)",
 		"announce_track_changes":"boolean(default=False)",
+		"track_change_voice":    "string(default='nvda')",
+		"sapi5_voice_name":      "string(default='')",
 		"mute_notifications":    "boolean(default=False)",
 		"save_liked_songs":       "boolean(default=False)",
 		"recordings_dir":         "string(default='')",
@@ -1836,12 +1948,18 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				if self._icy_last_title is None:
 					# First read after a station change — announce immediately and store.
 					self._icy_last_title = icy
-					wx.CallAfter(_notify, icy)
+					if config.conf["freeradio"].get("track_change_voice", "nvda") == "sapi5":
+						_sapi5_speak(icy)
+					else:
+						wx.CallAfter(_notify, icy)
 					continue
 
 				if icy != self._icy_last_title:
 					self._icy_last_title = icy
-					wx.CallAfter(_notify, icy)
+					if config.conf["freeradio"].get("track_change_voice", "nvda") == "sapi5":
+						_sapi5_speak(icy)
+					else:
+						wx.CallAfter(_notify, icy)
 			except Exception:
 				pass
 
@@ -2021,6 +2139,65 @@ class FreeRadioSettingsPanel(gui.settingsDialogs.SettingsPanel):
 			config.conf["freeradio"].get("announce_track_changes", False)
 		)
 		sHelper.addItem(self._announce_track_changes)
+
+		_voice_label = _("Track change &voice:")
+		sHelper.addItem(wx.StaticText(self, label=_voice_label))
+		self._track_change_voice = wx.Choice(
+			self,
+			choices=[_("NVDA"), _("SAPI5")],
+		)
+		self._track_change_voice.SetName(_voice_label)
+		_saved_voice = config.conf["freeradio"].get("track_change_voice", "nvda")
+		self._track_change_voice.SetSelection(0 if _saved_voice != "sapi5" else 1)
+		self._track_change_voice.Enable(
+			config.conf["freeradio"].get("announce_track_changes", False)
+		)
+		sHelper.addItem(self._track_change_voice)
+
+		# SAPI5 voice selector — populated on a background thread to avoid blocking UI.
+		_sapi5v_label = _("SAPI5 &voice:")
+		sHelper.addItem(wx.StaticText(self, label=_sapi5v_label))
+		self._sapi5_voice_choice = wx.Choice(self, choices=[_("Default (system)")])
+		self._sapi5_voice_choice.SetName(_sapi5v_label)
+		self._sapi5_voice_choice.SetSelection(0)
+		_is_sapi5 = _saved_voice == "sapi5"
+		_announce_on = config.conf["freeradio"].get("announce_track_changes", False)
+		self._sapi5_voice_choice.Enable(_announce_on and _is_sapi5)
+		sHelper.addItem(self._sapi5_voice_choice)
+		self._sapi5_voice_names = []  # parallel list: [""] + actual voice names
+
+		def _load_sapi5_voices():
+			voices = _list_sapi5_voices()
+			def _populate():
+				if not self:
+					return
+				saved_name = config.conf["freeradio"].get("sapi5_voice_name", "")
+				self._sapi5_voice_names = [""] + voices
+				labels = [_("Default (system)")] + voices
+				self._sapi5_voice_choice.Set(labels)
+				sel = 0
+				if saved_name and saved_name in voices:
+					sel = voices.index(saved_name) + 1
+				self._sapi5_voice_choice.SetSelection(sel)
+			wx.CallAfter(_populate)
+		import threading as _t
+		_t.Thread(target=_load_sapi5_voices, daemon=True).start()
+
+		def _on_voice_combo(e):
+			is_sapi5 = self._track_change_voice.GetSelection() == 1
+			enabled  = self._announce_track_changes.GetValue()
+			self._sapi5_voice_choice.Enable(enabled and is_sapi5)
+
+		self._announce_track_changes.Bind(
+			wx.EVT_CHECKBOX,
+			lambda e: (
+				self._track_change_voice.Enable(e.IsChecked()),
+				self._sapi5_voice_choice.Enable(
+					e.IsChecked() and self._track_change_voice.GetSelection() == 1
+				),
+			),
+		)
+		self._track_change_voice.Bind(wx.EVT_CHOICE, _on_voice_combo)
 
 		self._mute_notifications = wx.CheckBox(
 			self,
@@ -2380,6 +2557,14 @@ class FreeRadioSettingsPanel(gui.settingsDialogs.SettingsPanel):
 		config.conf["freeradio"]["volume"]          = min(100, vol)
 		config.conf["freeradio"]["resume_on_start"]        = self._resume.GetValue()
 		config.conf["freeradio"]["announce_track_changes"] = self._announce_track_changes.GetValue()
+		config.conf["freeradio"]["track_change_voice"] = (
+			"sapi5" if self._track_change_voice.GetSelection() == 1 else "nvda"
+		)
+		_sapi5v_sel = self._sapi5_voice_choice.GetSelection()
+		config.conf["freeradio"]["sapi5_voice_name"] = (
+			self._sapi5_voice_names[_sapi5v_sel]
+			if 0 <= _sapi5v_sel < len(self._sapi5_voice_names) else ""
+		)
 		config.conf["freeradio"]["mute_notifications"]     = self._mute_notifications.GetValue()
 		config.conf["freeradio"]["save_liked_songs"]        = self._save_liked_songs.GetValue()
 		

@@ -36,6 +36,8 @@ addon_info = AddonInfo(
 - Previously, the signature generator stopped processing audio after ~3.1 seconds or 255 peaks, whichever came first. The full 12-second audio sample is now used to build the fingerprint, sending significantly richer data to Shazam. This hopefully improves recognition accuracy for folk, regional, and other non-mainstream music.
 **All Stations tab: Sort combo box**
 - Added a *Sort* combo box to the All Stations tab, placed before the Country filter. Options are **Alphabetical** (default) and **By Rating** (sorted by vote count, highest first). Changing the sort order instantly re-sorts the current station list without triggering a new network request.
+**Settings: SAPI5 voice selector for track change announcements**
+- Added a *SAPI5 voice* dropdown to the settings panel, appearing below the existing *Track change voice* option. - When SAPI5 is selected as the announcement voice, users can now choose which installed SAPI5 voice to use. The list is populated automatically from the system's available voices. Selecting *Default (system)* uses whatever voice Windows has set as the default. The dropdown is disabled when NVDA is selected as the announcement voice, or when auto-announce is turned off.
 """),
 	
 	# Author(s)
