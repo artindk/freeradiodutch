@@ -56,6 +56,7 @@ from .utils import (
 	station_label  as _station_label,
 	first_tag      as _first_tag,
 	tr_sort_key    as _tr_sort_key,
+	matches_query  as _matches_query,
 	_COUNTRY_NAMES,
 	_NAME_TO_CODE,
 	name_to_code,
@@ -96,6 +97,8 @@ class RadioDialog(wx.Dialog):
 		self._combo_debounce_timer = None  # wx.CallLater for country combo debounce
 		self._search_debounce_timer = None
 		self._search_fetch_id = 0
+		self._total_found = None  # Total stations found by API (may exceed displayed limit)
+		self._country_station_counts = {}  # code -> stationcount from API, populated by _fetch_countries
 
 		self._build_ui()
 		self._prepopulate_country_combo()
@@ -240,16 +243,17 @@ class RadioDialog(wx.Dialog):
 		wx.CallAfter(self._search.SetFocus)
 
 	def focus_favorites(self):
-		"""Switch to the Favorites tab and give the list focus.
+		"""Switch to the Favourites tab and give the list focus.
 
-		Guard against being called while the dialog is hidden or the notebook
-		HWND has not yet been (re)created.  SetSelection on an orphaned notebook
-		triggers a C++ wxAssertionError because the internal page list and the
-		Win32 tab-control item count are out of sync.
+		Called from _open_dialog() via wx.CallLater(0) so the notebook HWND is
+		fully realized.  Guards against a corrupted notebook (GetPageCount() == 0)
+		as a safety net.
 		"""
-		if not self or not self.IsShown():
+		if not self:
 			return
 		try:
+			if self._notebook.GetPageCount() == 0:
+				return
 			self._notebook.SetSelection(1)  # Favourites tab index
 		except Exception:
 			return
@@ -262,11 +266,14 @@ class RadioDialog(wx.Dialog):
 	def focus_search(self):
 		"""Switch to the All Stations tab and focus on the search box.
 
-		Guard against being called while the dialog is hidden; see focus_favorites.
+		Called from _open_dialog() via wx.CallLater(0).
+		Guards against a corrupted notebook as a safety net.
 		"""
-		if not self or not self.IsShown():
+		if not self:
 			return
 		try:
+			if self._notebook.GetPageCount() == 0:
+				return
 			self._notebook.SetSelection(0)
 		except Exception:
 			return
@@ -277,11 +284,14 @@ class RadioDialog(wx.Dialog):
 		"""Switch to the specified tab and focus on the first focusable item.
 		Indices: 0=All Stations, 1=Favourites, 2=Recording, 3=Timer, 4=Liked Songs.
 
-		Guard against being called while the dialog is hidden; see focus_favorites.
+		Called from _open_dialog() via wx.CallLater(0).
+		Guards against a corrupted notebook as a safety net.
 		"""
-		if not self or not self.IsShown():
+		if not self:
 			return
 		try:
+			if self._notebook.GetPageCount() == 0:
+				return
 			self._notebook.SetSelection(tab_index)
 		except Exception:
 			return
@@ -364,6 +374,21 @@ class RadioDialog(wx.Dialog):
 		filter_sizer.Add(self._country_cb, 1)
 		sizer.Add(filter_sizer, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
 
+		# Result limit row
+		limit_sizer = wx.BoxSizer(wx.HORIZONTAL)
+		limit_sizer.Add(
+			wx.StaticText(self._all_panel, label=_("Result limit per country:")),
+			0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 4,
+		)
+		_saved_limit = config.conf["freeradio"].get("result_limit", 1000)
+		self._limit_spin = wx.SpinCtrl(
+			self._all_panel, min=100, max=10000, initial=_saved_limit,
+		)
+		self._limit_spin.SetName(_("Result limit:"))
+		self._limit_spin.SetMinSize((80, -1))
+		limit_sizer.Add(self._limit_spin, 0, wx.ALIGN_CENTER_VERTICAL)
+		sizer.Add(limit_sizer, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
+
 		sizer.Add(wx.StaticText(self._all_panel, label=_("Search:")),
 		          0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
 		self._search = wx.TextCtrl(self._all_panel)
@@ -390,6 +415,7 @@ class RadioDialog(wx.Dialog):
 		self._sort_cb.Bind(wx.EVT_COMBOBOX,    self._on_sort_changed)
 		self._country_cb.Bind(wx.EVT_COMBOBOX, self._on_combo_changed)
 		self._country_cb.Bind(wx.EVT_CHAR,     self._on_country_char)
+		self._limit_spin.Bind(wx.EVT_SPINCTRL, self._on_limit_changed)
 
 		self._all_list.Bind(wx.EVT_CHAR,           self._on_list_char)
 		self._all_list.Bind(wx.EVT_LISTBOX,        self._on_selection_changed)
@@ -414,7 +440,10 @@ class RadioDialog(wx.Dialog):
 
 		station_label = _("Station:")
 		st_lbl = wx.StaticText(self._rec_panel, label=station_label)
-		self._sched_station_cb = wx.ComboBox(self._rec_panel, style=wx.CB_READONLY, choices=[])
+		# Use a ListBox instead of an editable ComboBox so screen readers
+		# announce each item as the user navigates the list.
+		self._sched_station_cb = wx.ListBox(self._rec_panel, style=wx.LB_SINGLE)
+		self._sched_station_cb.SetMinSize((-1, 80))
 		sizer.Add(st_lbl, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
 		sizer.Add(self._sched_station_cb, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
 		self._sched_station_cb.SetName(station_label)
@@ -467,6 +496,8 @@ class RadioDialog(wx.Dialog):
 		self._sched_del_btn.Bind(wx.EVT_BUTTON, self._on_sched_del)
 		self._sched_list.Bind(wx.EVT_LISTBOX,   self._on_sched_selected)
 		self._sched_list.Bind(wx.EVT_CHAR,      self._on_list_char)
+		self._sched_station_cb.Bind(wx.EVT_SET_FOCUS, self._on_sched_station_focus)
+		# Type-ahead for the station listbox is handled in _on_char_hook.
 
 	def _build_timer_tab(self):
 		"""Timer tab: start (alarm) or stop (sleep) the radio at a specific time."""
@@ -498,9 +529,12 @@ class RadioDialog(wx.Dialog):
 		self._timer_station_label = wx.StaticText(
 			self._timer_panel, label=_("Station:")
 		)
-		self._timer_station_cb = wx.ComboBox(
-			self._timer_panel, style=wx.CB_READONLY, choices=[]
+		# Use a ListBox instead of an editable ComboBox so screen readers
+		# announce each item as the user navigates the list.
+		self._timer_station_cb = wx.ListBox(
+			self._timer_panel, style=wx.LB_SINGLE
 		)
+		self._timer_station_cb.SetMinSize((-1, 80))
 		self._timer_station_cb.SetName(_("Station:"))
 		sizer.Add(self._timer_station_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
 		sizer.Add(self._timer_station_cb,    0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
@@ -527,6 +561,8 @@ class RadioDialog(wx.Dialog):
 		self._timer_del_btn.Bind(wx.EVT_BUTTON,        self._on_timer_del)
 		self._timer_list.Bind(wx.EVT_LISTBOX,          self._on_timer_selected)
 		self._timer_list.Bind(wx.EVT_CHAR,             self._on_list_char)
+		self._timer_station_cb.Bind(wx.EVT_SET_FOCUS,  self._on_timer_station_focus)
+		# Type-ahead for the station listbox is handled in _on_char_hook.
 
 		self._timer_stations = []
 		self._timer_action_changed_update()
@@ -537,6 +573,48 @@ class RadioDialog(wx.Dialog):
 		if sel == 1:
 			return self._fav_list
 		return self._all_list
+
+	def _resolve_station_from_combo(self, combo, station_list):
+		"""Return the station object that matches the combo/listbox current selection.
+
+		Supports both wx.ListBox and wx.ComboBox widgets.  For a ListBox,
+		GetSelection() is always reliable.  For an editable ComboBox three
+		strategies are tried in order:
+
+		1. GetSelection() index — fast path when an item was chosen from the list.
+		2. Case-insensitive exact match on GetValue() against station names.
+		3. Case-insensitive prefix match (first station whose name starts with the
+		   typed text) — lets users type just the beginning of a long name.
+
+		Returns None when no station can be resolved.
+		"""
+		if not station_list:
+			return None
+
+		idx = combo.GetSelection()
+		if idx != wx.NOT_FOUND and 0 <= idx < len(station_list):
+			return station_list[idx]
+
+		# ListBox has no GetValue(); fall back to None when the widget does not
+		# support free-text input (i.e. it is a wx.ListBox, not a wx.ComboBox).
+		if not hasattr(combo, "GetValue"):
+			return None
+
+		typed = combo.GetValue().strip().lower()
+		if not typed:
+			return None
+
+		# Exact match first
+		for s in station_list:
+			if s.get("name", "").strip().lower() == typed:
+				return s
+
+		# Prefix match
+		for s in station_list:
+			if s.get("name", "").strip().lower().startswith(typed):
+				return s
+
+		return None
 
 	def _apply_tab_side_effects(self, sel):
 		"""Central handler for all side-effects that must run whenever the active
@@ -549,6 +627,11 @@ class RadioDialog(wx.Dialog):
 		  - Trigger per-tab data refresh.
 		  - Set _tab_just_switched so the focus handler can suppress redundant
 		    screen-reader announcements.
+
+		The Recording, Timer and Liked Songs refreshes are deferred via
+		wx.CallLater(0) so that the tab panel is painted before the listbox/combo
+		population runs.  Without this deferral the Clear()+Append() calls block
+		the wx paint cycle and the tab switch feels sluggish.
 		"""
 		on_rec_or_timer = (sel in (2, 3, 4))
 		self._play_btn.Show(not on_rec_or_timer)
@@ -560,17 +643,16 @@ class RadioDialog(wx.Dialog):
 
 		self._tab_just_switched = True
 		if sel == 1:
-			self._refresh_fav_list_no_select()
-			self._update_fav_button()
-			self._update_save_audio_btn()
+			wx.CallLater(0, self._update_fav_button)
+			wx.CallLater(0, self._update_save_audio_btn)
 		elif sel == 2:
-			self._refresh_sched_stations()
-			self._refresh_sched_list()
+			wx.CallLater(0, self._refresh_sched_stations)
+			wx.CallLater(0, self._refresh_sched_list)
 		elif sel == 3:
-			self._refresh_timer_stations()
-			self._refresh_timer_list()
+			wx.CallLater(0, self._refresh_timer_stations)
+			wx.CallLater(0, self._refresh_timer_list)
 		elif sel == 4:
-			self._refresh_liked_list()
+			wx.CallLater(0, self._refresh_liked_list)
 		if sel != 1 and hasattr(self, "_save_audio_btn"):
 			self._save_audio_btn.Enable(False)
 
@@ -583,8 +665,26 @@ class RadioDialog(wx.Dialog):
 		ui.message(self._notebook.GetPageText(sel))
 
 	def _on_tab_changed(self, event):
-		"""wx.EVT_NOTEBOOK_PAGE_CHANGED handler (user interaction / Ctrl+Tab)."""
-		self._apply_tab_side_effects(event.GetSelection())
+		"""wx.EVT_NOTEBOOK_PAGE_CHANGED handler (user interaction / Ctrl+Tab).
+
+		Guard against the wxAssertionError that fires when the Win32 tab-control
+		item count is out of sync with wxNotebook's internal page list (typically
+		happens if the dialog is shown/hidden very rapidly, e.g. via a double
+		hotkey press).  If the notebook is in a corrupted state we skip the side-
+		effects silently; _open_dialog() will detect the bad state on the next
+		hotkey press and rebuild the dialog from scratch.
+		"""
+		try:
+			sel = event.GetSelection()
+			# A mismatch between wx's internal page list and the Win32 tab-control
+			# produces GetPageCount() == 0 even though pages were added.  Bail out
+			# early rather than letting _apply_tab_side_effects touch the notebook.
+			if not self or self._notebook.GetPageCount() == 0:
+				event.Skip()
+				return
+			self._apply_tab_side_effects(sel)
+		except Exception:
+			pass
 		event.Skip()
 
 
@@ -684,11 +784,11 @@ class RadioDialog(wx.Dialog):
 		event.Skip()
 
 	def _on_fav_list_focus(self, event):
-		"""When the favorites list gets focus: select the first item (if there is no selection),
-		voice hint message, set default button."""
 		self._play_btn.SetDefault()
 		if self._fav_list.GetSelection() == wx.NOT_FOUND and self._fav_list.GetCount() > 0:
-			self._fav_list.SetSelection(0)
+			pending = getattr(self, "_fav_pending_name", "")
+			idx = self._fav_list.FindString(pending) if pending else wx.NOT_FOUND
+			self._fav_list.SetSelection(idx if idx != wx.NOT_FOUND else 0)
 		if not getattr(self, "_tab_just_switched", False):
 			ui.message(_("Press comma to pick a station, navigate to the target position, then press comma again to drop."))
 		self._tab_just_switched = False
@@ -725,7 +825,7 @@ class RadioDialog(wx.Dialog):
 			event.Skip()
 
 
-		"""Populate station combobox in recording tab from favourites."""
+		# Populate station listbox in the Recording tab from favourites.
 		favs = self._manager.get_favorites()
 		self._sched_station_cb.Clear()
 		for s in favs:
@@ -735,14 +835,29 @@ class RadioDialog(wx.Dialog):
 		self._sched_stations = favs
 
 	def _refresh_sched_stations(self):
-		"""Populate station combobox in recording tab from favourites."""
+		"""Populate the station listbox in the Recording tab from favourites.
+
+		Preserves the current selection by station name so that a tab-switch
+		refresh does not silently deselect the station the user had chosen.
+		SetSelection is intentionally NOT called here: calling it while focus is
+		on a different control causes Win32 to fire EVENT_OBJECT_SELECTION, which
+		NVDA announces even though the listbox does not have focus.  Instead, the
+		selection is applied lazily in _on_sched_station_focus when the user
+		actually tabs into the listbox.
+		"""
 		favs = self._manager.get_favorites()
+		# Remember which station was selected before clearing the list.
+		prev_idx = self._sched_station_cb.GetSelection()
+		prev_name = (
+			self._sched_station_cb.GetString(prev_idx)
+			if prev_idx != wx.NOT_FOUND else ""
+		)
 		self._sched_station_cb.Clear()
 		for s in favs:
 			self._sched_station_cb.Append(s.get("name", "?").strip())
-		if favs:
-			self._sched_station_cb.SetSelection(0)
 		self._sched_stations = favs
+		# Store the name to restore; the actual SetSelection is deferred to focus time.
+		self._sched_station_pending_name = prev_name
 
 	def _refresh_sched_list(self):
 		"""Rebuild the scheduled recordings listbox."""
@@ -751,6 +866,20 @@ class RadioDialog(wx.Dialog):
 			for rec in self._recorder.get_schedules():
 				self._sched_list.Append(str(rec))
 		self._sched_del_btn.Enable(self._sched_list.GetCount() > 0)
+
+	def _on_sched_station_focus(self, event):
+		"""Apply the pending selection when the station listbox actually gets focus.
+
+		_refresh_sched_stations deliberately skips SetSelection to avoid
+		Win32 firing EVENT_OBJECT_SELECTION (which NVDA announces) while
+		focus is elsewhere.  We do it here instead, when the user has
+		genuinely navigated to the listbox.
+		"""
+		if self._sched_station_cb.GetSelection() == wx.NOT_FOUND and self._sched_station_cb.GetCount() > 0:
+			pending = getattr(self, "_sched_station_pending_name", "")
+			idx = self._sched_station_cb.FindString(pending) if pending else wx.NOT_FOUND
+			self._sched_station_cb.SetSelection(idx if idx != wx.NOT_FOUND else 0)
+		event.Skip()
 
 
 	def _on_rec_btn(self, event):
@@ -800,12 +929,13 @@ class RadioDialog(wx.Dialog):
 			next_day  = True
 
 		dur = self._sched_dur.GetValue()
-		idx = self._sched_station_cb.GetSelection()
-		if idx == wx.NOT_FOUND or not hasattr(self, "_sched_stations") or idx >= len(self._sched_stations):
+		station = self._resolve_station_from_combo(
+			self._sched_station_cb,
+			getattr(self, "_sched_stations", []),
+		)
+		if station is None:
 			ui.message(_("Please select a station"))
 			return
-
-		station     = self._sched_stations[idx]
 		record_only = self._sched_mode_rec.GetValue()
 		player_paths = {
 			"vlc":       self._player._vlc_path,
@@ -823,13 +953,13 @@ class RadioDialog(wx.Dialog):
 		mode_str  = _("record only") if record_only else _("listen and record")
 		date_str  = start.strftime("%d.%m.%Y")
 		if next_day:
-			ui.message(_("Time has passed today. Schedule added for tomorrow: %s at %s (%s)") % (
-				station.get("name", "?"), time_str, mode_str
-			))
+			ui.message(_("Time has passed today. Schedule added for tomorrow: %(station)s at %(time)s (%(mode)s)") % {
+				"station": station.get("name", "?"), "time": time_str, "mode": mode_str
+			})
 		else:
-			ui.message(_("Schedule added: %s on %s at %s (%s)") % (
-				station.get("name", "?"), date_str, time_str, mode_str
-			))
+			ui.message(_("Schedule added: %(station)s on %(date)s at %(time)s (%(mode)s)") % {
+				"station": station.get("name", "?"), "date": date_str, "time": time_str, "mode": mode_str
+			})
 		if conflict_names:
 			wx.CallAfter(
 				wx.MessageBox,
@@ -873,7 +1003,10 @@ class RadioDialog(wx.Dialog):
 			try:
 				cc = self._manager.get_user_countrycode()
 				if cc:
-					stations_country[0] = self._manager.get_stations_by_country(cc)
+					result = self._manager.get_stations_by_country(cc)
+					# API'den (istasyonlar, toplam_sayı) şeklinde bir tuple dönebilir. 
+					# Biz sadece istasyonlar listesi olan ilk [0] elemanı alıyoruz.
+					stations_country[0] = result[0] if isinstance(result, tuple) else result
 			except RadioBrowserError as exc:
 				import logging
 				logging.getLogger(__name__).warning("FreeRadio: fetch_country failed: %s", exc)
@@ -926,6 +1059,7 @@ class RadioDialog(wx.Dialog):
 		if not countries_data or not self:
 			return
 		names = []
+		counts = {}
 		for c in countries_data:
 			code = c.get("iso_3166_1", "").strip().upper()
 			if not code:
@@ -933,12 +1067,15 @@ class RadioDialog(wx.Dialog):
 			count = int(c.get("stationcount", 0) or 0)
 			if len(code) == 2 and count > 0:
 				names.append(_country_name(code))
+				counts[code] = count
 		names = sorted(set(names))
-		wx.CallAfter(self._populate_country_combo, names)
+		wx.CallAfter(self._populate_country_combo, names, counts)
 
-	def _populate_country_combo(self, all_country_names):
+	def _populate_country_combo(self, all_country_names, counts=None):
 		if not self:
 			return
+		if counts:
+			self._country_station_counts.update(counts)
 		cur = self._country_cb.GetStringSelection()
 		existing = set(self._country_cb.GetStrings()) - {_("All")}
 		merged = sorted(existing | set(all_country_names))
@@ -966,9 +1103,6 @@ class RadioDialog(wx.Dialog):
 
 		# All pool: local + country data + text search
 		pool = self._all_stations + self._extra_stations + self._search_stations
-# Stations searched via API are exempt from local text filter
-		# (already filtered by API); Only the country filter is applied.
-		search_uids = {s.get("stationuuid") for s in self._search_stations}
 
 		result = []
 		seen   = set()
@@ -979,15 +1113,8 @@ class RadioDialog(wx.Dialog):
 			seen.add(uid)
 			if sel_country and _country_name(s.get("countrycode", "")) != sel_country:
 				continue
-			if text and uid not in search_uids:
-				haystack = " ".join([
-					s.get("name", ""),
-					s.get("countrycode", ""),
-					_country_name(s.get("countrycode", "")),
-					s.get("tags", ""),
-				])
-				if text not in haystack:
-					continue
+			if text and not _matches_query(s, text):
+				continue
 			result.append(s)
 
 		if getattr(self, "_sort_cb", None) and self._sort_cb.GetSelection() == 1:
@@ -999,21 +1126,41 @@ class RadioDialog(wx.Dialog):
 		for s in result:
 			self._all_list.Append(_station_label(s))
 
-		if sel_country and status_override:
-			label = _("%s in %s") % (status_override, sel_country)
+		text = self._search.GetValue().strip()
+		if sel_country and text:
+			label = _("\"%(query)s\" in %(country)s: %(count)d") % {"query": text, "country": sel_country, "count": len(result)}
 		elif sel_country:
-			label = _("%d stations in %s") % (len(result), sel_country)
-		elif status_override:
-			label = status_override
+			label = _("%(count)d stations in %(country)s") % {"count": len(result), "country": sel_country}
+		elif text:
+			label = _("\"%(query)s\": %(count)d") % {"query": text, "count": len(result)}
 		else:
-			label = _("%d stations") % len(result)
+			label = _("%(count)d stations") % {"count": len(result)}
+			
+		# Append a hint when the displayed count equals the configured limit.
+		# Only issue a limit warning if a search or country filter is active.
+		user_limit = config.conf["freeradio"].get("result_limit", 1000)
+		is_filtered = bool(sel_country or text)
+		
+		if is_filtered and len(result) >= user_limit and not status_override:
+			# For country filters, _total_found comes from the stationcount cache
+			# (limit-independent). For text searches, search_stations fetches up to
+			# 50000 results internally so total_found is also reliable.
+			total = (
+				self._total_found
+				if self._total_found and self._total_found > len(result)
+				else None
+			)
+			if total:
+				label += " " + _("(%(shown)d of %(total)d shown — increase result limit to see more)") % {"shown": len(result), "total": total}
+			else:
+				label += " " + _("(limit reached — increase result limit to see more)")
+			
+		if status_override and not result:
+			label = status_override
+			
 		self._status.SetLabel(label)
 		if announce:
 			ui.message(label)
-
-		if result:
-			self._all_list.SetSelection(0)
-		self._update_fav_button()
 
 	def _refresh_fav_list(self):
 		"""Repopulate the favourites list, applying the filter field if non-empty.
@@ -1028,16 +1175,11 @@ class RadioDialog(wx.Dialog):
 			prev_uuid = self._fav_filtered[prev_sel].get("stationuuid")
 
 		query = getattr(self, "_fav_filter", None)
-		query = query.GetValue().strip().lower() if query else ""
+		query = query.GetValue().strip() if query else ""
 
 		favs = self._manager.get_favorites()
 		if query:
-			filtered = [
-				s for s in favs
-				if query in s.get("name", "").lower()
-				or query in s.get("tags", "").lower()
-				or query in s.get("countrycode", "").lower()
-			]
+			filtered = [s for s in favs if _matches_query(s, query)]
 		else:
 			filtered = list(favs)
 
@@ -1066,23 +1208,25 @@ class RadioDialog(wx.Dialog):
 
 		SetSelection sends Windows EVENT_OBJECT_SELECTION to NVDA's list,
 		causing it to announce; This is not desired when reading the tab name.
-		Also applies the current filter so the list is consistent.
+		The pending selection is applied lazily in _on_fav_list_focus.
 		"""
 		query = getattr(self, "_fav_filter", None)
-		query = query.GetValue().strip().lower() if query else ""
+		query = query.GetValue().strip() if query else ""
 
 		favs = self._manager.get_favorites()
 		if query:
-			filtered = [
-				s for s in favs
-				if query in s.get("name", "").lower()
-				or query in s.get("tags", "").lower()
-				or query in s.get("countrycode", "").lower()
-			]
+			filtered = [s for s in favs if _matches_query(s, query)]
 		else:
 			filtered = list(favs)
 
 		self._fav_filtered = filtered
+
+		# Remember current selection before clearing, so focus handler can restore it.
+		prev_sel = self._fav_list.GetSelection()
+		self._fav_pending_name = (
+			self._fav_list.GetString(prev_sel)
+			if prev_sel != wx.NOT_FOUND else ""
+		)
 
 		self._fav_list.Clear()
 		for s in filtered:
@@ -1115,19 +1259,22 @@ class RadioDialog(wx.Dialog):
 
 		ci = self._country_cb.GetSelection()
 		selected_country = name_to_code(self._country_cb.GetString(ci)) if ci > 0 else None
+		user_limit = config.conf["freeradio"].get("result_limit", 1000)
 
 		def _do_search():
 			self._search_debounce_timer = None
 			if not self or fetch_id != self._search_fetch_id:
 				return
 			try:
-				stations = self._manager.search_stations(query, limit=1000, countrycode=selected_country)
+				stations, total_found = self._manager.search_stations(query, limit=user_limit, countrycode=selected_country)
 			except Exception:
-				stations = []
+				stations, total_found = [], 0
 			if not self or fetch_id != self._search_fetch_id:
 				return
-			status = _("\"%s\": %d") % (query, len(stations))
-			wx.CallAfter(self._on_search_results, stations, status, fetch_id)
+			
+			# Status override parameter is passed as None so _apply_filters 
+			# can use its own consistent "limit reached" message logic.
+			wx.CallAfter(self._on_search_results, stations, None, fetch_id, total_found)
 
 		self._search_debounce_timer = wx.CallLater(500, _do_search)
 
@@ -1288,11 +1435,13 @@ class RadioDialog(wx.Dialog):
 		never pollutes the search string, current index, or anchor of another.
 		"""
 		_list_state_map = {
-			id(self._all_list):   "_list_search_all",
-			id(self._fav_list):   "_list_search_fav",
-			id(self._sched_list): "_list_search_sched",
-			id(self._timer_list): "_list_search_timer",
-			id(self._liked_list): "_list_search_liked",
+			id(self._all_list):          "_list_search_all",
+			id(self._fav_list):          "_list_search_fav",
+			id(self._sched_list):        "_list_search_sched",
+			id(self._sched_station_cb):  "_list_search_sched_station",
+			id(self._timer_list):        "_list_search_timer",
+			id(self._timer_station_cb):  "_list_search_timer_station",
+			id(self._liked_list):        "_list_search_liked",
 		}
 		state_attr = _list_state_map.get(id(listbox), "_list_search_all")
 		self._typeahead(
@@ -1336,6 +1485,27 @@ class RadioDialog(wx.Dialog):
 	def _reset_list_search(self):
 		self._list_search_str   = ""
 		self._list_search_timer = None
+
+	def _on_limit_changed(self, event):
+		"""Save the new result limit to config and re-trigger search/country fetch."""
+		limit = self._limit_spin.GetValue()
+		config.conf["freeradio"]["result_limit"] = limit
+		# Re-run the active search or country fetch with the new limit.
+		query = self._search.GetValue().strip()
+		if query:
+			self._search_stations = []
+			self._schedule_search(query)
+		else:
+			ci = self._country_cb.GetSelection()
+			if ci > 0:
+				# Simulate a combo change to re-fetch with the new limit.
+				self._extra_stations = []
+				wx.PostEvent(
+					self._country_cb,
+					wx.CommandEvent(wx.EVT_COMBOBOX.typeId, self._country_cb.GetId()),
+				)
+			else:
+				self._apply_filters()
 
 	def _on_sort_changed(self, event):
 		"""Re-apply filters with the newly selected sort order."""
@@ -1390,48 +1560,64 @@ class RadioDialog(wx.Dialog):
 			self._combo_debounce_timer = None
 			if not self or fetch_id != self._combo_fetch_id:
 				return
+			user_limit = config.conf["freeradio"].get("result_limit", 1000)
 
 			def fetch():
 				RadioBrowserError = _radio_browser_error()
 				country_code = name_to_code(country_snap)
 				try:
-					data = self._manager.get_stations_by_country(country_code)
-					results = data or []
+					results, total_found = self._manager.get_stations_by_country(
+						country_code, limit=user_limit,
+					)
+					results = results[:user_limit]
 				except RadioBrowserError:
 					return
 				if not self or fetch_id != self._combo_fetch_id:
 					return
-				wx.CallAfter(self._on_combo_fetch_done, results, fetch_id)
+				wx.CallAfter(self._on_combo_fetch_done, results, total_found, fetch_id)
 
 			threading.Thread(target=fetch, daemon=True).start()
 
 		self._combo_debounce_timer = wx.CallLater(self._COMBO_DEBOUNCE_MS, _do_fetch)
 		event.Skip()
 
-	def _on_combo_fetch_done(self, new_stations, fetch_id):
+	def _on_combo_fetch_done(self, new_stations, total_found, fetch_id):
 		if not self or fetch_id != self._combo_fetch_id:
 			return
-		# If a search query is active, suppress the intermediate country-level
-		# announce here; _on_search_results will announce the final result once
-		# the rescoped search completes, avoiding double NVDA speech.
+		
 		query = self._search.GetValue().strip()
 		has_query = bool(query)
-		if not new_stations:
-			self._apply_filters(announce=not has_query)
+		
+		self._extra_stations = new_stations or []
+		# Prefer the cached stationcount from _fetch_countries (accurate, limit-independent).
+		# Fall back to total_found from the API response only if the cache has no entry.
+		ci = self._country_cb.GetSelection()
+		if ci > 0:
+			sel_country = self._country_cb.GetString(ci)
+			cc = name_to_code(sel_country)
+			cached = self._country_station_counts.get(cc.upper()) if cc else None
+			self._total_found = cached if cached else total_found
 		else:
-			self._extra_stations = new_stations
-			self._apply_filters(announce=not has_query)
-		# If there is an active search query, re-run it scoped to the new country.
+			self._total_found = total_found
+		
+		# Apply filters. If there is no search query, this will automatically
+		# append and announce the standard "limit reached" message if needed.
+		# If there is a search query, we suppress the announcement to avoid double speech.
+		self._apply_filters(announce=not has_query)
+
+		# If an active search query exists, re-run the search scoped to the new country.
 		if has_query:
 			self._search_stations = []
 			self._schedule_search(query)
 
-	def _on_search_results(self, stations, status_text, fetch_id=None):
+	def _on_search_results(self, stations, status_text, fetch_id=None, total_found=None):
 		if not self:
 			return
 		if fetch_id is not None and fetch_id != self._search_fetch_id:
 			return
 		self._search_stations = stations
+		if total_found is not None:
+			self._total_found = total_found
 		self._apply_filters(status_text, announce=True)
 		self._refresh_fav_list()
 
@@ -1991,7 +2177,9 @@ class RadioDialog(wx.Dialog):
 		# Intercepting here — before event.Skip() — ensures the character is
 		# consumed entirely by our handler and never reaches the native control.
 		if (not event.ControlDown() and not event.AltDown()
-				and focused in (self._sched_list, self._timer_list, self._liked_list)):
+				and focused in (self._sched_list, self._sched_station_cb,
+				                self._timer_list, self._timer_station_cb,
+				                self._liked_list)):
 			ukey = event.GetUnicodeKey()
 			if ukey != wx.WXK_NONE and ukey >= 32:
 				ch = chr(ukey).lower()
@@ -2219,14 +2407,26 @@ class RadioDialog(wx.Dialog):
 		event.Skip()
 
 	def _refresh_timer_stations(self):
-		"""Timer tab fill station combo from favorites."""
+		"""Timer tab: fill the station listbox from favourites.
+
+		Preserves the current selection by station name so that a tab-switch
+		refresh does not silently deselect the station the user had chosen.
+		SetSelection is intentionally NOT called here — see _refresh_sched_stations
+		for the rationale.  Selection is applied lazily in _on_timer_station_focus.
+		"""
 		favs = self._manager.get_favorites()
+		# Remember which station was selected before clearing the list.
+		prev_idx = self._timer_station_cb.GetSelection()
+		prev_name = (
+			self._timer_station_cb.GetString(prev_idx)
+			if prev_idx != wx.NOT_FOUND else ""
+		)
 		self._timer_station_cb.Clear()
 		for s in favs:
 			self._timer_station_cb.Append(s.get("name", "?").strip())
-		if favs:
-			self._timer_station_cb.SetSelection(0)
 		self._timer_stations = favs
+		# Store the name to restore; the actual SetSelection is deferred to focus time.
+		self._timer_station_pending_name = prev_name
 
 	def _refresh_timer_list(self):
 		"""Write pending timers to the listbox."""
@@ -2244,6 +2444,20 @@ class RadioDialog(wx.Dialog):
 					text = _("Sleep %(time)s") % {"time": time_str}
 				self._timer_list.Append(text)
 		self._timer_del_btn.Enable(self._timer_list.GetCount() > 0)
+
+	def _on_timer_station_focus(self, event):
+		"""Apply the pending selection when the station listbox actually gets focus.
+
+		_refresh_timer_stations deliberately skips SetSelection to avoid
+		Win32 firing EVENT_OBJECT_SELECTION (which NVDA announces) while
+		focus is elsewhere.  We do it here instead, when the user has
+		genuinely navigated to the listbox.
+		"""
+		if self._timer_station_cb.GetSelection() == wx.NOT_FOUND and self._timer_station_cb.GetCount() > 0:
+			pending = getattr(self, "_timer_station_pending_name", "")
+			idx = self._timer_station_cb.FindString(pending) if pending else wx.NOT_FOUND
+			self._timer_station_cb.SetSelection(idx if idx != wx.NOT_FOUND else 0)
+		event.Skip()
 
 	def _on_timer_add(self, event):
 		if not self._timer_manager:
@@ -2274,11 +2488,13 @@ class RadioDialog(wx.Dialog):
 		is_start = self._timer_rb_start.GetValue()
 
 		if is_start:
-			idx = self._timer_station_cb.GetSelection()
-			if idx == wx.NOT_FOUND or idx >= len(self._timer_stations):
+			station = self._resolve_station_from_combo(
+				self._timer_station_cb,
+				getattr(self, "_timer_stations", []),
+			)
+			if station is None:
 				ui.message(_("Please select a station"))
 				return
-			station = self._timer_stations[idx]
 			self._timer_manager.add_alarm(
 				start_dt=when,
 				station=station,

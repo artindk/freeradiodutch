@@ -892,8 +892,18 @@ class RadioPlayer:
         if _stale():
             return
 
-        # Skip if BASS is disabled
-        if not self._disable_bass and self._bass_engine and self._bass_engine.ready():
+        # Hosts that consistently fail with BASS (ICY-over-HTTPS, err=40).
+        # For these skip BASS entirely and start from VLC.
+        _BASS_SKIP_HOSTS = ("icecast.walmradio.com",)
+        try:
+            from urllib.parse import urlsplit as _us
+            _h = _us(url).hostname or ""
+            _skip_bass = any(_h == h or _h.endswith("." + h) for h in _BASS_SKIP_HOSTS)
+        except Exception:
+            _skip_bass = False
+
+        # Skip if BASS is disabled or host is blacklisted
+        if not _skip_bass and not self._disable_bass and self._bass_engine and self._bass_engine.ready():
             try:
                 if self._launch_bass(url, volume):
                     if _stale():

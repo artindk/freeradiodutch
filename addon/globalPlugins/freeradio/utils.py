@@ -362,7 +362,43 @@ _TR_ORDER = "aAbBcCçÇdDeEfFgGğĞhHıIiİjJkKlLmMnNoOöÖpPrRsSSşŞtTuUüÜvV
 _TR_CHAR_KEY: dict[str, int] = {ch: idx for idx, ch in enumerate(_TR_ORDER)}
 
 
+def normalize_for_search(text: str) -> str:
+	"""For searching, it converts text to lowercase and converts Turkish characters to their English equivalents."""
+	if not text:
+		return ""
+	text = text.lower()
+	mapping = {
+		"ç": "c", "ğ": "g", "ı": "i", "i̇": "i", "ö": "o", "ş": "s", "ü": "u",
+		"â": "a", "î": "i", "û": "u"
+	}
+	for k, v in mapping.items():
+		text = text.replace(k, v)
+	return text
+
+def matches_query(station: dict, query: str) -> bool:
+	"""It checks whether each space-separated word in the query occurs in the station data."""
+	query = query.strip()
+	if not query:
+		return True
+
+	# We purify the query and the text to be searched from Turkish characters and convert them to lowercase letters.
+	tokens = normalize_for_search(query).split()
+	haystack = " ".join([
+		station.get("name", ""),
+		station.get("countrycode", ""),
+		country_name(station.get("countrycode", "")),
+		station.get("tags", ""),
+	])
+	haystack = normalize_for_search(haystack)
+
+	# Each word written must appear somewhere (in) the text.
+	for token in tokens:
+		if token not in haystack:
+			return False
+	return True
+
+
 def tr_sort_key(station: dict) -> list[int]:
-	"""İstasyon adından Türkçe alfabetik sıralama anahtarı üretir."""
+	"""Generates Turkish alphabetical sorting key from the station name."""
 	name = station.get("name", "").strip()
 	return [_TR_CHAR_KEY.get(ch, len(_TR_ORDER) + ord(ch)) for ch in name]

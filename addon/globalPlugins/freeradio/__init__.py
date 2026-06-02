@@ -215,6 +215,7 @@ def _init_config():
 		"auto_check_updates":     "boolean(default=True)",
 		"disable_internet_check": "boolean(default=False)",
 		"crossfade":              "string(default='off')",
+		"result_limit":           "integer(default=1000, min=100, max=10000)",
 	}
 
 _init_config()
@@ -1324,14 +1325,27 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		else:
 			ui.message(_("Notifications unmuted"))
 
-	def _open_dialog(self):
-		# If a dialog instance exists but its underlying wx object is no longer
-		# valid (bool(wx_object) returns False when the C++ peer has been
-		# destroyed) or its notebook has become corrupted (which happens when a
-		# wxAssertionError fires inside a BookCtrlEvent handler and leaves the
-		# Win32 tab-control out of sync), destroy it and start fresh.  Without
-		# this check the dialog silently fails to appear on subsequent hotkey
-		# presses because Show() is called on a zombie object.
+	def _open_dialog(self, focus=None):
+		"""Show the station browser dialog, optionally switching to a specific tab.
+
+		focus — controls which tab/widget receives focus after the dialog is shown:
+		  None          : no tab switch; focus stays wherever the dialog left it.
+		  "favorites"   : switch to the Favourites tab (index 1).
+		  "search"      : switch to the All Stations tab and focus the search box.
+		  0..4 (int)    : switch to the tab at that index.
+		                  0=All Stations, 1=Favourites, 2=Recording,
+		                  3=Timer, 4=Liked Songs.
+
+		All tab switching is done here — after Show() and Raise() — so that the
+		notebook HWND is guaranteed to be fully realized before SetSelection is
+		called.  This avoids the wxAssertionError / SystemError that fires when
+		SetSelection is called on a notebook whose Win32 tab-control item count
+		is still out of sync with wxNotebook's internal page list.
+
+		If a dialog instance exists but its underlying wx object is no longer
+		valid (bool(wx_object) is False when the C++ peer has been destroyed) or
+		its notebook has become corrupted, it is destroyed and rebuilt from scratch.
+		"""
 		if self._dialog is not None:
 			notebook_ok = False
 			try:
@@ -1342,6 +1356,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				try:
 					self._dialog.Bind(wx.EVT_CLOSE, None)
 					self._dialog.Destroy()
+				except Exception:
+					pass
+				# The corrupt dialog already called postPopup() when it was hidden,
+				# but if it was never properly shown the prePopup() call that
+				# accompanied its creation is still unbalanced.  Call postPopup()
+				# here to restore the counter before we create a fresh dialog below.
+				try:
+					gui.mainFrame.postPopup()
 				except Exception:
 					pass
 				self._dialog = None
@@ -1366,38 +1388,41 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			self._dialog.Show()
 		self._dialog.Raise()
 
-	def _open_dialog_on_favorites(self):
-		"""Open the dialog and switch to the Favourites tab.
+		# Apply the requested tab/focus after yielding to the event loop once
+		# (wx.CallLater with 0 ms).  This gives wx time to render Show()/Raise()
+		# before SetSelection runs — eliminating the lag on Recording/Timer tabs —
+		# and also ensures the notebook HWND is fully realized on first creation,
+		# which fixes the wrong-tab-on-first-open bug (IsShown() is still False
+		# at this point when the dialog was just constructed).
+		if focus is None:
+			return
+		def _apply_focus():
+			if not self._dialog:
+				return
+			try:
+				if focus == "favorites":
+					self._dialog.focus_favorites()
+				elif focus == "search":
+					self._dialog.focus_search()
+				elif isinstance(focus, int):
+					self._dialog.focus_tab(focus)
+			except Exception:
+				pass
+		wx.CallLater(0, _apply_focus)
 
-		_open_dialog() calls Show() synchronously, but the notebook HWND may not
-		be fully re-realized by the time the next line executes.  Wrapping the
-		focus call in wx.CallAfter defers it to the next event-loop iteration,
-		by which point the window is guaranteed to be visible and its controls
-		have valid Win32 handles.  focus_favorites also guards against a hidden
-		dialog as a second line of defence.
-		"""
-		self._open_dialog()
-		if self._dialog:
-			wx.CallAfter(self._dialog.focus_favorites)
+	def _open_dialog_on_favorites(self):
+		"""Open the dialog and switch to the Favourites tab."""
+		self._open_dialog(focus="favorites")
 
 	def _open_dialog_on_search(self):
-		"""Open the dialog and switch to the All Stations tab / search box.
-
-		Same deferred-focus rationale as _open_dialog_on_favorites.
-		"""
-		self._open_dialog()
-		if self._dialog:
-			wx.CallAfter(self._dialog.focus_search)
+		"""Open the dialog and switch to the All Stations tab / search box."""
+		self._open_dialog(focus="search")
 
 	def _open_dialog_on_tab(self, tab_index):
 		"""Open the dialog and switch to the given tab.
 		Indices: 0=All Stations, 1=Favourites, 2=Recording, 3=Timer, 4=Liked Songs.
-
-		Same deferred-focus rationale as _open_dialog_on_favorites.
 		"""
-		self._open_dialog()
-		if self._dialog:
-			wx.CallAfter(self._dialog.focus_tab, tab_index)
+		self._open_dialog(focus=tab_index)
 
 	def _on_station_selected(self, station, stations, index, announce=True):
 		self._stations      = stations

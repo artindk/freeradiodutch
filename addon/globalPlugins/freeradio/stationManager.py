@@ -5,6 +5,7 @@
 import json
 import logging
 import os
+import socket
 import urllib.parse
 import urllib.request
 import uuid
@@ -32,11 +33,50 @@ RADIO_BROWSER_MIRRORS = [
 	"https://de1.api.radio-browser.info/json",
 	"https://nl1.api.radio-browser.info/json",
 	"https://at1.api.radio-browser.info/json",
-]
+]  # fallback list — used only when DNS discovery fails
 USER_AGENT = "FreeRadio-NVDA/1.0"
 REQUEST_TIMEOUT = 10
 COUNTRY_STATION_LIMIT = 1000
 SEARCH_LIMIT = 1000
+
+# Retry behaviour for HTTP 5xx responses (e.g. 503 Service Unavailable).
+_HTTP_RETRY_STATUSES = {503, 502, 504}
+_HTTP_RETRY_DELAY    = 2   # seconds to wait before retrying
+
+
+def _discover_mirrors():
+	"""Return a shuffled list of live Radio Browser server URLs via DNS lookup.
+
+	Follows the approach recommended by the Radio Browser API docs:
+	  1. Resolve 'all.api.radio-browser.info' to get all server IPs.
+	  2. Reverse-lookup each IP to get the human-readable hostname.
+	  3. Shuffle and return as https://<host>/json URLs.
+
+	Falls back to the hardcoded RADIO_BROWSER_MIRRORS list on any error.
+	"""
+	import random
+	try:
+		ips = socket.getaddrinfo(
+			"all.api.radio-browser.info", 80, 0, 0, socket.IPPROTO_TCP
+		)
+		hosts = []
+		for entry in ips:
+			ip = entry[4][0]
+			try:
+				host = socket.gethostbyaddr(ip)[0]
+				url  = f"https://{host}/json"
+				if url not in hosts:
+					hosts.append(url)
+			except Exception as exc:
+				log.warning("FreeRadio: reverse lookup failed for %s: %s", ip, exc)
+		if hosts:
+			random.shuffle(hosts)
+			log.info("FreeRadio: discovered mirrors via DNS: %s", hosts)
+			return hosts
+		log.warning("FreeRadio: DNS discovery returned no usable hosts")
+	except Exception as exc:
+		log.warning("FreeRadio: DNS discovery failed: %s — using fallback list", exc)
+	return list(RADIO_BROWSER_MIRRORS)
 
 # If a mirror gives this many consecutive errors, the cache is reset and
 # The healthiest mirror is determined again on the next request.
@@ -54,6 +94,14 @@ class StationManager:
 		self._load_favorites()
 		self._api_base          = None  # working mirror; determined on first request
 		self._api_base_failures = 0     # consecutive failure count for cached mirror
+		self._mirrors           = None  # discovered mirror list; None = not yet fetched
+		# Kick off DNS discovery in the background so it's ready before first request.
+		import threading as _t
+		_t.Thread(target=self._prefetch_mirrors, daemon=True).start()
+
+	def _prefetch_mirrors(self):
+		if self._mirrors is None:
+			self._mirrors = _discover_mirrors()
 
 	def _get_api_base(self):
 		"""Return the first reachable mirror, caching the result."""
@@ -90,6 +138,7 @@ class StationManager:
 			)
 			self._api_base          = None
 			self._api_base_failures = 0
+			self._mirrors           = None  # re-discover via DNS on next request
 
 	def _request(self, path, params=""):
 		"""
@@ -105,7 +154,6 @@ class StationManager:
 		_MIRROR_FAIL_THRESHOLD times in a row, _maybe_invalidate_mirror()
 		resets the cache so all mirrors are re-evaluated on the next call.
 		"""
-		import socket
 		import urllib.error
 
 		url_pattern = (
@@ -118,10 +166,14 @@ class StationManager:
 		had_json_error   = False
 
 		# Prioritise the known-good mirror; fall back to the rest in order.
-		if self._api_base and self._api_base in RADIO_BROWSER_MIRRORS:
-			ordered = [self._api_base] + [m for m in RADIO_BROWSER_MIRRORS if m != self._api_base]
+		if self._mirrors is None:
+			self._mirrors = _discover_mirrors()
+		mirrors = self._mirrors
+
+		if self._api_base and self._api_base in mirrors:
+			ordered = [self._api_base] + [m for m in mirrors if m != self._api_base]
 		else:
-			ordered = list(RADIO_BROWSER_MIRRORS)
+			ordered = list(mirrors)
 
 		for mirror in ordered:
 			url = url_pattern.format(mirror=mirror, path=path, params=params)
@@ -149,6 +201,40 @@ class StationManager:
 				return data
 
 			except urllib.error.HTTPError as exc:
+				if exc.code in _HTTP_RETRY_STATUSES:
+					log.warning(
+						"FreeRadio: HTTP %d from %s — retrying in %ds",
+						exc.code, mirror, _HTTP_RETRY_DELAY,
+					)
+					import time as _time
+					_time.sleep(_HTTP_RETRY_DELAY)
+					try:
+						with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT) as resp:
+							raw = resp.read().decode("utf-8")
+						data = json.loads(raw)
+						if mirror != self._api_base:
+							log.info("FreeRadio: switching to mirror %s (after retry)", mirror)
+						self._api_base          = mirror
+						self._api_base_failures = 0
+						return data
+					except urllib.error.HTTPError as retry_exc:
+						last_error = retry_exc
+						log.warning(
+							"FreeRadio: HTTP %d from %s after retry — moving on",
+							retry_exc.code, mirror,
+						)
+						self._maybe_invalidate_mirror(mirror)
+						continue  # try next mirror
+					except (TimeoutError, socket.timeout) as retry_exc:
+						had_timeout = True
+						last_error  = retry_exc
+						self._maybe_invalidate_mirror(mirror)
+						continue
+					except Exception as retry_exc:
+						had_connection = True
+						last_error     = retry_exc
+						self._maybe_invalidate_mirror(mirror)
+						continue
 				last_error = exc
 				log.warning(
 					"FreeRadio: HTTP %d from %s — %s",
@@ -186,21 +272,36 @@ class StationManager:
 
 	def search_stations(self, query, limit=SEARCH_LIMIT, countrycode=None):
 		"""Search stations by name, country, and tag simultaneously.
-		
+
+		Each token in the query is sent to the API separately (name/tag/country),
+		results are unioned, then the full query is applied as a local post-filter
+		so every token must appear in the station data.  This gives the widest
+		possible API coverage while still enforcing AND semantics.
+
 		If countrycode is provided, results are filtered to that country.
 		Raises RadioBrowserError subclasses on network/API failure.
 		"""
-		encoded = urllib.parse.quote(query)
+		from .utils import matches_query as _mq
+
 		path = "/stations/search"
-		base_params = f"limit={limit}&order=votes&reverse=true"
+		# Use a higher internal limit to discover the real total result count;
+		# the returned list is sliced to the user's limit by the caller.
+		_DISCOVERY_LIMIT = max(limit, 10000)
+		base_params = f"limit={_DISCOVERY_LIMIT}&order=votes&reverse=true"
 		if countrycode:
 			base_params += f"&countrycode={urllib.parse.quote(countrycode.upper())}"
 
-		sub_queries = [
-			("name",    f"{base_params}&name={encoded}"),
-			("country", f"{base_params}&country={encoded}"),
-			("tag",     f"{base_params}&tag={encoded}"),
-		]
+		tokens = query.strip().split()
+		if not tokens:
+			tokens = [query.strip()]
+
+		# Build one name+tag+country triple per token — union all results.
+		sub_queries = []
+		for token in tokens:
+			encoded = urllib.parse.quote(token)
+			sub_queries.append((f"name:{token}",    f"{base_params}&name={encoded}"))
+			sub_queries.append((f"tag:{token}",     f"{base_params}&tag={encoded}"))
+			sub_queries.append((f"country:{token}", f"{base_params}&country={encoded}"))
 
 		seen        = {}
 		last_exc    = None
@@ -209,7 +310,7 @@ class StationManager:
 		def _fetch(label, params):
 			return label, self._request(path, params)
 
-		with ThreadPoolExecutor(max_workers=3) as pool:
+		with ThreadPoolExecutor(max_workers=min(9, len(sub_queries))) as pool:
 			futures = {
 				pool.submit(_fetch, label, params): label
 				for label, params in sub_queries
@@ -233,8 +334,12 @@ class StationManager:
 				"Search failed: could not reach Radio Browser."
 			)
 
-		merged = sorted(seen.values(), key=lambda s: s.get("votes", 0), reverse=True)
-		return merged[:limit]
+		# Post-filter: all tokens must appear somewhere in the station data.
+		filtered = [s for s in seen.values() if _mq(s, query)]
+
+		merged = sorted(filtered, key=lambda s: s.get("votes", 0), reverse=True)
+		total_found = len(merged)
+		return merged[:limit], total_found
 
 	def get_top_stations(self, limit=1000):
 		"""Return the top-voted stations. Raises RadioBrowserError on failure."""
@@ -242,13 +347,18 @@ class StationManager:
 
 	def get_stations_by_country(self, countrycode, limit=COUNTRY_STATION_LIMIT):
 		"""Return stations for the given ISO 3166-1 alpha-2 country code.
+		Returns (stations, total_found) where total_found is len(raw) — the
+		caller (radioDialog) is responsible for substituting the cached
+		stationcount from _fetch_countries when available.
 		Raises RadioBrowserError on failure.
 		"""
 		code = urllib.parse.quote(countrycode.upper())
-		return self._request(
+		raw = self._request(
 			f"/stations/bycountrycodeexact/{code}",
 			f"limit={limit}&order=votes&reverse=true&hidebroken=true",
 		)
+		total_found = len(raw)
+		return raw, total_found
 
 	def get_stations_by_tag(self, tag, limit=500):
 		"""Return stations matching the given tag. Raises RadioBrowserError on failure."""

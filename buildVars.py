@@ -18,26 +18,22 @@ addon_info = AddonInfo(
 	addon_description=_("""FreeRadio is an internet radio add-on for NVDA that provides seamless access to thousands of stations via the Radio Browser open directory. It features a fully accessible station browser with search, country filter, favourites management, and per-station audio profiles. Playback is handled by a prioritised backend chain (BASS, VLC, PotPlayer, Windows Media Player) with support for volume control, audio effects, output device selection, and simultaneous audio mirroring to a second device. Additional features include instant and scheduled recording, sleep and alarm timers, automatic ICY metadata announcements, Shazam-based music recognition, and a liked-songs log. All controls and shortcuts are designed for NVDA accessibility."""),
 	
 	# version
-	addon_version="2026.19.6",
+	addon_version="2026.19.7",
 	
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version
 	addon_changelog=_("""
-**Liked Songs: duplicate detection**
-- Before adding a track to `likedSongs.txt`, the file is now read and checked for an existing entry with the same text. If the track is already present, it is not written again and NVDA announces "Already in liked songs: [track]" instead. This prevents the list from accumulating repeated entries when the same track is recognised or copied multiple times during a session.
-**F2 in station browser: 4-press behaviour now mirrors Ctrl+Win+I**
-- The in-dialog F2 handler (`_whats_playing_from_dialog`) has been rewritten to match `script_whatsPlaying` press-for-press:
-- **1×** — announce the currently playing station and track
-- **2×** — open the station details dialog (delayed 350 ms so a 3rd press can cancel it)
-- **3×** — copy ICY track title to clipboard; fall back to Shazam if no metadata is available
-- **4×** — force Shazam music recognition regardless of ICY metadata, then reset the counter
-- Previously the handler merged the 3rd and all subsequent presses into a single `elif count >= 2` branch, so the 4th press was never reached. A cancellation token is now also passed into the 3rd-press background thread so that a 4th press arriving while the thread is still running correctly aborts the clipboard/Shazam action before the forced-recognition path takes over.
-**Music Recognizer: improved recognition of non-mainstream tracks**
-- Previously, the signature generator stopped processing audio after ~3.1 seconds or 255 peaks, whichever came first. The full 12-second audio sample is now used to build the fingerprint, sending significantly richer data to Shazam. This hopefully improves recognition accuracy for folk, regional, and other non-mainstream music.
-**All Stations tab: Sort combo box**
-- Added a *Sort* combo box to the All Stations tab, placed before the Country filter. Options are **Alphabetical** (default) and **By Rating** (sorted by vote count, highest first). Changing the sort order instantly re-sorts the current station list without triggering a new network request.
-**Settings: SAPI5 voice selector for track change announcements**
-- Added a *SAPI5 voice* dropdown to the settings panel, appearing below the existing *Track change voice* option. - When SAPI5 is selected as the announcement voice, users can now choose which installed SAPI5 voice to use. The list is populated automatically from the system's available voices. Selecting *Default (system)* uses whatever voice Windows has set as the default. The dropdown is disabled when NVDA is selected as the announcement voice, or when auto-announce is turned off.
+**New Languages for Freeradio**
+- Czech by jiri Holzinger.
+- Arabic by ALI ALOMARI
+- French and Spanish by Rémy Ruiz
+- Khmer by Phearith
+- Russian by Валентин Куприянов
+**Station Manager: resilient mirror selection**
+- The Radio Browser server list is now fetched dynamically via DNS lookup (`all.api.radio-browser.info`) at startup, following the approach recommended by the Radio Browser API. Servers are shuffled before use so load is distributed across the network. When DNS discovery fails, the previous hardcoded mirror list is used as a fallback. Temporary HTTP 5xx errors (e.g. 503 Service Unavailable) are now retried once after a short delay before moving on to the next mirror, reducing failed loads during brief server outages.
+**Search: multi-token filtering for All Stations and Favourites**
+- Local filtering in both the All Stations tab and the Favourites tab now splits the search query into individual tokens and requires all of them to match (AND logic). For example, searching "jazz france" returns only stations whose metadata contains both "jazz" and "france". The last token is matched as a prefix so that results remain visible while the user is still typing a word. The status label in the All Stations tab now always reflects the actual number of visible stations after filtering, rather than the raw count returned by the API.
+- Added a "Result limit" setting to the All Stations tab to control the maximum number of results fetched for searches and country filters.
 """),
 	
 	# Author(s)
