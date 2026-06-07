@@ -18,22 +18,35 @@ addon_info = AddonInfo(
 	addon_description=_("""FreeRadio is an internet radio add-on for NVDA that provides seamless access to thousands of stations via the Radio Browser open directory. It features a fully accessible station browser with search, country filter, favourites management, and per-station audio profiles. Playback is handled by a prioritised backend chain (BASS, VLC, PotPlayer, Windows Media Player) with support for volume control, audio effects, output device selection, and simultaneous audio mirroring to a second device. Additional features include instant and scheduled recording, sleep and alarm timers, automatic ICY metadata announcements, Shazam-based music recognition, and a liked-songs log. All controls and shortcuts are designed for NVDA accessibility."""),
 	
 	# version
-	addon_version="2026.19.7",
+	addon_version="2026.19.8",
 	
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version
 	addon_changelog=_("""
-**New Languages for Freeradio**
-- Czech by jiri Holzinger.
-- Arabic by ALI ALOMARI
-- French and Spanish by Rémy Ruiz
-- Khmer by Phearith
-- Russian by Валентин Куприянов
-**Station Manager: resilient mirror selection**
-- The Radio Browser server list is now fetched dynamically via DNS lookup (`all.api.radio-browser.info`) at startup, following the approach recommended by the Radio Browser API. Servers are shuffled before use so load is distributed across the network. When DNS discovery fails, the previous hardcoded mirror list is used as a fallback. Temporary HTTP 5xx errors (e.g. 503 Service Unavailable) are now retried once after a short delay before moving on to the next mirror, reducing failed loads during brief server outages.
-**Search: multi-token filtering for All Stations and Favourites**
-- Local filtering in both the All Stations tab and the Favourites tab now splits the search query into individual tokens and requires all of them to match (AND logic). For example, searching "jazz france" returns only stations whose metadata contains both "jazz" and "france". The last token is matched as a prefix so that results remain visible while the user is still typing a word. The status label in the All Stations tab now always reflects the actual number of visible stations after filtering, rather than the raw count returned by the API.
-- Added a "Result limit" setting to the All Stations tab to control the maximum number of results fetched for searches and country filters.
+- Fixed playback of HTTPS Icecast streams that caused BASS to fail with
+  BASS_ERROR_FILEFORM (err=40). Affected streams sent ICY response headers
+  immediately after the TLS handshake, before a standard HTTP status line,
+  which BASS's SSL layer could not parse.
+- Implemented a local loopback proxy in bass_host.py to work around the
+  issue: urllib opens the HTTPS connection (which tolerates ICY quirks),
+  and BASS reads plain HTTP audio from a localhost socket instead.
+- The remote HTTPS connection and BASS's local connect now happen in
+  parallel, keeping startup latency close to that of a normal stream.
+- ICY headers (content-type, icy-metaint, icy-br, icy-sr, etc.) are
+  forwarded accurately from the remote server to BASS. Previously sending
+  icy-metaint: 0 caused garbled audio and a phaser/chorus-like artifact.
+- Removed the _BASS_SKIP_HOSTS workaround in radioPlayer.py that
+  bypassed BASS entirely for icecast.walmradio.com, restoring full BASS
+  features (ICY metadata, bass boost, FX, volume mixer entry) for that
+  station.
+---
+**New: Adjustable EQ Effect Levels**
+The Bass Boost, Treble Boost, and Vocal Boost effects now include individual gain controls. When one of these effects is enabled, a dB slider appears next to it, letting you fine-tune the intensity from −15 dB to +15 dB.
+Previously, each EQ effect had a fixed strength (Bass: +9 dB, Treble: +9 dB, Vocal: +6 dB). These defaults are unchanged — the controls simply let you go lower or higher as needed.
+**What's new:**
+- Gain controls appear automatically when an EQ effect is turned on, and hide when it is turned off.
+- Values are saved globally and restored when the add-on starts.
+- If you save an audio profile for a favourite station, the EQ gain levels are included in that profile and restored whenever you tune to that station.
 """),
 	
 	# Author(s)

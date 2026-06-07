@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # FreeRadio - Shared utilities
 #
-# Bu modül birden fazla modül tarafından kullanılan yardımcı işlevleri içerir:
-#   - Ülke kodu → ülke adı çevirisi (çok dilli, NVDA gettext destekli)
-#   - İstasyon etiketi / ilk etiket yardımcıları
-#   - Türkçe alfabetik sıralama anahtarı
+# Helper functions shared across multiple modules:
+#   - Country code → country name translation (multi-language, NVDA gettext-aware)
+#   - Station label / first-tag helpers
+#   - Turkish alphabetical sort key
 
 import addonHandler
 addonHandler.initTranslation()
@@ -14,18 +14,18 @@ del _tr
 
 
 # ---------------------------------------------------------------------------
-# Ülke adları — statik Türkçe yedek sözlük
+# Country names — static Turkish fallback dictionary
 #
-# Çalışma mantığı (country_name fonksiyonu):
-#   1. NVDA'nın aktif diline göre gettext aracılığıyla çevrilmiş adı dener.
-#      Bunun için her ülke adı ayrı bir _() çağrısıyla işaretlenmiştir
-#      (xgettext bu satırları otomatik toplar).
-#   2. Çeviri bulunamazsa (msgid == msgstr) Türkçe sözlüğe düşer.
-#   3. Sözlükte de yoksa ISO kodu olduğu gibi döner.
+# Resolution order (see country_name function):
+#   1. Try the gettext-translated name for NVDA's active language.
+#      Every country name is marked with a separate _() call so xgettext
+#      picks them up automatically.
+#   2. If no translation exists (msgid == msgstr), fall back to the Turkish
+#      static dictionary below.
+#   3. If still not found, return the ISO code as-is.
 #
-# Yeni bir dil eklemek için yalnızca locale/<lang>/LC_MESSAGES/nvda.po
-# dosyasına aşağıdaki msgid'leri çevirmek yeterlidir; bu dosyada değişiklik
-# gerekmez.
+# To add a new language, only translate the msgids listed in
+# locale/<lang>/LC_MESSAGES/nvda.po — no changes to this file are needed.
 # ---------------------------------------------------------------------------
 
 # fmt: off
@@ -122,10 +122,10 @@ _COUNTRY_NAMES: dict[str, str] = {
 # fmt: on
 
 
-# İngilizce msgid → Türkçe statik yedek eşlemesi
-# _() her çağrıda çalışır, bu nedenle dil değişiklikleri anında yansır.
-# .po dosyasında bu msgid'lere karşılık gelen çeviriler varsa o dil gösterilir;
-# yoksa İngilizce msgid döner (NVDA'nın kendi davranışı).
+# English msgid → Turkish static fallback mapping.
+# _() is evaluated on every call, so language switches take effect immediately.
+# When a .po file provides a translation for a msgid, that translation is used;
+# otherwise the English msgid is returned (NVDA's default behaviour).
 _COUNTRY_MSGID: dict[str, str] = {
 	"AD": "Andorra",                           "AE": "United Arab Emirates",
 	"AF": "Afghanistan",                       "AG": "Antigua and Barbuda",
@@ -255,83 +255,83 @@ _COUNTRY_MSGID: dict[str, str] = {
 }
 
 
-# İsim → kod ters eşlemesi
-# Her iki sözlükten de (Türkçe + İngilizce) eşleme yapılır; böylece
-# hangi dilde görünüyorsa o isimden kod bulunabilir.
+# Reverse mapping: display name → ISO code.
+# Built from both dictionaries (Turkish + English) so that a code can be
+# looked up regardless of which language is currently displayed.
 _NAME_TO_CODE: dict[str, str] = {v: k for k, v in _COUNTRY_NAMES.items()}
 _NAME_TO_CODE.update({v: k for k, v in _COUNTRY_MSGID.items()})
 
 
 def country_name(code: str) -> str:
-	"""ISO 3166-1 alpha-2 kodundan aktif NVDA diline göre ülke adını döner.
+	"""Return the country name for the given ISO 3166-1 alpha-2 code in NVDA's active language.
 
-	Öncelik sırası:
-	  1. .po dosyasında çeviri varsa (msgid != çeviri) → gettext sonucu
-	  2. NVDA dili Türkçe ise → _COUNTRY_NAMES statik sözlüğü
-	  3. Diğer dillerde → İngilizce msgid (uluslararası standart)
-	  4. Hiçbiri bulunamazsa → ISO kodu
+	Resolution order:
+	  1. gettext translation from a .po file (msgid != translated string)
+	  2. Turkish static dictionary when NVDA's language is Turkish
+	  3. English msgid (international standard) for all other languages
+	  4. The ISO code itself if nothing else matches
 	"""
 	if not code:
 		return code
 	upper = code.strip().upper()
 
-	# 1. gettext .po çevirisi
+	# 1. gettext .po translation
 	msgid = _COUNTRY_MSGID.get(upper)
 	if msgid:
 		translated = _(msgid)
 		if translated != msgid:
 			return translated
 
-	# NVDA dilini al
+	# Retrieve the active NVDA language
 	try:
 		import languageHandler
 		lang = languageHandler.getLanguage() or "en"
 	except Exception:
 		lang = "en"
 
-	# 2. Türkçe statik sözlük
+	# 2. Turkish static dictionary
 	if lang.startswith("tr"):
 		return _COUNTRY_NAMES.get(upper, msgid or upper)
 
-	# 3. İngilizce msgid
+	# 3. English msgid
 	if msgid:
 		return msgid
 
-	# 4. ISO kodu
+	# 4. ISO code
 	return upper
 
 
 def name_to_code(display_name: str) -> str:
-	"""Ekranda gösterilen ülke adından ISO kodunu döner.
+	"""Return the ISO code for a country name as currently displayed.
 
-	Hangi dilde görünüyorsa o addan koda çevirir:
-	  1. Statik tablolar (Türkçe + İngilizce)
-	  2. .po gettext çevirisi
-	  3. Bulunamazsa display_name olduğu gibi döner
+	Works regardless of which language the name is shown in:
+	  1. Static lookup tables (Turkish + English)
+	  2. gettext .po translation
+	  3. Return display_name unchanged if no match is found
 	"""
 	if not display_name:
 		return display_name
 
-	# 1. Statik tablolar
+	# 1. Static lookup tables
 	code = _NAME_TO_CODE.get(display_name)
 	if code:
 		return code
 
-	# 2. .po çevirisi
+	# 2. .po translation
 	for iso, msgid in _COUNTRY_MSGID.items():
 		if _(msgid) == display_name:
 			return iso
 
-	# 3. Bulunamadı
+	# 3. Not found
 	return display_name
 
 
 # ---------------------------------------------------------------------------
-# İstasyon etiket / etiket yardımcıları
+# Station label / tag helpers
 # ---------------------------------------------------------------------------
 
 def station_label(station: dict) -> str:
-	"""İstasyon listesinde gösterilecek tam etiketi döner: Ad - Ülke - İlk etiket."""
+	"""Return the full display label for a station list entry: Name - Country - First tag."""
 	name    = station.get("name", _("Unknown"))
 	country = station.get("countrycode", "")
 	tags    = station.get("tags", "")
@@ -346,7 +346,7 @@ def station_label(station: dict) -> str:
 
 
 def first_tag(station: dict) -> str:
-	"""İstasyonun ilk etiketini küçük harfle döner; yoksa boş string."""
+	"""Return the station's first tag in lower case, or an empty string if none."""
 	tags = station.get("tags", "")
 	if not tags:
 		return ""
@@ -354,16 +354,16 @@ def first_tag(station: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Türkçe alfabetik sıralama
+# Turkish alphabetical sort key
 # ---------------------------------------------------------------------------
 
-# Türkçe karakter sırası (İ/i, Ğ/ğ, Ş/ş, Ü/ü, Ö/ö, Ç/ç İngilizce'den farklı)
+# Turkish character order (İ/i, Ğ/ğ, Ş/ş, Ü/ü, Ö/ö, Ç/ç differ from English)
 _TR_ORDER = "aAbBcCçÇdDeEfFgGğĞhHıIiİjJkKlLmMnNoOöÖpPrRsSSşŞtTuUüÜvVyYzZ0123456789"
 _TR_CHAR_KEY: dict[str, int] = {ch: idx for idx, ch in enumerate(_TR_ORDER)}
 
 
 def normalize_for_search(text: str) -> str:
-	"""For searching, it converts text to lowercase and converts Turkish characters to their English equivalents."""
+	"""Lower-case text and fold Turkish characters to their ASCII equivalents for searching."""
 	if not text:
 		return ""
 	text = text.lower()
@@ -376,12 +376,13 @@ def normalize_for_search(text: str) -> str:
 	return text
 
 def matches_query(station: dict, query: str) -> bool:
-	"""It checks whether each space-separated word in the query occurs in the station data."""
+	"""Return True when every space-separated token in query appears in the station data."""
 	query = query.strip()
 	if not query:
 		return True
 
-	# We purify the query and the text to be searched from Turkish characters and convert them to lowercase letters.
+	# Normalise both the query and the haystack: fold Turkish characters to ASCII
+	# equivalents and convert to lower case.
 	tokens = normalize_for_search(query).split()
 	haystack = " ".join([
 		station.get("name", ""),
@@ -391,7 +392,7 @@ def matches_query(station: dict, query: str) -> bool:
 	])
 	haystack = normalize_for_search(haystack)
 
-	# Each word written must appear somewhere (in) the text.
+	# Every token must appear somewhere in the haystack (AND semantics).
 	for token in tokens:
 		if token not in haystack:
 			return False

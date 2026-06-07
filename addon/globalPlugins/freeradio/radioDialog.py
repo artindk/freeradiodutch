@@ -183,6 +183,36 @@ class RadioDialog(wx.Dialog):
 
 		main_sizer.Add(audio_row, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, 4)
 
+		# EQ gain row — shown only when at least one EQ effect is enabled
+		eq_row = wx.BoxSizer(wx.HORIZONTAL)
+		self._eq_bands = [
+			("eq_bass",   _("Bass gain (dB):"),   9),
+			("eq_treble", _("Treble gain (dB):"), 9),
+			("eq_vocal",  _("Vocal gain (dB):"),  6),
+		]
+		self._eq_spins = {}   # band -> SpinCtrl
+		for band, label, default_db in self._eq_bands:
+			lbl = wx.StaticText(self, label=label)
+			eq_row.Add(lbl, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 8)
+			saved_db = config.conf["freeradio"].get("eq_gain_" + band, default_db)
+			spin = wx.SpinCtrl(self, min=-15, max=15, initial=int(saved_db))
+			spin.SetName(label)
+			spin.SetMinSize((60, -1))
+			eq_row.Add(spin, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 4)
+			self._eq_spins[band] = spin
+			spin.Bind(wx.EVT_SPINCTRL, lambda evt, b=band: self._on_eq_gain_changed(evt, b))
+
+		self._eq_row_sizer = eq_row
+		main_sizer.Add(eq_row, 0, wx.EXPAND | wx.BOTTOM, 4)
+
+		if disable_bass:
+			for spin in self._eq_spins.values():
+				spin.Hide()
+			for item in eq_row.GetChildren():
+				wnd = item.GetWindow()
+				if wnd:
+					wnd.Hide()
+
 
 		# action buttons
 		btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -230,6 +260,9 @@ class RadioDialog(wx.Dialog):
 		self._fx_choice.Bind(wx.EVT_CHECKLISTBOX, self._on_fx_changed)
 		self._fx_choice.Bind(wx.EVT_LISTBOX,      self._on_fx_focus)
 		self._device_choice.Bind(wx.EVT_CHOICE,   self._on_device_changed)
+
+		# Apply saved EQ gains to player on startup and update row visibility
+		wx.CallAfter(self._init_eq_gains)
 
 		for btn in (self._play_btn, self._del_btn, self._fav_btn,
 		            self._details_btn, self._add_btn, self._close_btn):
@@ -781,6 +814,61 @@ class RadioDialog(wx.Dialog):
 		except Exception:
 			pass
 		config.conf["freeradio"]["audio_fx"] = fx_str
+		self._update_eq_row_visibility(active)
+		event.Skip()
+
+	def _update_eq_row_visibility(self, active_fx_list=None):
+		"""Show EQ gain controls only for the EQ bands that are currently enabled."""
+		if config.conf["freeradio"].get("disable_bass", False):
+			return
+		if active_fx_list is None:
+			checked = self._fx_choice.GetCheckedItems()
+			active_fx_list = [self._fx_keys[i] for i in checked if 0 <= i < len(self._fx_keys)]
+		eq_active = {k for k in active_fx_list if k in ("eq_bass", "eq_treble", "eq_vocal")}
+		any_visible = False
+		for band, _label, _default in self._eq_bands:
+			spin = self._eq_spins[band]
+			# Find the StaticText label widget for this spin (it's the sibling before it)
+			visible = band in eq_active
+			spin.Show(visible)
+			# Also show/hide the label (StaticText) that precedes the spin in eq_row
+			sizer = self._eq_row_sizer
+			for i, item in enumerate(sizer.GetChildren()):
+				wnd = item.GetWindow()
+				if wnd is spin and i > 0:
+					prev = sizer.GetChildren()[i - 1].GetWindow()
+					if prev:
+						prev.Show(visible)
+			if visible:
+				any_visible = True
+		self.Layout()
+
+	def _init_eq_gains(self):
+		"""Apply saved EQ gain values to the player and set initial row visibility."""
+		if config.conf["freeradio"].get("disable_bass", False):
+			return
+		for band, _label, default_db in self._eq_bands:
+			saved_db = config.conf["freeradio"].get("eq_gain_" + band, default_db)
+			try:
+				self._player.set_eq_gain(band, saved_db)
+			except Exception:
+				pass
+		# Set row visibility based on currently saved active effects
+		_saved_fx = config.conf["freeradio"].get("audio_fx", "none")
+		active = [x.strip() for x in _saved_fx.split(",") if x.strip() != "none"]
+		self._update_eq_row_visibility(active)
+
+	def _on_eq_gain_changed(self, event, band):
+		"""Instantly apply EQ gain change and save it to config."""
+		if config.conf["freeradio"].get("disable_bass", False):
+			event.Skip()
+			return
+		gain_db = self._eq_spins[band].GetValue()
+		config.conf["freeradio"]["eq_gain_" + band] = gain_db
+		try:
+			self._player.set_eq_gain(band, gain_db)
+		except Exception:
+			pass
 		event.Skip()
 
 	def _on_fav_list_focus(self, event):
@@ -1004,8 +1092,8 @@ class RadioDialog(wx.Dialog):
 				cc = self._manager.get_user_countrycode()
 				if cc:
 					result = self._manager.get_stations_by_country(cc)
-					# API'den (istasyonlar, toplam_sayı) şeklinde bir tuple dönebilir. 
-					# Biz sadece istasyonlar listesi olan ilk [0] elemanı alıyoruz.
+					# It can return a tuple of the form (stations, total_count) from the API.
+					# We just take the first [0] element, which is the list of stations.
 					stations_country[0] = result[0] if isinstance(result, tuple) else result
 			except RadioBrowserError as exc:
 				import logging
@@ -1669,7 +1757,12 @@ class RadioDialog(wx.Dialog):
 		active = [self._fx_keys[i] for i in checked if 0 <= i < len(self._fx_keys)]
 		fx_str = ",".join(active) if active else "none"
 
-		station["station_audio"] = {"volume": vol, "fx": fx_str}
+		# Also save EQ gains
+		eq_gains = {}
+		for band, _label, _default in self._eq_bands:
+			eq_gains[band] = self._eq_spins[band].GetValue()
+
+		station["station_audio"] = {"volume": vol, "fx": fx_str, "eq_gains": eq_gains}
 		self._manager._save_favorites()
 
 		name = station.get("name", "").strip()
@@ -2025,7 +2118,7 @@ class RadioDialog(wx.Dialog):
 			return
 
 		if key == wx.WXK_F5:
-			vol = max(0, self._player.get_volume() - 10)
+			vol = max(0, self._player.get_volume() - 5)
 			self._player.set_volume(vol)
 			config.conf["freeradio"]["volume"] = min(100, vol)
 			self._vol_spin.SetValue(vol)
@@ -2038,7 +2131,7 @@ class RadioDialog(wx.Dialog):
 			return
 
 		if key == wx.WXK_F6:
-			vol = min(200, self._player.get_volume() + 10)
+			vol = min(200, self._player.get_volume() + 5)
 			self._player.set_volume(vol)
 			config.conf["freeradio"]["volume"] = min(100, vol)
 			self._vol_spin.SetValue(vol)
@@ -2129,14 +2222,14 @@ class RadioDialog(wx.Dialog):
 
 		if event.ControlDown() and not event.AltDown() and not event.ShiftDown():
 			if key == wx.WXK_UP:
-				vol = min(200, self._player.get_volume() + 10)
+				vol = min(200, self._player.get_volume() + 5)
 				self._player.set_volume(vol)
 				config.conf["freeradio"]["volume"] = min(100, vol)
 				_notify(_("Volume %d") % vol)
 				self._vol_spin.SetValue(vol)
 				return
 			if key == wx.WXK_DOWN:
-				vol = max(0, self._player.get_volume() - 10)
+				vol = max(0, self._player.get_volume() - 5)
 				self._player.set_volume(vol)
 				config.conf["freeradio"]["volume"] = min(100, vol)
 				_notify(_("Volume %d") % vol)

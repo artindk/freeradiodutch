@@ -205,6 +205,9 @@ def _init_config():
 		"ffmpeg_path":       "string(default='')",
 		"audio_fx":          "string(default='none')",
 		"audio_device":      "integer(default=-1)",
+		"eq_gain_eq_bass":   "integer(default=9)",
+		"eq_gain_eq_treble": "integer(default=9)",
+		"eq_gain_eq_vocal":  "integer(default=6)",
 		"disable_bass":          "boolean(default=False)",
 		"announce_track_changes":"boolean(default=False)",
 		"track_change_voice":    "string(default='nvda')",
@@ -873,24 +876,24 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				self._start_music_recognition(stream_url)
 
 	@script(
-		description=_("Increase FreeRadio volume by 10"),
+		description=_("Increase FreeRadio volume by 5"),
 		category=_("FreeRadio"),
 		gesture="kb:control+windows+upArrow",
 	)
 	def script_volumeUp(self, gesture):
-		vol = min(200, self._player.get_volume() + 10)
+		vol = min(200, self._player.get_volume() + 5)
 		self._player.set_volume(vol)
 		config.conf["freeradio"]["volume"] = min(100, vol)
 		_notify(_("Volume %d") % vol)
 		self._sync_dialog_volume(vol)
 
 	@script(
-		description=_("Decrease FreeRadio volume by 10"),
+		description=_("Decrease FreeRadio volume by 5"),
 		category=_("FreeRadio"),
 		gesture="kb:control+windows+downArrow",
 	)
 	def script_volumeDown(self, gesture):
-		vol = max(0, self._player.get_volume() - 10)
+		vol = max(0, self._player.get_volume() - 5)
 		self._player.set_volume(vol)
 		config.conf["freeradio"]["volume"] = min(100, vol)
 		_notify(_("Volume %d") % vol)
@@ -904,7 +907,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			except Exception:
 				pass
 
-	def _sync_dialog_audio(self, vol, fx_str):
+	def _sync_dialog_audio(self, vol, fx_str, eq_gains=None):
 		"""Update both the volume SpinCtrl and effects CheckListBox in the browser dialog."""
 		if self._dialog and self._dialog.IsShown():
 			try:
@@ -915,6 +918,18 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				active = {x.strip() for x in fx_str.split(",") if x.strip() != "none"}
 				for i, key in enumerate(self._dialog._fx_keys):
 					self._dialog._fx_choice.Check(i, key in active)
+			except Exception:
+				pass
+			# Sync EQ gain spin controls
+			if eq_gains and hasattr(self._dialog, "_eq_spins"):
+				for band, gain_db in eq_gains.items():
+					try:
+						self._dialog._eq_spins[band].SetValue(int(gain_db))
+					except Exception:
+						pass
+			# Update EQ row visibility
+			try:
+				self._dialog._update_eq_row_visibility(list(active))
 			except Exception:
 				pass
 
@@ -1887,7 +1902,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					recordings_dir = os.path.join(os.path.expanduser("~"), "Documents", "FreeRadio Recordings")
 				os.makedirs(recordings_dir, exist_ok=True)
 				liked_path = os.path.join(recordings_dir, "likedSongs.txt")
-				# Mükerrerlik kontrolü: aynı şarkı zaten listede varsa ekleme
+				# Duplicate check: don't add the same song if it is already in the list
 				existing = []
 				if os.path.isfile(liked_path):
 					with open(liked_path, encoding="utf-8") as fh:
@@ -2023,7 +2038,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				self._player.set_fx(fx)
 			except Exception:
 				pass
-			self._sync_dialog_audio(vol, fx)
+			# Apply station-specific EQ gains if present
+			eq_gains = station_audio.get("eq_gains", {})
+			for band, gain_db in eq_gains.items():
+				try:
+					self._player.set_eq_gain(band, gain_db)
+				except Exception:
+					pass
+			self._sync_dialog_audio(vol, fx, eq_gains=eq_gains)
 		else:
 			# Restore global settings
 			global_vol = config.conf["freeradio"]["volume"]
@@ -2034,6 +2056,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					self._player.set_fx(global_fx)
 				except Exception:
 					pass
+				# Restore global EQ gains
+				_eq_defaults = {"eq_bass": 9, "eq_treble": 9, "eq_vocal": 6}
+				for band, default_db in _eq_defaults.items():
+					gain_db = config.conf["freeradio"].get("eq_gain_" + band, default_db)
+					try:
+						self._player.set_eq_gain(band, gain_db)
+					except Exception:
+						pass
 			self._sync_dialog_audio(global_vol, global_fx)
 
 		self._pending_url     = url
@@ -2133,7 +2163,24 @@ class FreeRadioSettingsPanel(gui.settingsDialogs.SettingsPanel):
 		self._fx_choice.Bind(wx.EVT_CHECKLISTBOX, self._on_fx_check)
 		self._fx_choice.Bind(wx.EVT_LISTBOX,      self._on_fx_hover)
 
-		# --- Station switch crossfade (BASS only) ---
+		# --- EQ gain controls (shown only for active EQ bands) ---
+		self._eq_bands_settings = [
+			("eq_bass",   _("&Bass gain (dB):"),   9),
+			("eq_treble", _("&Treble gain (dB):"), 9),
+			("eq_vocal",  _("&Vocal gain (dB):"),  6),
+		]
+		self._eq_spins_settings = {}
+		self._eq_spin_labels_settings = {}
+		for band, label, default_db in self._eq_bands_settings:
+			lbl = wx.StaticText(self, label=label)
+			sHelper.addItem(lbl)
+			saved_db = config.conf["freeradio"].get("eq_gain_" + band, default_db)
+			spin = wx.SpinCtrl(self, min=-15, max=15, initial=int(saved_db))
+			spin.SetName(label)
+			sHelper.addItem(spin)
+			spin.Bind(wx.EVT_SPINCTRL, lambda evt, b=band: self._on_eq_gain_settings(evt, b))
+			self._eq_spins_settings[band] = spin
+			self._eq_spin_labels_settings[band] = lbl
 		_cf_label = _("Station &switch transition (BASS backend only):")
 		_cf_choices = [
 			_("Instant cut (no crossfade)"),
@@ -2427,6 +2474,14 @@ class FreeRadioSettingsPanel(gui.settingsDialogs.SettingsPanel):
 			if isinstance(child, wx.StaticText) and child.GetLabel().startswith(_("Audio &effects:")):
 				child.Show(not disable_bass)
 				break
+
+		# EQ gain spins - BASS only; also respect active-band visibility
+		if disable_bass:
+			for band in self._eq_spins_settings:
+				self._eq_spins_settings[band].Show(False)
+				self._eq_spin_labels_settings[band].Show(False)
+		else:
+			self._update_eq_spins_visibility()
 		
 		# Bass hint - show only when BASS is disabled
 		self._bass_hint.Show(disable_bass)
@@ -2504,6 +2559,32 @@ class FreeRadioSettingsPanel(gui.settingsDialogs.SettingsPanel):
 				except Exception:
 					pass
 				break
+		self._update_eq_spins_visibility()
+
+	def _update_eq_spins_visibility(self):
+		"""Show EQ gain controls only for the EQ bands that are currently checked."""
+		checked = self._fx_choice.GetCheckedItems()
+		active_eq = {self._fx_keys[i] for i in checked
+		             if 0 <= i < len(self._fx_keys) and
+		             self._fx_keys[i] in ("eq_bass", "eq_treble", "eq_vocal")}
+		for band in self._eq_spins_settings:
+			visible = band in active_eq
+			self._eq_spins_settings[band].Show(visible)
+			self._eq_spin_labels_settings[band].Show(visible)
+		self.Layout()
+
+	def _on_eq_gain_settings(self, event, band):
+		"""Apply and save EQ gain change immediately from the settings panel."""
+		gain_db = self._eq_spins_settings[band].GetValue()
+		config.conf["freeradio"]["eq_gain_" + band] = gain_db
+		for plugin in globalPluginHandler.runningPlugins:
+			if isinstance(plugin, GlobalPlugin):
+				try:
+					plugin._player.set_eq_gain(band, gain_db)
+				except Exception:
+					pass
+				break
+		event.Skip()
 
 	def _on_browse_vlc(self, event):
 		with wx.FileDialog(

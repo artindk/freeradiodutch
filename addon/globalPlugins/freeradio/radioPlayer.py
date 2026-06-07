@@ -269,7 +269,7 @@ class _BassSubprocessEngine:
         (non-admin) subprocess so Windows does not trigger UAC elevation.
 
         Search order:
-        1. Bundled embed Python (eklentinin python/ klasörü) — mimariyle eşleşen
+        1. Bundled embed Python (python/ folder of the plugin) — matching the architecture
         2. pythonw.exe / python.exe next to bass_host.py
         3. pythonw.exe / python.exe next to sys.executable
         4. sys.executable itself if it is literally python/pythonw
@@ -529,6 +529,15 @@ class _BassSubprocessEngine:
         It is applied instantly on the active stream.
         """
         self._send({"cmd": "set_fx", "fx": fx_name or "none"})
+
+    def set_eq_gain(self, band, gain_db):
+        """Set the ParamEQ gain for one EQ band in dB (-15..+15).
+
+        band:    "eq_bass" | "eq_treble" | "eq_vocal"
+        gain_db: dB value; applied immediately if the band effect is active.
+        """
+        self._send({"cmd": "set_eq_gain", "band": band,
+                    "gain_db": max(-15.0, min(15.0, float(gain_db)))})
 
     def get_icy_title(self):
         return self._icy_title
@@ -892,18 +901,7 @@ class RadioPlayer:
         if _stale():
             return
 
-        # Hosts that consistently fail with BASS (ICY-over-HTTPS, err=40).
-        # For these skip BASS entirely and start from VLC.
-        _BASS_SKIP_HOSTS = ("icecast.walmradio.com",)
-        try:
-            from urllib.parse import urlsplit as _us
-            _h = _us(url).hostname or ""
-            _skip_bass = any(_h == h or _h.endswith("." + h) for h in _BASS_SKIP_HOSTS)
-        except Exception:
-            _skip_bass = False
-
-        # Skip if BASS is disabled or host is blacklisted
-        if not _skip_bass and not self._disable_bass and self._bass_engine and self._bass_engine.ready():
+        if not self._disable_bass and self._bass_engine and self._bass_engine.ready():
             try:
                 if self._launch_bass(url, volume):
                     if _stale():
@@ -1433,6 +1431,27 @@ class RadioPlayer:
                 self._bass_engine.set_fx(self._audio_fx)
             except Exception:
                 pass
+
+    def set_eq_gain(self, band, gain_db):
+        """Set the ParamEQ gain for one EQ band in dB (-15..+15).
+
+        band:    "eq_bass" | "eq_treble" | "eq_vocal"
+        gain_db: dB value applied immediately; ignored unless BASS backend is active.
+        """
+        # Store so it can be restored after reconnect / device switch
+        if not hasattr(self, "_eq_gains"):
+            self._eq_gains = {}
+        self._eq_gains[band] = max(-15.0, min(15.0, float(gain_db)))
+        if not self._disable_bass and self._backend == self.BACKEND_BASS and self._bass_engine:
+            try:
+                self._bass_engine.set_eq_gain(band, gain_db)
+            except Exception:
+                pass
+
+    def get_eq_gain(self, band):
+        """Return the stored EQ gain for *band*, or the default if not set."""
+        _defaults = {"eq_bass": 9.0, "eq_treble": 9.0, "eq_vocal": 6.0}
+        return getattr(self, "_eq_gains", {}).get(band, _defaults.get(band, 9.0))
 
     def get_fx(self):
         return getattr(self, "_audio_fx", "none")

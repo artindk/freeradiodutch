@@ -42,8 +42,8 @@ Todos los atajos se pueden reasignar desde el Menú NVDA → Preferencias → Ge
 | `Ctrl+Win+S` | Detener | Detiene completamente la estación actual y reinicia el reproductor. |
 | `Ctrl+Win+→` | Siguiente favorito | Salta  a la siguiente estación en la lista de favoritos. Vuelve al principio y al final de la lista. |
 | `Ctrl+Win+←` | Favorito anterior | Salta a la estación anterior en la lista de favoritos. Salta al final cuando está al principio. |
-| `Ctrl+Win+↑` | Aumentar el volumen | Aumenta el volumen de 10 ; máximo 100. |
-| `Ctrl+Win+↓` | Disminuir el volumen | Disminuye el volumen de 10 ; mínimo 0. |
+| `Ctrl+Win+↑` | Aumentar el volumen | Aumenta el volumen de 5 ; máximo 100. |
+| `Ctrl+Win+↓` | Disminuir el volumen | Disminuye el volumen de 5 ; mínimo 0. |
 | `Ctrl+Win+V` | Añadir a favoritos | Añade la estación que se está reproduciendo actualmente a la lista de favoritos. Anuncia si la emisora ya está en la lista. |
 | `Ctrl+Win+I` | Información de la Estación | Anuncia el nombre de la estación que se está reproduciendo actualmente. Pulsa dos veces para mostrar los detalles como el país, el género y el bitrate en un diálogo. Pulsa tres veces para copiar la información de la pista actual (metadatos ICY) al portapapeles si está disponible; Si no hay metadatos presentes, inicia el reconocimiento de música de Shazam en su lugar. Pulsa cuatro veces para forzar el reconocimiento de música en caso de metadatos ICY incorrectos. |
 | `Ctrl+Win+M` | Espejo de audio | Poner en espejo el flujo actual hacia un dispositivo de salida de audio adicional simultáneamente. Pulsa nuevamente para detener la puesta en espejo. |
@@ -65,6 +65,8 @@ La lista desplegable **Dispositivo de salida** en la parte inferior de la ventan
 
 Los controles de **Volumen** (0–200) y **Efectos** en la misma área se puede ajustar en cualquier momento cuando la ventana está abierta. Desde la lista de Efectos, Coro, Compresión, Distorsión, Eco, Flanger, Gargle, Reverberación, EQ: Bass Boost, EQ: Treble Boost y EQ: Vocal Boost se puede activar simultáneamente; Los cambios se aplican instantáneamente al flujo activo. Estos controles solo son completamente funcionales cuando el BASS backend está activo.
 
+Cuando uno o más efectos de EQ están habilitados, aparece un **control de ganancia** para cada banda activa. La ganancia se puede configurar entre −15 dB y +15 dB; los valores predeterminados son Bass +9 dB, Treble +9 dB, y Vocal +6 dB. Los controles de ganancia se muestran solo para las bandas de EQ que están marcadas actualmente y se ocultan automáticamente cuando un efecto de EQ no está marcado. Los valores de ganancia se guardan globalmente y se restauran en la siguiente sesión.
+
 El botón **Reproducir/Pausar** También se encuentra en la parte inferior de la ventana. Si no se reproduce ninguna estación, se inicia la estación seleccionada; si ya se está reproduciendo una emisora, la reproducción se interrumpe.
 
 Cuando se selecciona una estación en la lista, el botón **Detalles de la estación** muestra información como el país, el idioma, el género, el formato, el bitrate, el sitio web y el flujo URL en un cuadro de diálogo separado. Cada campo aparece en su propio cuadro de texto de solo lectura; puedes moverte entre los campos con Tab y copia toda la información al portapapeles de una vez con el botón **Copiar todo al portapapeles**. Este botón está disponible en las pestañas Todas las estaciones y Favoritos.
@@ -81,8 +83,8 @@ Las siguientes teclas solo funcionan cuando la ventana del Navegador de Estacion
 | `F2` | que esta reproduciendo  | Anuncia la estación que se está reproduciendo actualmente y el nombre de la pista. Pulsa dos veces para mostrar los detalles como el país, el género y el bitrate en un diálogo. Pulsa tres veces para copiar la información de la pista actual (metadatos ICY) al portapapeles si está disponible; si no hay metadatos presentes, inicia el reconocimiento de música de Shazam en su lugar. Pulsa cuatro veces para forzar el reconocimiento de música en caso de metadatos ICY incorrectos. |
 | `F3` | Estación anterior | Salta a la estación anterior en la pestaña Todas las estaciones o Favoritos y comienza a reproducir inmediatamente. Salta al final cuando está al principio de la lista. |
 | `F4` | Station suivante | Salta a la siguiente estación en la pestaña Todas las estaciones o Favoritos y comienza a reproducir inmediatamente. Vuelve al principio al final de la lista. |
-| `F5` | Disminuir el volumen | Disminuye el volumen de 10 (mínimo 0). |
-| `F6` | Aumentar el volumen | Aumenta el volumen de 10 (máximo 200). |
+| `F5` | Disminuir el volumen | Disminuye el volumen de 5 (mínimo 0). |
+| `F6` | Aumentar el volumen | Aumenta el volumen de 5 (máximo 200). |
 | `F7` | Pausar/reanudar | Pausa la estación actual si se está reproduciendo; se reanuda cuando está en pausa y el medio está cargado. |
 | `F8` | Detener | Detiene completamente la estación actual y reinicia el reproductor. |
 | `F9` | Renombrar | Abre el cuadro de diálogo para renombrar la estación enfocada en la pestaña Favoritos. |
@@ -103,8 +105,8 @@ Las siguientes teclas solo funcionan cuando la ventana del Navegador de Estacion
 
 | Atajo | Función | Descripción |
 |---|---|---|
-| `Ctrl+↑` | Aumentar el volumen | Aumenta el volumen de 10. Funciona sólo cuando la ventana del navegador está abierta. |
-| `Ctrl+↓` | Disminuir el volumen | Disminuye el volumen de 10. Funciona sólo cuando la ventana del navegador está abierta. |
+| `Ctrl+↑` | Aumentar el volumen | Aumenta el volumen de 5. Funciona sólo cuando la ventana del navegador está abierta. |
+| `Ctrl+↓` | Disminuir el volumen | Disminuye el volumen de 5. Funciona sólo cuando la ventana del navegador está abierta. |
 
 ### Atajos de la Tecla Alt
 
@@ -139,9 +141,9 @@ Para añadir una estación que no está en Radio Browser, use el botón Añadir 
 
 La pestaña Favoritos incluye dos botones para administrar los ajustes de audio por estación:
 
-**Guardar perfil de audio para esta estación** — guarda el nivel de volumen actual y los efectos activos (coro, EQ, etc.) como perfil vinculado a esta emisora específica. Cada vez que esa estación comienza a reproducirse, el volumen y los efectos guardados se aplican automáticamente, anulando los valores predeterminados globales.
+**Guardar perfil de audio para esta estación** — guarda el nivel de volumen actual y los efectos activos (coro, EQ, etc.), y valores de ganancia de EQ como un perfil vinculado a esa estación específica. Cada vez que esa estación comienza a reproducirse, sus ajustes de volumen, efectos y ganancia guardadas se aplican automáticamente, anulando los valores predeterminados globales.
 
-**Borrar perfil de audio** — elimina el perfil de audio guardado de la estación seleccionada. Después de borrar, la estación vuelve a los ajustes globales de volumen y efectos. Este botón solo está activo cuando la estación seleccionada ya tiene un perfil guardado.
+**Borrar perfil de audio** — elimina el perfil de audio guardado de la estación seleccionada. Después de borrar, la estación vuelve a los ajustes globales de volumen,  efectos y ganancia de EQ. Este botón solo está activo cuando la estación seleccionada ya tiene un perfil guardado.
 
 Los dos botones están ubicados debajo de la lista de favoritos y solo se activan cuando se selecciona una estación de la lista.
 
@@ -203,6 +205,7 @@ Las siguientes opciones se pueden configurar desde el Menú NVDA → Preferencia
 | Dispositivo de salida de audio (BASS backend) | Establece el dispositivo de salida de audio para la reproducción de la radio. La lista incluye todos los dispositivos del sistema BASS-compatible más una opción "valor predeterminado del sistema". Los cambios se aplican inmediatamente después de guardarlos; Si el dispositivo seleccionado se desconecta, el complemento vuelve automáticamente al valor predeterminado del sistema y anuncia el cambio. Activo solo cuando se utiliza el BASS backend. |
 | Volumen | Establece el volumen cuando se inicia el complemento (0–200). Los cambios realizados durante la reproducción con `Ctrl+Win+↑` / `Ctrl+Win+↓` también se reflejan aquí. |
 | Efecto de audio predeterminado | Establece el efecto de audio aplicado cuando se inicia NVDA o una estación comienza a reproducirse. El efecto seleccionado corresponde a la lista de efectos en el navegador de estaciones. Activo solo cuando se utiliza el BASS backend. |
+| Ganancia de EQ (Bass / Treble / Vocal) | Establece el nivel de ganancia en dB para cada banda de EQ (−15 a +15). Estos valores se aplican cuando el efecto EQ correspondiente está activo y se guardan globalmente. Las reemplazos por estación se pueden almacenar utilizando el botón **Guardar perfil de audio** en la pestaña Favoritos. Activo solo cuando se utiliza el BASS backend. |
 | Transición de cambio de estación(BASS backend) | Controla el comportamiento de transición al conmutar entre las estaciones. **Corte instantáneo** (por defecto) detiene la estación anterior justo antes de que comience la nueva. **Fundido encadenado corto (1 segundo)** y **Fundido encadenado normal (2 segundos)** inicia inmediatamente la nueva estación sin interrupción, luego desaparece gradualmente la estación anterior en segundo plano una vez confirmado el nuevo flujo activo. No tiene ningún efecto ni impacto en el rendimiento cuando se establece en Corte instantáneo. Solo disponible cuando el BASS backend está en uso. |
 | Reanudar la última estación al iniciar NVDA | Cuando está habilitado, la última estación escuchada se reinicia automáticamente cada vez que se inicia NVDA. |
 | Anunciar automáticamente los cambios de pista (metadatos ICY) | Cuando está habilitado, NVDA lee automáticamente el nombre de la nueva pista cada vez que cambia en una estación que transmite metadatos ICY. La primera canción también se anuncia inmediatamente al cambiar a una nueva estación. Deshabilitado por defecto. |

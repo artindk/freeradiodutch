@@ -67,6 +67,8 @@ A lista pendente **Dispositivo de saída** na parte inferior da janela do navega
 
 Os controlos **Volume** (0–200) e **Efeitos** na mesma área podem ser ajustados em qualquer altura com a janela aberta. Na lista de Efeitos, é possível ativar simultaneamente Chorus, Compressor, Distortion, Echo, Flanger, Gargle, Reverb, EQ: Bass Boost, EQ: Treble Boost e EQ: Vocal Boost; as alterações são aplicadas à transmissão ativa instantaneamente. Estes controlos só são totalmente funcionais quando o backend BASS está ativo.
 
+Quando um ou mais efeitos EQ estão ativos, surge automaticamente um **controlo de ganho** para cada banda ativa. O ganho pode ser ajustado entre −15 dB e +15 dB; os valores predefinidos são Graves +9 dB, Agudos +9 dB e Vocal +6 dB. Os controlos só aparecem para as bandas EQ selecionadas e ocultam-se automaticamente quando o efeito é desmarcado. Os valores são guardados permanentemente e restaurados na sessão seguinte.
+
 O botão **Reproduzir/Pausar** encontra-se também na parte inferior da janela. Se nenhuma estação estiver a reproduzir, inicia a estação selecionada; se uma estação já estiver em reprodução, pausa a reprodução.
 
 Quando uma estação está selecionada na lista, o botão **Detalhes da Estação** apresenta informações como país, idioma, género, formato, bitrate, website e URL da transmissão numa caixa de diálogo separada. Cada campo aparece na sua própria caixa de texto só de leitura; pode mover-se entre campos com Tab e copiar todas as informações para a área de transferência de uma só vez com o botão **Copiar tudo para a área de transferência**. Este botão está disponível nos separadores Todas as Estações e Favoritos.
@@ -141,9 +143,9 @@ Para adicionar uma estação que não esteja no Radio Browser, utilize o botão 
 
 O separador Favoritos inclui dois botões para gerir as definições de áudio por estação:
 
-**Guardar Perfil de Áudio para Esta Estação** — guarda o nível de volume atual e os efeitos ativos (chorus, EQ, etc.) como um perfil associado a essa estação específica. Sempre que essa estação iniciar a reprodução, o volume e efeitos guardados são automaticamente aplicados, substituindo as predefinições globais.
+**Guardar Perfil de Áudio para Esta Estação** — guarda o nível de volume atual, os efeitos ativos e os valores de ganho EQ como um perfil associado a essa estação específica. Sempre que essa estação iniciar a reprodução, o volume, efeitos e ganho guardados são automaticamente aplicados, substituindo as predefinições globais.
 
-**Limpar Perfil de Áudio** — remove o perfil de áudio guardado da estação selecionada. Após limpar, a estação reverte para as definições globais de volume e efeitos. Este botão só está ativo quando a estação selecionada já tem um perfil guardado.
+**Limpar Perfil de Áudio** — remove o perfil de áudio guardado da estação selecionada. Após limpar, a estação reverte para as definições globais de volume, efeitos e ganho EQ. Este botão só está ativo quando a estação selecionada já tem um perfil guardado.
 
 Ambos os botões estão localizados abaixo da lista de favoritos e só estão ativos quando uma estação da lista está selecionada.
 
@@ -205,6 +207,7 @@ As seguintes opções podem ser configuradas em Menu NVDA → Preferências → 
 | Dispositivo de saída de áudio (backend BASS) | Define o dispositivo de saída de áudio para reprodução de rádio. A lista inclui todos os dispositivos compatíveis com BASS no sistema, mais uma opção "Predefinição do sistema". As alterações são aplicadas imediatamente ao guardar; se o dispositivo selecionado for desligado, o complemento reverte automaticamente para a predefinição do sistema e anuncia a alteração. Só ativo quando o backend BASS está em uso. |
 | Volume | Define o volume inicial do complemento (0–200). As alterações feitas durante a reprodução com `Ctrl+Win+↑` / `Ctrl+Win+↓` também são refletidas aqui. |
 | Efeito de áudio predefinido | Define o efeito de áudio aplicado quando o NVDA inicia ou uma estação começa a reproduzir. O efeito selecionado corresponde à lista de Efeitos no Navegador de Estações. Só ativo quando o backend BASS está em uso. |
+| Ganho EQ (graves / agudos / vocal) | Define o nível de ganho em dB para cada banda EQ (de −15 a +15). O controlo aparece automaticamente quando o efeito EQ correspondente está ativo e oculta-se quando é desativado. Os valores são guardados globalmente; podem ser substituídos por estação através do botão **Guardar Perfil de Áudio** no separador Favoritos. Só ativo quando o backend BASS está em uso. |
 | Transição entre estações (backend BASS) | Controla o comportamento de transição ao mudar de estação. **Corte imediato** (predefinição) para a estação anterior imediatamente antes de a nova começar. **Transição curta (1 segundo)** e **Transição normal (2 segundos)** iniciam a nova estação sem pausa, desvanecendo gradualmente a anterior em segundo plano assim que o novo fluxo é confirmado. Não tem efeito nem impacto no desempenho quando definido como Corte imediato. Só disponível com o backend BASS. |
 | Retomar última estação ao iniciar o NVDA | Quando ativado, a última estação reproduzida reinicia automaticamente sempre que o NVDA inicia. |
 | Anunciar automaticamente mudanças de faixa (metadados ICY) | Quando ativado, o NVDA lê automaticamente o novo nome da faixa sempre que muda numa estação que difunde metadados ICY. A primeira faixa também é anunciada imediatamente ao mudar para uma nova estação. Desativado por predefinição. |

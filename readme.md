@@ -42,8 +42,8 @@ All shortcuts can be reassigned from NVDA Menu → Preferences → Input Gesture
 | `Ctrl+Win+S` | Stop | Fully stops the current station and resets the player. |
 | `Ctrl+Win+→` | Next favourite | Moves to the next station in the favourites list. Wraps around to the beginning at the end of the list. |
 | `Ctrl+Win+←` | Previous favourite | Moves to the previous station in the favourites list. Jumps to the end when at the beginning. |
-| `Ctrl+Win+↑` | Volume up | Increases volume by 10; maximum 100. |
-| `Ctrl+Win+↓` | Volume down | Decreases volume by 10; minimum 0. |
+| `Ctrl+Win+↑` | Volume up | Increases volume by 5; maximum 200. |
+| `Ctrl+Win+↓` | Volume down | Decreases volume by 5; minimum 0. |
 | `Ctrl+Win+V` | Add to favourites | Adds the currently playing station to the favourites list. Announces if the station is already in the list. |
 | `Ctrl+Win+I` | Station info | Announces the currently playing station name. Press twice to show details such as country, genre and bitrate in a dialog. Press three times to copy the current track info (ICY metadata) to the clipboard if available; if no metadata is present, starts Shazam music recognition instead. Press four times to force music recognition in case of wrong ICY metadata. |
 | `Ctrl+Win+M` | Audio mirror | Mirrors the current stream to an additional audio output device simultaneously. Press again to stop mirroring. |
@@ -65,6 +65,8 @@ The **Output Device** dropdown at the bottom of the browser window — outside t
 
 The **Volume** (0–200) and **Effects** controls in the same area can be adjusted at any time while the window is open. From the Effects list, Chorus, Compressor, Distortion, Echo, Flanger, Gargle, Reverb, EQ: Bass Boost, EQ: Treble Boost and EQ: Vocal Boost can be enabled simultaneously; changes are applied to the active stream instantly. These controls are fully functional only when the BASS backend is active.
 
+When one or more EQ effects are enabled, a **gain control** appears for each active band. The gain can be set between −15 dB and +15 dB; the default values are Bass +9 dB, Treble +9 dB, and Vocal +6 dB. The gain controls are shown only for the EQ bands that are currently checked, and are hidden automatically when an EQ effect is unchecked. Gain values are saved globally and restored on the next session.
+
 The **Play/Pause** button is also located at the bottom of the window. If no station is playing it starts the selected station; if a station is already playing it pauses playback.
 
 When a station is selected in the list, the **Station Details** button displays information such as country, language, genre, format, bitrate, website and stream URL in a separate dialog. Each field appears in its own read-only text box; you can move between fields with Tab and copy all information to the clipboard at once with the **Copy all to clipboard** button. This button is available in both the All Stations and Favourites tabs.
@@ -81,8 +83,8 @@ The following keys work only while the Station Browser window is active.
 | `F2` | what's playing | Announces the currently playing station and track name. Press twice to show details such as country, genre and bitrate in a dialog. Press three times to copy the current track info (ICY metadata) to the clipboard if available; if no metadata is present, starts Shazam music recognition instead. Press four times to force music recognition in case of wrong ICY metadata. |
 | `F3` | Previous station | Moves to the previous station in the All Stations or Favourites tab and starts playing immediately. Jumps to the end when at the beginning of the list. |
 | `F4` | Next station | Moves to the next station in the All Stations or Favourites tab and starts playing immediately. Wraps to the beginning at the end of the list. |
-| `F5` | Volume down | Decreases volume by 10 (minimum 0). |
-| `F6` | Volume up | Increases volume by 10 (maximum 200). |
+| `F5` | Volume down | Decreases volume by 5 (minimum 0). |
+| `F6` | Volume up | Increases volume by 5 (maximum 200). |
 | `F7` | Pause / resume | Pauses if a station is playing; resumes if paused and media is loaded. |
 | `F8` | Stop | Fully stops the current station and resets the player. |
 | `F9` | Rename | Opens rename dialog for focused station in favorits tab. |
@@ -103,8 +105,8 @@ The following keys work only while the Station Browser window is active.
 
 | Shortcut | Function | Description |
 |---|---|---|
-| `Ctrl+↑` | Volume up | Increases volume by 10. Only works while the browser window is open. |
-| `Ctrl+↓` | Volume down | Decreases volume by 10. Only works while the browser window is open. |
+| `Ctrl+↑` | Volume up | Increases volume by 5. Only works while the browser window is open. |
+| `Ctrl+↓` | Volume down | Decreases volume by 5. Only works while the browser window is open. |
 
 ### Alt Key Shortcuts
 
@@ -139,9 +141,9 @@ To add a station that is not in Radio Browser, use the Add Custom Station button
 
 The Favourites tab includes two buttons for managing per-station audio settings:
 
-**Save Audio Profile for This Station** — saves the current volume level and active effects (chorus, EQ, etc.) as a profile tied to that specific station. Whenever that station starts playing, its saved volume and effects are automatically applied, overriding the global defaults.
+**Save Audio Profile for This Station** — saves the current volume level, active effects (chorus, EQ, etc.), and EQ gain values as a profile tied to that specific station. Whenever that station starts playing, its saved volume, effects and gain settings are automatically applied, overriding the global defaults.
 
-**Clear Audio Profile** — removes the saved audio profile from the selected station. After clearing, the station reverts to the global volume and effects settings. This button is only active when the selected station already has a saved profile.
+**Clear Audio Profile** — removes the saved audio profile from the selected station. After clearing, the station reverts to the global volume, effects and EQ gain settings. This button is only active when the selected station already has a saved profile.
 
 Both buttons are located below the favourites list and are only enabled when a station in the list is selected.
 
@@ -203,6 +205,7 @@ The following options can be configured from NVDA Menu → Preferences → Setti
 | Audio output device (BASS backend) | Sets the audio output device for radio playback. The list includes all BASS-compatible devices on the system plus a "System default" option. Changes are applied immediately on save; if the selected device is disconnected, the add-on automatically falls back to the system default and announces the change. Only active when the BASS backend is in use. |
 | Volume | Sets the add-on's starting volume (0–200). Changes made during playback with `Ctrl+Win+↑` / `Ctrl+Win+↓` are also reflected here. |
 | Default audio effect | Sets the audio effect applied when NVDA starts or a station begins playing. The selected effect corresponds to the Effects list in the Station Browser. Only active when the BASS backend is in use. |
+| EQ gain (Bass / Treble / Vocal) | Sets the gain level in dB for each EQ band (−15 to +15). These values apply when the corresponding EQ effect is active and are saved globally. Per-station overrides can be stored using the **Save Audio Profile** button in the Favourites tab. Only active when the BASS backend is in use. |
 | Station switch transition (BASS backend) | Controls the transition behaviour when switching between stations. **Instant cut** (default) stops the previous station immediately before the new one starts. **Short crossfade (1 second)** and **Normal crossfade (2 seconds)** start the new station immediately with no gap, then gradually fade out the previous station in the background once the new stream is confirmed active. Has no effect and no performance impact when set to Instant cut. Only available when the BASS backend is in use. |
 | Resume last station on NVDA startup | When enabled, the last played station automatically restarts every time NVDA starts. |
 | Auto-announce track changes (ICY metadata) | When enabled, NVDA automatically reads the new track name each time it changes on a station that broadcasts ICY metadata. The first track is also announced immediately when switching to a new station. Disabled by default. |

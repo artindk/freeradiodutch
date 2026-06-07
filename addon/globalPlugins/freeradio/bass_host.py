@@ -87,11 +87,16 @@ _FX_NAME_TO_TYPE = {
 
 # ParamEQ preset parameters: {fCenter_Hz, fBandwidth_semitones, fGain_dB}
 # fBandwidth: 1–36 semitones — 18 ≈ 1.5 octaves according to DirectX documentation
+# fGain_dB: default gain; can be overridden at runtime via set_eq_gain command.
 _PARAMEQ_PRESETS = {
     "eq_bass":    (100.0,  18.0,  9.0),
     "eq_treble":  (8000.0, 18.0,  9.0),
     "eq_vocal":   (2500.0, 12.0,  6.0),
 }
+
+# Runtime gain overrides — populated by set_eq_gain command.
+# Keys: "eq_bass" | "eq_treble" | "eq_vocal"  Values: dB (float, -15..+15)
+_PARAMEQ_GAIN_OVERRIDE: dict = {}
 
 # Stdout helpers — all communication goes through stdout as JSON lines.
 # stderr is used only for fatal startup errors.
@@ -275,7 +280,7 @@ class BassHost:
                 return False, f"BASS_Init failed (err={err})"
 
         dll.BASS_SetConfig(_BASS_CONFIG_NET_HTTPS_FLAG, 1)
-        dll.BASS_SetConfig(_BASS_CONFIG_NET_TIMEOUT, 12000)     # ms — 12s; slow servers (qingting.fm etc.) için artırıldı
+        dll.BASS_SetConfig(_BASS_CONFIG_NET_TIMEOUT, 12000)     # ms — 12s; Increased for slow servers (qingting.fm etc.)
         dll.BASS_SetConfig(_BASS_CONFIG_NET_READTIMEOUT, 12000) # ms
         dll.BASS_SetConfig(_BASS_CONFIG_NET_PREBUF, 0)
         dll.BASS_SetConfig(_BASS_CONFIG_NET_SSL, 1)
@@ -596,11 +601,38 @@ class BassHost:
             if is_hls and not self._dll_hls and url_lower.startswith("https"):
                 return 0
 
+        is_https = url_lower.startswith("https://")
+        is_http  = url_lower.startswith("http://")
+
+        # HTTPS Icecast workaround — bypass BASS's SSL layer entirely.
+        #
+        # Some Icecast servers (e.g. icecast.walmradio.com) send ICY response
+        # headers immediately after the TLS handshake, before any HTTP/1.x
+        # status line.  BASS's SSL stack cannot parse this and returns
+        # BASS_ERROR_FILEFORM (err=40) without ever timing out cleanly, which
+        # means every normal BASS_StreamCreateURL attempt below would burn the
+        # full NET_TIMEOUT budget (~12 s) before failing.
+        #
+        # The fix: open the HTTPS connection with urllib (which tolerates ICY
+        # quirks), pipe the raw audio bytes through a local loopback socket, and
+        # point BASS at http://127.0.0.1:<port> instead.  BASS sees plain HTTP
+        # audio from localhost and has no trouble with it.
+        #
+        # The proxy thread is started before BASS_StreamCreateURL so that BASS
+        # finds an already-listening socket and connects without delay.
+        if is_https:
+            stream = self._try_https_local_proxy(url)
+            if stream:
+                return stream
+            # Proxy failed (connection error, non-audio content-type, etc.);
+            # fall through to the standard BASS attempts below — they will almost
+            # certainly fail too for the same reason, but this preserves the
+            # original behaviour for servers that do work with BASS over HTTPS.
+
         # For HTTP, disable SSL completely and also try with custom headers via a small hack
         # Some Shoutcast servers require "Icy-MetaData: 1" header.
         # BASS doesn't send it by default, but we can set BASS_CONFIG_NET_META=1 already.
         ssl_saved = None
-        is_http = url_lower.startswith("http://")
         if is_http:
             try:
                 ssl_saved = self._dll.BASS_GetConfig(_BASS_CONFIG_NET_SSL)
@@ -653,6 +685,187 @@ class BassHost:
                 except:
                     pass
 
+    def _try_https_local_proxy(self, url):
+        """Proxy an HTTPS Icecast stream through a local TCP socket for BASS.
+
+        BASS fails with BASS_ERROR_FILEFORM (err=40) on HTTPS Icecast streams
+        that send ICY headers immediately after the TLS handshake.  This method
+        works around the issue by:
+
+          1. Connecting to the remote server with urllib (ICY-tolerant).
+          2. Opening a local loopback TCP server on an ephemeral port.
+          3. Returning 'http://127.0.0.1:<port>' to BASS so it reads plain HTTP
+             audio from localhost — no SSL parsing needed on BASS's side.
+          4. Running a background thread that forwards bytes from the remote
+             connection into the loopback socket for as long as BASS is reading.
+
+        The proxy thread is started *before* BASS_StreamCreateURL so that the
+        listening socket is ready by the time BASS tries to connect.
+        """
+        import socket as _socket
+        import ssl as _ssl
+        import urllib.request
+
+        CONNECT_TIMEOUT = 10   # seconds — urllib connection timeout
+        CHUNK           = 8192 # bytes per forwarding iteration
+
+        ssl_ctx = _ssl.create_default_context()
+        ssl_ctx.check_hostname = False
+        ssl_ctx.verify_mode    = _ssl.CERT_NONE
+
+        # --- Step 1: bind a local loopback server socket immediately ---
+        # We bind *before* opening the remote connection so BASS can be pointed
+        # at the local address right away.  The urllib connection is opened
+        # inside the proxy thread, in parallel with BASS's own connect attempt.
+        # This eliminates the sequential "wait for urllib, then tell BASS" delay
+        # that previously caused ~10 s startup time.
+        try:
+            srv = _socket.socket(_socket.AF_INET, _socket.SOCK_STREAM)
+            srv.setsockopt(_socket.SOL_SOCKET, _socket.SO_REUSEADDR, 1)
+            srv.bind(("127.0.0.1", 0))
+            srv.listen(1)
+            srv.settimeout(15)   # BASS must connect within 15 s
+            port = srv.getsockname()[1]
+        except Exception:
+            return 0
+
+        # --- Step 2: proxy thread ---
+        proxy_ready = threading.Event()
+
+        def _proxy():
+            proxy_ready.set()
+
+            # Accept BASS's incoming connection
+            try:
+                client, _ = srv.accept()
+            except Exception:
+                return
+            finally:
+                srv.close()
+
+            # Open the remote HTTPS stream now — BASS is already connected and
+            # waiting for our response, so this runs in parallel with BASS's
+            # internal buffer setup rather than blocking the caller.
+            try:
+                req = urllib.request.Request(
+                    url,
+                    headers={
+                        "User-Agent": "VLC/3.0.21 LibVLC/3.0.21",
+                        "Icy-MetaData": "1",
+                        "Accept":      "*/*",
+                    },
+                )
+                remote_resp = urllib.request.urlopen(
+                    req, timeout=CONNECT_TIMEOUT, context=ssl_ctx)
+            except Exception:
+                try:
+                    client.close()
+                except Exception:
+                    pass
+                return
+
+            ct = (remote_resp.headers.get("content-type") or "").lower()
+            if not ("audio/" in ct or "application/ogg" in ct or "video/" in ct):
+                try:
+                    client.close()
+                    remote_resp.close()
+                except Exception:
+                    pass
+                return
+
+            # Collect ICY/audio headers to pass through to BASS.
+            # icy-metaint must be forwarded accurately — sending 0 or omitting it
+            # causes BASS to misparse the byte stream (garbled audio / glitches).
+            passthrough_headers = []
+            for hdr in ("content-type", "icy-name", "icy-genre", "icy-br",
+                        "icy-sr", "icy-metaint", "icy-pub", "icy-url"):
+                val = remote_resp.headers.get(hdr)
+                if val:
+                    passthrough_headers.append(f"{hdr}: {val}".encode())
+
+            # Drain BASS's HTTP GET request
+            try:
+                client.settimeout(5)
+                buf = b""
+                while b"\r\n\r\n" not in buf:
+                    chunk = client.recv(512)
+                    if not chunk:
+                        break
+                    buf += chunk
+            except Exception:
+                pass
+
+            # Send HTTP response with forwarded ICY headers
+            header_lines = [b"HTTP/1.0 200 OK"] + passthrough_headers + [b"", b""]
+            try:
+                client.sendall(b"\r\n".join(header_lines))
+            except Exception:
+                try:
+                    client.close()
+                    remote_resp.close()
+                except Exception:
+                    pass
+                return
+
+            # Forward remote audio bytes → BASS.
+            # A generous timeout (30 s) prevents spurious disconnects during
+            # brief network pauses without blocking indefinitely on dead streams.
+            client.settimeout(30)
+            read_fn = remote_resp.read
+            try:
+                while True:
+                    data = read_fn(CHUNK)
+                    if not data:
+                        break
+                    client.sendall(data)
+            except Exception:
+                pass
+            finally:
+                try:
+                    client.close()
+                except Exception:
+                    pass
+                try:
+                    remote_resp.close()
+                except Exception:
+                    pass
+
+        t = threading.Thread(target=_proxy, daemon=True, name="bass-https-proxy")
+        t.start()
+
+        # Wait until the server socket is bound and listening before telling BASS
+        proxy_ready.wait(timeout=2)
+
+        # --- Step 4: point BASS at the local proxy ---
+        local_url = f"http://127.0.0.1:{port}/"
+        stream = self._dll.BASS_StreamCreateURL(
+            local_url.encode("utf-8"),
+            ctypes.c_uint32(_BASS_STREAM_BLOCK), ctypes.c_uint32(0),
+            ctypes.c_void_p(0), ctypes.c_void_p(0),
+        )
+        if stream:
+            return stream
+
+        # BASS still failed — try without BLOCK flag
+        stream = self._dll.BASS_StreamCreateURL(
+            local_url.encode("utf-8"),
+            ctypes.c_uint32(0), ctypes.c_uint32(0),
+            ctypes.c_void_p(0), ctypes.c_void_p(0),
+        )
+        if stream:
+            return stream
+
+        # Both attempts failed; close the server socket so the proxy thread exits
+        try:
+            srv.close()
+        except Exception:
+            pass
+        try:
+            remote_resp.close()
+        except Exception:
+            pass
+        return 0
+
     def stop(self):
         # Cancel any pending play when stopping
         self._cancel_pending_play()
@@ -693,7 +906,7 @@ class BassHost:
           volume=1.0 → gain=1.0 (no change)
           volume=1.5 → gain≈2.8  (+8.5 dB)
           volume=2.0 → gain≈8.0  (+18 dB)
-          Formule: gain = EXP_BASE ^ (volume - 1.0)  (volume > 1.0 için)
+          Formule: gain = EXP_BASE ^ (for volume - 1.0)  (volume > 1.0)
 
         Bass boost (low-shelf IIR, first degree):
           Cutoff frequency ~150 Hz, 44100 Hz sampling rate assumed.
@@ -899,6 +1112,8 @@ class BassHost:
             # Set parameters for ParamEQ presets
             if name in _PARAMEQ_PRESETS:
                 fCenter, fBandwidth, fGain = _PARAMEQ_PRESETS[name]
+                # Apply runtime gain override if set
+                fGain = _PARAMEQ_GAIN_OVERRIDE.get(name, fGain)
                 class _PARAMEQ(ctypes.Structure):
                     _fields_ = [
                         ("fCenter",    ctypes.c_float),
@@ -910,6 +1125,38 @@ class BassHost:
                     dll.BASS_FXSetParameters(self._fx_handles[name], ctypes.byref(params))
                 except Exception:
                     pass
+
+    def set_eq_gain(self, band, gain_db):
+        """Set the gain (dB) for one ParamEQ band and re-apply it immediately.
+
+        band:    "eq_bass" | "eq_treble" | "eq_vocal"
+        gain_db: float, clamped to -15..+15 dB
+        """
+        if band not in _PARAMEQ_PRESETS:
+            return
+        gain_db = max(-15.0, min(15.0, float(gain_db)))
+        _PARAMEQ_GAIN_OVERRIDE[band] = gain_db
+
+        with self._lock:
+            h = self._handle
+            dll = self._dll
+            fx_h = self._fx_handles.get(band)
+        if not h or not dll or not fx_h:
+            return
+
+        fCenter, fBandwidth, _ = _PARAMEQ_PRESETS[band]
+
+        class _PARAMEQ(ctypes.Structure):
+            _fields_ = [
+                ("fCenter",    ctypes.c_float),
+                ("fBandwidth", ctypes.c_float),
+                ("fGain",      ctypes.c_float),
+            ]
+        params = _PARAMEQ(fCenter, fBandwidth, float(gain_db))
+        try:
+            dll.BASS_FXSetParameters(fx_h, ctypes.byref(params))
+        except Exception:
+            pass
 
     def set_bass_boost(self, boost_0_1):
         """Adjust the bass boost level.
@@ -1148,6 +1395,12 @@ def main():
         elif cmd == "set_fx":
             fx = cmd_obj.get("fx", "none")
             host.set_fx(fx)
+            _ok()
+
+        elif cmd == "set_eq_gain":
+            band    = cmd_obj.get("band", "")
+            gain_db = float(cmd_obj.get("gain_db", 9.0))
+            host.set_eq_gain(band, gain_db)
             _ok()
 
         elif cmd == "quit":
