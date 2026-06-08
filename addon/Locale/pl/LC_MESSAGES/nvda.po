@@ -572,7 +572,7 @@ msgstr "Nie udało się odtworzyć stacji: %s"
 
 #: addon/globalPlugins/freeradio/__init__.py:2102
 msgid "&Disable BASS backend (use VLC/PotPlayer/WMP instead)"
-msgstr "&Wyłącz backend BASS (użyj zamiast tego VLC/PotPlayer/WMP)"
+msgstr "&Używaj VLC, PotPlayer lub WMP zamiast BASS"
 
 #: addon/globalPlugins/freeradio/__init__.py:2111
 msgid ""
@@ -582,7 +582,7 @@ msgstr "Uwaga: wybór urządzenia audio, efekty i kopiowanie dźwięku wymagają
 #: addon/globalPlugins/freeradio/__init__.py:2118
 #: addon/globalPlugins/freeradio/__init__.py:2465
 msgid "Audio output device (BASS backend):"
-msgstr "Urządzenie wyjścia audio (backend BASS):"
+msgstr "Urządzenie odtwarzania (BASS):"
 
 #: addon/globalPlugins/freeradio/__init__.py:2122
 #: addon/globalPlugins/freeradio/__init__.py:2493

@@ -203,7 +203,7 @@ Poniższe opcje można skonfigurować w menu NVDA -> Preferencje -> Ustawienia -
 
 | Opcja | Opis |
 |---|---|
-| Urządzenie wyjścia audio (backend BASS) | Ustawia urządzenie wyjścia audio dla odtwarzania radia. Lista zawiera wszystkie urządzenia zgodne z BASS w systemie oraz opcję "Domyślne systemowe". Zmiany są stosowane natychmiast po zapisaniu; jeśli wybrane urządzenie zostanie odłączone, dodatek automatycznie wróci do domyślnego urządzenia systemowego i ogłosi zmianę. Opcja działa tylko wtedy, gdy używany jest backend BASS. |
+| Urządzenie odtwarzania (BASS) | Wybiera urządzenie, na którym ma być odtwarzane radio. Lista zawiera wszystkie urządzenia zgodne z BASS w systemie oraz opcję "Domyślne systemowe". Zmiany są stosowane natychmiast po zapisaniu; jeśli wybrane urządzenie zostanie odłączone, dodatek automatycznie wróci do domyślnego urządzenia systemowego i ogłosi zmianę. Opcja działa tylko wtedy, gdy używany jest BASS. |
 | Głośność | Ustawia początkową głośność dodatku (0-200). Zmiany wykonane podczas odtwarzania skrótami `Ctrl+Win+Up` / `Ctrl+Win+Down` są również odzwierciedlane tutaj. |
 | Domyślny efekt audio | Ustawia efekt audio stosowany przy starcie NVDA albo rozpoczęciu odtwarzania stacji. Wybrany efekt odpowiada liście Efekty w przeglądarce stacji. Opcja działa tylko z backendem BASS. |
 | Wzmocnienie EQ (bas / soprany / wokal) | Ustawia poziom wzmocnienia w dB dla każdego pasma EQ (-15 do +15). Wartości obowiązują, gdy odpowiedni efekt EQ jest aktywny, i są zapisywane globalnie. Nadpisania dla pojedynczej stacji można zapisać przyciskiem **Zapisz profil audio** na karcie Ulubione. Opcja działa tylko z backendem BASS. |
