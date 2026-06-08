@@ -666,19 +666,19 @@ msgstr "Wzmocnienie &wokalu (dB):"
 
 #: addon/globalPlugins/freeradio/__init__.py:2184
 msgid "Station &switch transition (BASS backend only):"
-msgstr "Przejście przy &zmianie stacji (tylko backend BASS):"
+msgstr "Sposób &przełączania stacji (tylko backend BASS):"
 
 #: addon/globalPlugins/freeradio/__init__.py:2186
 msgid "Instant cut (no crossfade)"
-msgstr "Natychmiastowe cięcie (bez przejścia)"
+msgstr "Natychmiastowe przełączenie (bez płynnego przejścia)"
 
 #: addon/globalPlugins/freeradio/__init__.py:2187
 msgid "Short crossfade (1 second)"
-msgstr "Krótkie przejście (1 sekunda)"
+msgstr "Krótkie płynne przejście (1 sekunda)"
 
 #: addon/globalPlugins/freeradio/__init__.py:2188
 msgid "Normal crossfade (2 seconds)"
-msgstr "Normalne przejście (2 sekundy)"
+msgstr "Normalne płynne przejście (2 sekundy)"
 
 #: addon/globalPlugins/freeradio/__init__.py:2202
 msgid "&Resume last station on NVDA startup"
