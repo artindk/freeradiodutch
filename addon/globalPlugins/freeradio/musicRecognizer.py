@@ -687,13 +687,19 @@ def recognize(stream_url, ffmpeg_path, _unused_api_key=""):
             )
 
         # 2. URL çözümle
+        # HLS playlists (.m3u8) are passed directly to ffmpeg, which handles
+        # segment concatenation natively. Resolving them to a single segment
+        # would yield only one ~6s chunk — not enough for recognition.
         log.info("FreeRadio Recognizer: resolving %s", stream_url)
-        resolved = _resolve_to_audio_url(stream_url)
-        if resolved and resolved != stream_url:
-            log.info("FreeRadio Recognizer: resolved → %s", resolved)
-            stream_url = resolved
-        elif not resolved:
-            log.warning("FreeRadio Recognizer: could not resolve, trying original")
+        if stream_url.lower().endswith(".m3u8"):
+            log.info("FreeRadio Recognizer: HLS playlist detected, passing directly to ffmpeg")
+        else:
+            resolved = _resolve_to_audio_url(stream_url)
+            if resolved and resolved != stream_url:
+                log.info("FreeRadio Recognizer: resolved → %s", resolved)
+                stream_url = resolved
+            elif not resolved:
+                log.warning("FreeRadio Recognizer: could not resolve, trying original")
 
         # 3. ffmpeg ile PCM al
         log.info("FreeRadio Recognizer: decoding %ds PCM via ffmpeg", _SAMPLE_DURATION)

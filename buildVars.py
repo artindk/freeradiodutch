@@ -18,35 +18,14 @@ addon_info = AddonInfo(
 	addon_description=_("""FreeRadio is an internet radio add-on for NVDA that provides seamless access to thousands of stations via the Radio Browser open directory. It features a fully accessible station browser with search, country filter, favourites management, and per-station audio profiles. Playback is handled by a prioritised backend chain (BASS, VLC, PotPlayer, Windows Media Player) with support for volume control, audio effects, output device selection, and simultaneous audio mirroring to a second device. Additional features include instant and scheduled recording, sleep and alarm timers, automatic ICY metadata announcements, Shazam-based music recognition, and a liked-songs log. All controls and shortcuts are designed for NVDA accessibility."""),
 	
 	# version
-	addon_version="2026.19.8",
+	addon_version="2026.19.9",
 	
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version
 	addon_changelog=_("""
-- Fixed playback of HTTPS Icecast streams that caused BASS to fail with
-  BASS_ERROR_FILEFORM (err=40). Affected streams sent ICY response headers
-  immediately after the TLS handshake, before a standard HTTP status line,
-  which BASS's SSL layer could not parse.
-- Implemented a local loopback proxy in bass_host.py to work around the
-  issue: urllib opens the HTTPS connection (which tolerates ICY quirks),
-  and BASS reads plain HTTP audio from a localhost socket instead.
-- The remote HTTPS connection and BASS's local connect now happen in
-  parallel, keeping startup latency close to that of a normal stream.
-- ICY headers (content-type, icy-metaint, icy-br, icy-sr, etc.) are
-  forwarded accurately from the remote server to BASS. Previously sending
-  icy-metaint: 0 caused garbled audio and a phaser/chorus-like artifact.
-- Removed the _BASS_SKIP_HOSTS workaround in radioPlayer.py that
-  bypassed BASS entirely for icecast.walmradio.com, restoring full BASS
-  features (ICY metadata, bass boost, FX, volume mixer entry) for that
-  station.
----
-**New: Adjustable EQ Effect Levels**
-The Bass Boost, Treble Boost, and Vocal Boost effects now include individual gain controls. When one of these effects is enabled, a dB slider appears next to it, letting you fine-tune the intensity from −15 dB to +15 dB.
-Previously, each EQ effect had a fixed strength (Bass: +9 dB, Treble: +9 dB, Vocal: +6 dB). These defaults are unchanged — the controls simply let you go lower or higher as needed.
-**What's new:**
-- Gain controls appear automatically when an EQ effect is turned on, and hide when it is turned off.
-- Values are saved globally and restored when the add-on starts.
-- If you save an audio profile for a favourite station, the EQ gain levels are included in that profile and restored whenever you tune to that station.
+**Fix music recognition for HLS streams (`.m3u8`)**
+
+Previously, the URL resolver extracted a single media segment from the HLS playlist and passed it to ffmpeg. This yielded only ~6 seconds of audio — too short for Shazam to identify a track. HLS playlist URLs are now passed directly to ffmpeg, which handles segment concatenation natively and produces the full 12-second sample required for recognition.
 """),
 	
 	# Author(s)
