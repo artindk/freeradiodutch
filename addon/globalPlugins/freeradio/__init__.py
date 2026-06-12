@@ -1340,6 +1340,221 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		else:
 			ui.message(_("Notifications unmuted"))
 
+	@script(
+		description=_("Enable or disable the BASS audio backend"),
+		category=_("FreeRadio"),
+		# No gesture assigned by default; bind one via NVDA's Input Gestures dialog.
+	)
+	def script_toggleBassBackend(self, gesture):
+		current = config.conf["freeradio"].get("disable_bass", False)
+		config.conf["freeradio"]["disable_bass"] = not current
+
+		if self._dialog is not None and hasattr(self._dialog, "_disable_bass"):
+			try:
+				self._dialog._disable_bass.SetValue(not current)
+			except Exception:
+				pass
+
+		label = _("&Disable BASS backend (use VLC/PotPlayer/WMP instead)").replace("&", "")
+		ui.message(_("%(effect)s %(state)s") % {
+			"effect": label,
+			"state": _("enabled") if not current else _("disabled"),
+		})
+		ui.message(_("Restart NVDA for this change to take effect."))
+
+	@script(
+		description=_("Toggle bass boost"),
+		category=_("FreeRadio"),
+		# No gesture assigned by default; bind one via NVDA's Input Gestures dialog.
+	)
+	def script_toggleBassBoost(self, gesture):
+		self._toggle_eq_band("eq_bass", _("EQ: Bass Boost"))
+
+	@script(
+		description=_("Toggle treble boost"),
+		category=_("FreeRadio"),
+		# No gesture assigned by default; bind one via NVDA's Input Gestures dialog.
+	)
+	def script_toggleTrebleBoost(self, gesture):
+		self._toggle_eq_band("eq_treble", _("EQ: Treble Boost"))
+
+	@script(
+		description=_("Toggle vocal boost"),
+		category=_("FreeRadio"),
+		# No gesture assigned by default; bind one via NVDA's Input Gestures dialog.
+	)
+	def script_toggleVocalBoost(self, gesture):
+		self._toggle_eq_band("eq_vocal", _("EQ: Vocal Boost"))
+
+	def _toggle_eq_band(self, band, label):
+		"""Toggle an EQ band on/off.
+
+		The BASS engine only applies a ParamEQ gain if the corresponding
+		effect name (e.g. "eq_bass") is part of the active FX list, so
+		toggling must add/remove that name from "audio_fx" via set_fx,
+		in addition to (re)applying the saved gain via set_eq_gain.
+		"""
+		if config.conf["freeradio"].get("disable_bass", False):
+			ui.message(_("Note: Audio device selection, effects, and mirroring require BASS backend."))
+			return
+
+		fx_str = config.conf["freeradio"].get("audio_fx", "none")
+		active = [f.strip() for f in fx_str.split(",") if f.strip() and f.strip() != "none"]
+
+		gain_key = "eq_gain_" + band
+		_eq_defaults = {"eq_bass": 9, "eq_treble": 9, "eq_vocal": 6}
+
+		if band in active:
+			# Currently on: remove from the active FX list.
+			active.remove(band)
+			turning_on = False
+		else:
+			# Currently off: add to the active FX list.
+			active.append(band)
+			turning_on = True
+			# Ensure a sensible (non-zero) gain is set.
+			if config.conf["freeradio"].get(gain_key, 0) == 0:
+				config.conf["freeradio"][gain_key] = _eq_defaults.get(band, 6)
+
+		new_fx_str = ",".join(active) if active else "none"
+		config.conf["freeradio"]["audio_fx"] = new_fx_str
+		gain_db = config.conf["freeradio"].get(gain_key, _eq_defaults.get(band, 6))
+
+		if self._player is not None:
+			try:
+				self._player.set_fx(new_fx_str)
+				self._player.set_eq_gain(band, gain_db)
+			except Exception:
+				pass
+
+		# Keep the settings panel's effects list and EQ spin controls in sync.
+		if self._dialog is not None:
+			try:
+				if hasattr(self._dialog, "_fx_choice") and hasattr(self._dialog, "_fx_keys"):
+					if band in self._dialog._fx_keys:
+						idx = self._dialog._fx_keys.index(band)
+						self._dialog._fx_choice.Check(idx, turning_on)
+						if hasattr(self._dialog, "_update_eq_spins_visibility"):
+							self._dialog._update_eq_spins_visibility()
+				if hasattr(self._dialog, "_eq_spins_settings"):
+					spin = self._dialog._eq_spins_settings.get(band)
+					if spin is not None:
+						spin.SetValue(gain_db)
+			except Exception:
+				pass
+
+		# Keep the station browser dialog's effects list and EQ spin controls in sync.
+		self._sync_dialog_audio(
+			self._player.get_volume() if self._player is not None else 0,
+			new_fx_str,
+			eq_gains={band: gain_db},
+		)
+
+		ui.message(_("%(effect)s %(state)s") % {
+			"effect": label,
+			"state": _("enabled") if turning_on else _("disabled"),
+		})
+
+	@script(
+		description=_("Toggle station switch transition (crossfade)"),
+		category=_("FreeRadio"),
+		# No gesture assigned by default; bind one via NVDA's Input Gestures dialog.
+	)
+	def script_toggleStationTransition(self, gesture):
+		_cf_order = ["off", "short", "normal"]
+		_cf_labels = {
+			"off":    _("Instant cut (no crossfade)"),
+			"short":  _("Short crossfade (1 second)"),
+			"normal": _("Normal crossfade (2 seconds)"),
+		}
+		_cf_map = {"off": 0.0, "short": 1.0, "normal": 2.0}
+
+		current = config.conf["freeradio"].get("crossfade", "off")
+		try:
+			idx = _cf_order.index(current)
+		except ValueError:
+			idx = 0
+		new_value = _cf_order[(idx + 1) % len(_cf_order)]
+
+		config.conf["freeradio"]["crossfade"] = new_value
+		if self._player is not None:
+			try:
+				self._player.set_crossfade_duration(_cf_map.get(new_value, 0.0))
+			except Exception:
+				pass
+
+		# Keep the settings panel's choice control in sync if it's open.
+		if self._dialog is not None and hasattr(self._dialog, "_crossfade_choice"):
+			try:
+				self._dialog._crossfade_choice.SetSelection(_cf_order.index(new_value))
+			except Exception:
+				pass
+
+		ui.message(_cf_labels.get(new_value, new_value))
+
+	@script(
+		description=_("Enable or disable auto-announce track changes (ICY metadata)"),
+		category=_("FreeRadio"),
+		# No gesture assigned by default; bind one via NVDA's Input Gestures dialog.
+	)
+	def script_toggleAnnounceTrackChanges(self, gesture):
+		current = config.conf["freeradio"].get("announce_track_changes", False)
+		config.conf["freeradio"]["announce_track_changes"] = not current
+
+		# Keep the settings panel's checkbox and voice choice in sync if it's open.
+		if self._dialog is not None and hasattr(self._dialog, "_announce_track_changes"):
+			try:
+				self._dialog._announce_track_changes.SetValue(not current)
+				if hasattr(self._dialog, "_track_change_voice"):
+					self._dialog._track_change_voice.Enable(not current)
+			except Exception:
+				pass
+
+		ui.message(_("%(effect)s %(state)s") % {
+			"effect": _("&Auto-announce track changes (ICY metadata)").replace("&", ""),
+			"state": _("enabled") if not current else _("disabled"),
+		})
+
+	@script(
+		description=_("Switch track change announcement voice"),
+		category=_("FreeRadio"),
+		# No gesture assigned by default; bind one via NVDA's Input Gestures dialog.
+	)
+	def script_switchTrackChangeVoice(self, gesture):
+		current = config.conf["freeradio"].get("track_change_voice", "nvda")
+		new_value = "sapi5" if current != "sapi5" else "nvda"
+		config.conf["freeradio"]["track_change_voice"] = new_value
+
+		# Keep the settings panel's voice choice in sync if it's open.
+		if self._dialog is not None and hasattr(self._dialog, "_track_change_voice"):
+			try:
+				self._dialog._track_change_voice.SetSelection(0 if new_value != "sapi5" else 1)
+			except Exception:
+				pass
+
+		ui.message("SAPI5" if new_value == "sapi5" else "NVDA")
+
+	@script(
+		description=_("Turn on or off saving liked songs to a text file"),
+		category=_("FreeRadio"),
+		# No gesture assigned by default; bind one via NVDA's Input Gestures dialog.
+	)
+	def script_toggleSaveLikedSongs(self, gesture):
+		current = config.conf["freeradio"].get("save_liked_songs", False)
+		config.conf["freeradio"]["save_liked_songs"] = not current
+
+		# Keep the settings panel's checkbox in sync if it's open.
+		if self._dialog is not None and hasattr(self._dialog, "_save_liked_songs"):
+			try:
+				self._dialog._save_liked_songs.SetValue(not current)
+			except Exception:
+				pass
+
+		ui.message(_("%(effect)s %(state)s") % {
+			"effect": _("&Save liked songs to a text file").replace("&", ""),
+			"state": _("enabled") if not current else _("disabled"),
+		})
+
 	def _open_dialog(self, focus=None):
 		"""Show the station browser dialog, optionally switching to a specific tab.
 

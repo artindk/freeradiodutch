@@ -26,6 +26,15 @@ addon_info = AddonInfo(
 **Fix music recognition for HLS streams (`.m3u8`)**
 
 Previously, the URL resolver extracted a single media segment from the HLS playlist and passed it to ffmpeg. This yielded only ~6 seconds of audio — too short for Shazam to identify a track. HLS playlist URLs are now passed directly to ffmpeg, which handles segment concatenation natively and produces the full 12-second sample required for recognition.
+## FreeRadio — New unassigned shortcuts
+This release adds several new input gestures (all unassigned by default — bind them via NVDA's Input Gestures dialog under the FreeRadio category):
+- **Enable/disable BASS backend** — toggles the BASS audio engine on or off (a restart of NVDA is required for this to take effect).
+- **Toggle Bass Boost / Treble Boost / Vocal Boost** — quickly turn each EQ effect on or off without opening the settings dialog. Requires the BASS backend.
+- **Toggle station switch transition** — cycles through the crossfade options (instant cut, short, normal).
+- **Toggle auto-announce track changes** — enables or disables automatic announcement of ICY metadata when the track changes.
+- **Switch track change voice** — switches the track-change announcement between NVDA's speech and SAPI5.
+- **Toggle save liked songs to a text file** — turns the "save liked songs" feature on or off.
+All of these settings remain available in the FreeRadio settings dialog, and any change made via shortcut is reflected there immediately (and vice versa).
 """),
 	
 	# Author(s)
