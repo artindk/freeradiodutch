@@ -74,7 +74,8 @@ msgstr "FreeRadio"
 
 #: addon/globalPlugins/freeradio/__init__.py:420
 msgid "Audio mirror requires BASS backend. Enable it in FreeRadio settings."
-msgstr "Kopia dźwięku wymaga backendu BASS. Włącz go w ustawieniach FreeRadio."
+msgstr ""
+"Kopia dźwięku wymaga backendu BASS. Włącz go w ustawieniach FreeRadio."
 
 #: addon/globalPlugins/freeradio/__init__.py:426
 msgid "Audio mirror stopped"
@@ -135,7 +136,8 @@ msgstr "Odtwarzanie"
 msgid "Stop FreeRadio playback"
 msgstr "Zatrzymaj odtwarzanie FreeRadio"
 
-# ── Kayıt sekmesi (radioDialog.py) ───────────────────────────────────────────
+# ── Kayıt sekmesi (radioDialog.py)
+# ───────────────────────────────────────────
 #: addon/globalPlugins/freeradio/__init__.py:597
 #: addon/globalPlugins/freeradio/__init__.py:1108
 #, python-format
@@ -205,7 +207,9 @@ msgid ""
 "Announce currently playing station. Press twice for full details, three "
 "times to copy track info, four times to force music recognition."
 msgstr ""
-"Odczytaj aktualnie odtwarzaną stację. Naciśnij dwa razy, aby uzyskać pełne szczegóły, trzy razy, aby skopiować informacje o utworze, cztery razy, aby wymusić rozpoznawanie muzyki."
+"Odczytaj aktualnie odtwarzaną stację. Naciśnij dwa razy, aby uzyskać pełne "
+"szczegóły, trzy razy, aby skopiować informacje o utworze, cztery razy, aby "
+"wymusić rozpoznawanie muzyki."
 
 #: addon/globalPlugins/freeradio/__init__.py:736
 #: addon/globalPlugins/freeradio/__init__.py:968
@@ -286,9 +290,12 @@ msgstr "Zmniejsz głośność FreeRadio o 5"
 
 #: addon/globalPlugins/freeradio/__init__.py:1201
 msgid "Audio device disconnected. Switched to system default."
-msgstr "Urządzenie audio zostało odłączone. Przełączono na domyślne urządzenie systemowe."
+msgstr ""
+"Urządzenie audio zostało odłączone. Przełączono na domyślne urządzenie "
+"systemowe."
 
-# ── Kayıt kısayolu (__init__.py) ──────────────────────────────────────────────
+# ── Kayıt kısayolu (__init__.py)
+# ──────────────────────────────────────────────
 #: addon/globalPlugins/freeradio/__init__.py:1204
 msgid "Start or stop instant recording"
 msgstr "Rozpocznij lub zatrzymaj nagrywanie natychmiastowe"
@@ -307,7 +314,8 @@ msgstr "Nagrywanie utworu zatrzymane"
 msgid ""
 "This station does not broadcast track metadata. Song recording is not "
 "available."
-msgstr "Ta stacja nie nadaje metadanych utworu. Nagrywanie utworu jest niedostępne."
+msgstr ""
+"Ta stacja nie nadaje metadanych utworu. Nagrywanie utworu jest niedostępne."
 
 #: addon/globalPlugins/freeradio/__init__.py:1267
 #, python-format
@@ -328,7 +336,8 @@ msgstr "Nagrywanie zatrzymane: %s"
 msgid "Recording stopped"
 msgstr "Nagrywanie zatrzymane"
 
-# ── Kayıt sekmesi (radioDialog.py) ───────────────────────────────────────────
+# ── Kayıt sekmesi (radioDialog.py)
+# ───────────────────────────────────────────
 #: addon/globalPlugins/freeradio/__init__.py:1307
 msgid "Could not start recording"
 msgstr "Nie udało się rozpocząć nagrywania"
@@ -346,7 +355,9 @@ msgstr "Nie udało się otworzyć folderu nagrań: %s"
 msgid ""
 "Toggle mute notifications (station changes, playback, recording, volume "
 "level)"
-msgstr "Przełącz wyciszenie powiadomień (zmiany stacji, odtwarzanie, nagrywanie, poziom głośności)"
+msgstr ""
+"Przełącz wyciszenie powiadomień (zmiany stacji, odtwarzanie, nagrywanie, "
+"poziom głośności)"
 
 #: addon/globalPlugins/freeradio/__init__.py:1339
 msgid "Notifications muted"
@@ -367,7 +378,8 @@ msgstr "Sprawdzanie aktualizacji nie powiodło się (HTTP %d)."
 
 #: addon/globalPlugins/freeradio/__init__.py:1490
 msgid "Update check failed. Please check your internet connection."
-msgstr "Sprawdzanie aktualizacji nie powiodło się. Sprawdź połączenie z internetem."
+msgstr ""
+"Sprawdzanie aktualizacji nie powiodło się. Sprawdź połączenie z internetem."
 
 #: addon/globalPlugins/freeradio/__init__.py:1505
 msgid "Could not determine latest version."
@@ -503,7 +515,8 @@ msgstr "Adres URL strumienia"
 msgid "Votes"
 msgstr "Głosy"
 
-# ── İstasyon detayları (__init__.py) ─────────────────────────────────────────
+# ── İstasyon detayları (__init__.py)
+# ─────────────────────────────────────────
 #: addon/globalPlugins/freeradio/__init__.py:1767
 #: addon/globalPlugins/freeradio/__init__.py:1886
 #: addon/globalPlugins/freeradio/radioDialog.py:1926
@@ -562,7 +575,8 @@ msgid ""
 "Could not play station: Windows Media Player is not available on this "
 "system. Please install VLC media player."
 msgstr ""
-"Nie udało się odtworzyć stacji: Windows Media Player nie jest dostępny w tym systemie. Zainstaluj odtwarzacz VLC."
+"Nie udało się odtworzyć stacji: Windows Media Player nie jest dostępny w tym"
+" systemie. Zainstaluj odtwarzacz VLC."
 
 #: addon/globalPlugins/freeradio/__init__.py:2088
 #: addon/globalPlugins/freeradio/__init__.py:2090
@@ -577,7 +591,9 @@ msgstr "&Używaj VLC, PotPlayer lub WMP zamiast BASS"
 #: addon/globalPlugins/freeradio/__init__.py:2111
 msgid ""
 "Note: Audio device selection, effects, and mirroring require BASS backend."
-msgstr "Uwaga: wybór urządzenia audio, efekty i kopiowanie dźwięku wymagają backendu BASS."
+msgstr ""
+"Uwaga: wybór urządzenia audio, efekty i kopiowanie dźwięku wymagają backendu"
+" BASS."
 
 #: addon/globalPlugins/freeradio/__init__.py:2118
 #: addon/globalPlugins/freeradio/__init__.py:2465
@@ -785,7 +801,9 @@ msgstr "Rozpoznawanie muzyki przez Shazam (Ctrl+Win+I × 3):"
 
 #: addon/globalPlugins/freeradio/__init__.py:2353
 msgid "ffmpeg.exe path (optional; auto-used from addon folder if empty):"
-msgstr "Ścieżka do ffmpeg.exe (opcjonalnie; jeśli puste, automatycznie używany z folderu dodatku):"
+msgstr ""
+"Ścieżka do ffmpeg.exe (opcjonalnie; jeśli puste, automatycznie używany z "
+"folderu dodatku):"
 
 #: addon/globalPlugins/freeradio/__init__.py:2361
 msgid "Brows&e..."
@@ -801,7 +819,9 @@ msgstr "&Przeglądaj..."
 
 #: addon/globalPlugins/freeradio/__init__.py:2378
 msgid "wmplayer.exe path (optional, used if VLC not found):"
-msgstr "Ścieżka do wmplayer.exe (opcjonalnie, używana, jeśli VLC nie zostanie znaleziony):"
+msgstr ""
+"Ścieżka do wmplayer.exe (opcjonalnie, używana, jeśli VLC nie zostanie "
+"znaleziony):"
 
 #: addon/globalPlugins/freeradio/__init__.py:2383
 msgid "B&rowse..."
@@ -809,7 +829,8 @@ msgstr "Prz&eglądaj..."
 
 #: addon/globalPlugins/freeradio/__init__.py:2389
 msgid "PotPlayer path (optional, auto-detected if empty):"
-msgstr "Ścieżka do PotPlayera (opcjonalnie, wykrywana automatycznie, jeśli pusta):"
+msgstr ""
+"Ścieżka do PotPlayera (opcjonalnie, wykrywana automatycznie, jeśli pusta):"
 
 #: addon/globalPlugins/freeradio/__init__.py:2394
 msgid "Bro&wse..."
@@ -831,7 +852,9 @@ msgstr "Przeglą&daj folder..."
 msgid ""
 "&Disable internet connectivity check before playing (recommended if DNS is "
 "blocked)"
-msgstr "&Wyłącz sprawdzanie połączenia internetowego przed odtwarzaniem (zalecane, jeśli DNS jest blokowany)"
+msgstr ""
+"&Wyłącz sprawdzanie połączenia internetowego przed odtwarzaniem (zalecane, "
+"jeśli DNS jest blokowany)"
 
 #: addon/globalPlugins/freeradio/__init__.py:2434
 msgid "&Automatically check for updates on startup"
@@ -921,7 +944,9 @@ msgid ""
 "and place ffmpeg.exe in the FreeRadio addon folder, or set the path in "
 "settings."
 msgstr ""
-"Nie znaleziono ffmpeg.exe. Pobierz ffmpeg z https://ffmpeg.org/download.html i umieść ffmpeg.exe w folderze dodatku FreeRadio albo ustaw ścieżkę w ustawieniach."
+"Nie znaleziono ffmpeg.exe. Pobierz ffmpeg z https://ffmpeg.org/download.html"
+" i umieść ffmpeg.exe w folderze dodatku FreeRadio albo ustaw ścieżkę w "
+"ustawieniach."
 
 #: addon/globalPlugins/freeradio/radioDialog.py:82
 msgid "FreeRadio - Station Browser"
@@ -1072,7 +1097,8 @@ msgstr "Ładowanie stacji..."
 msgid "Stations:"
 msgstr "Stacje:"
 
-# ── Kayıt sekmesi (radioDialog.py) ───────────────────────────────────────────
+# ── Kayıt sekmesi (radioDialog.py)
+# ───────────────────────────────────────────
 #: addon/globalPlugins/freeradio/radioDialog.py:462
 msgid "Instant Recording"
 msgstr "Nagrywanie natychmiastowe"
@@ -1161,7 +1187,8 @@ msgid ""
 "Press comma to pick a station, navigate to the target position, then press "
 "comma again to drop."
 msgstr ""
-"Naciśnij przecinek, aby podnieść stację, przejdź do docelowej pozycji, a następnie naciśnij przecinek ponownie, aby ją upuścić."
+"Naciśnij przecinek, aby podnieść stację, przejdź do docelowej pozycji, a "
+"następnie naciśnij przecinek ponownie, aby ją upuścić."
 
 #: addon/globalPlugins/freeradio/radioDialog.py:896
 msgid "No favourites found"
@@ -1209,7 +1236,9 @@ msgstr "słuchaj i nagrywaj"
 msgid ""
 "Time has passed today. Schedule added for tomorrow: %(station)s at %(time)s "
 "(%(mode)s)"
-msgstr "Ta godzina już dziś minęła. Harmonogram dodano na jutro: %(station)s o %(time)s (%(mode)s)"
+msgstr ""
+"Ta godzina już dziś minęła. Harmonogram dodano na jutro: %(station)s o "
+"%(time)s (%(mode)s)"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1048
 #, python-format
@@ -1257,7 +1286,9 @@ msgstr "%(count)d stacji"
 #: addon/globalPlugins/freeradio/radioDialog.py:1242
 #, python-format
 msgid "(%(shown)d of %(total)d shown — increase result limit to see more)"
-msgstr "(pokazano %(shown)d z %(total)d — zwiększ limit wyników, aby zobaczyć więcej)"
+msgstr ""
+"(pokazano %(shown)d z %(total)d — zwiększ limit wyników, aby zobaczyć "
+"więcej)"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1244
 msgid "(limit reached — increase result limit to see more)"
@@ -1265,7 +1296,9 @@ msgstr "(osiągnięto limit — zwiększ limit wyników, aby zobaczyć więcej)"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1327
 msgid "Could not connect to radio directory. Check your internet connection."
-msgstr "Nie udało się połączyć z katalogiem radiowym. Sprawdź połączenie z internetem."
+msgstr ""
+"Nie udało się połączyć z katalogiem radiowym. Sprawdź połączenie z "
+"internetem."
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1769
 #, python-format
@@ -1329,7 +1362,9 @@ msgstr "Nie znaleziono pliku pomocy."
 #, python-format
 msgid ""
 "%s selected. Navigate to the target position and press comma again to drop."
-msgstr "Wybrano %s. Przejdź do docelowej pozycji i naciśnij przecinek ponownie, aby upuścić."
+msgstr ""
+"Wybrano %s. Przejdź do docelowej pozycji i naciśnij przecinek ponownie, aby "
+"upuścić."
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2322
 msgid "Move cancelled"
@@ -1462,18 +1497,29 @@ msgstr "freeRadio"
 
 #: buildVars.py:18
 msgid ""
-"FreeRadio is an internet radio add-on for NVDA that provides seamless access "
-"to thousands of stations via the Radio Browser open directory. It features a "
-"fully accessible station browser with search, country filter, favourites "
+"FreeRadio is an internet radio add-on for NVDA that provides seamless access"
+" to thousands of stations via the Radio Browser open directory. It features "
+"a fully accessible station browser with search, country filter, favourites "
 "management, and per-station audio profiles. Playback is handled by a "
 "prioritised backend chain (BASS, VLC, PotPlayer, Windows Media Player) with "
 "support for volume control, audio effects, output device selection, and "
-"simultaneous audio mirroring to a second device. Additional features include "
-"instant and scheduled recording, sleep and alarm timers, automatic ICY "
+"simultaneous audio mirroring to a second device. Additional features include"
+" instant and scheduled recording, sleep and alarm timers, automatic ICY "
 "metadata announcements, Shazam-based music recognition, and a liked-songs "
 "log. All controls and shortcuts are designed for NVDA accessibility."
 msgstr ""
-"FreeRadio to dodatek radia internetowego dla NVDA, który zapewnia wygodny dostęp do tysięcy stacji przez otwarty katalog Radio Browser. Oferuje w pełni dostępny przeglądacz stacji z wyszukiwaniem, filtrem kraju, zarządzaniem ulubionymi i profilami audio dla poszczególnych stacji. Odtwarzanie obsługuje priorytetowy łańcuch backendów (BASS, VLC, PotPlayer, Windows Media Player) z obsługą regulacji głośności, efektów dźwiękowych, wyboru urządzenia wyjściowego i jednoczesnego kopiowania dźwięku na drugie urządzenie. Dodatkowe funkcje obejmują nagrywanie natychmiastowe i zaplanowane, timery uśpienia i alarmu, automatyczne komunikaty metadanych ICY, rozpoznawanie muzyki oparte na Shazamie oraz dziennik polubionych utworów. Wszystkie elementy sterujące i skróty zaprojektowano z myślą o dostępności w NVDA."
+"FreeRadio to dodatek radia internetowego dla NVDA, który zapewnia wygodny "
+"dostęp do tysięcy stacji przez otwarty katalog Radio Browser. Oferuje w "
+"pełni dostępny przeglądacz stacji z wyszukiwaniem, filtrem kraju, "
+"zarządzaniem ulubionymi i profilami audio dla poszczególnych stacji. "
+"Odtwarzanie obsługuje priorytetowy łańcuch backendów (BASS, VLC, PotPlayer, "
+"Windows Media Player) z obsługą regulacji głośności, efektów dźwiękowych, "
+"wyboru urządzenia wyjściowego i jednoczesnego kopiowania dźwięku na drugie "
+"urządzenie. Dodatkowe funkcje obejmują nagrywanie natychmiastowe i "
+"zaplanowane, timery uśpienia i alarmu, automatyczne komunikaty metadanych "
+"ICY, rozpoznawanie muzyki oparte na Shazamie oraz dziennik polubionych "
+"utworów. Wszystkie elementy sterujące i skróty zaprojektowano z myślą o "
+"dostępności w NVDA."
 
 #: buildVars.py:25
 msgid ""
@@ -1496,19 +1542,12 @@ msgid ""
 "  station.\n"
 "---\n"
 "**New: Adjustable EQ Effect Levels**\n"
-"The Bass Boost, Treble Boost, and Vocal Boost effects now include individual "
-"gain controls. When one of these effects is enabled, a dB slider appears "
-"next to it, letting you fine-tune the intensity from −15 dB to +15 dB.\n"
-"Previously, each EQ effect had a fixed strength (Bass: +9 dB, Treble: +9 dB, "
-"Vocal: +6 dB). These defaults are unchanged — the controls simply let you go "
-"lower or higher as needed.\n"
+"The Bass Boost, Treble Boost, and Vocal Boost effects now include individual gain controls. When one of these effects is enabled, a dB slider appears next to it, letting you fine-tune the intensity from −15 dB to +15 dB.\n"
+"Previously, each EQ effect had a fixed strength (Bass: +9 dB, Treble: +9 dB, Vocal: +6 dB). These defaults are unchanged — the controls simply let you go lower or higher as needed.\n"
 "**What's new:**\n"
-"- Gain controls appear automatically when an EQ effect is turned on, and "
-"hide when it is turned off.\n"
+"- Gain controls appear automatically when an EQ effect is turned on, and hide when it is turned off.\n"
 "- Values are saved globally and restored when the add-on starts.\n"
-"- If you save an audio profile for a favourite station, the EQ gain levels "
-"are included in that profile and restored whenever you tune to that "
-"station.\n"
+"- If you save an audio profile for a favourite station, the EQ gain levels are included in that profile and restored whenever you tune to that station.\n"
 msgstr ""
 "\n"
 "- Naprawiono odtwarzanie strumieni HTTPS Icecast, które powodowały błąd BASS\n"
@@ -1535,3 +1574,69 @@ msgstr ""
 "- Regulatory wzmocnienia pojawiają się automatycznie po włączeniu efektu EQ i znikają po jego wyłączeniu.\n"
 "- Wartości są zapisywane globalnie i przywracane przy starcie dodatku.\n"
 "- Jeśli zapiszesz profil audio dla ulubionej stacji, poziomy wzmocnienia EQ zostaną uwzględnione w tym profilu i przywrócone przy każdym przełączeniu na tę stację.\n"
+
+#: addon/globalPlugins/freeradio/__init__.py:1344
+msgid "Enable or disable the BASS audio backend"
+msgstr "Włącz lub wyłącz backend audio BASS"
+
+#: addon/globalPlugins/freeradio/__init__.py:1363
+msgid "Restart NVDA for this change to take effect."
+msgstr "Uruchom ponownie NVDA, aby ta zmiana zaczęła obowiązywać."
+
+#: addon/globalPlugins/freeradio/__init__.py:1366
+msgid "Toggle bass boost"
+msgstr "Włącz lub wyłącz wzmocnienie basów"
+
+#: addon/globalPlugins/freeradio/__init__.py:1374
+msgid "Toggle treble boost"
+msgstr "Włącz lub wyłącz wzmocnienie wysokich tonów"
+
+#: addon/globalPlugins/freeradio/__init__.py:1382
+msgid "Toggle vocal boost"
+msgstr "Włącz lub wyłącz wzmocnienie wokalu"
+
+#: addon/globalPlugins/freeradio/__init__.py:1459
+msgid "Toggle station switch transition (crossfade)"
+msgstr "Włącz lub wyłącz przejście między stacjami (przenikanie)"
+
+#: addon/globalPlugins/freeradio/__init__.py:1496
+msgid "Enable or disable auto-announce track changes (ICY metadata)"
+msgstr "Włącz lub wyłącz automatyczne ogłaszanie zmian utworu (metadane ICY)"
+
+#: addon/globalPlugins/freeradio/__init__.py:1519
+msgid "Switch track change announcement voice"
+msgstr "Przełącz głos ogłaszania zmiany utworu"
+
+#: addon/globalPlugins/freeradio/__init__.py:1538
+msgid "Turn on or off saving liked songs to a text file"
+msgstr "Włącz lub wyłącz zapisywanie polubionych piosenek do pliku tekstowego"
+
+#: buildVars.py:25
+msgid ""
+"\n"
+"**Fix music recognition for HLS streams (`.m3u8`)**\n"
+"\n"
+"Previously, the URL resolver extracted a single media segment from the HLS playlist and passed it to ffmpeg. This yielded only ~6 seconds of audio — too short for Shazam to identify a track. HLS playlist URLs are now passed directly to ffmpeg, which handles segment concatenation natively and produces the full 12-second sample required for recognition.\n"
+"## FreeRadio — New unassigned shortcuts\n"
+"This release adds several new input gestures (all unassigned by default — bind them via NVDA's Input Gestures dialog under the FreeRadio category):\n"
+"- **Enable/disable BASS backend** — toggles the BASS audio engine on or off (a restart of NVDA is required for this to take effect).\n"
+"- **Toggle Bass Boost / Treble Boost / Vocal Boost** — quickly turn each EQ effect on or off without opening the settings dialog. Requires the BASS backend.\n"
+"- **Toggle station switch transition** — cycles through the crossfade options (instant cut, short, normal).\n"
+"- **Toggle auto-announce track changes** — enables or disables automatic announcement of ICY metadata when the track changes.\n"
+"- **Switch track change voice** — switches the track-change announcement between NVDA's speech and SAPI5.\n"
+"- **Toggle save liked songs to a text file** — turns the \"save liked songs\" feature on or off.\n"
+"All of these settings remain available in the FreeRadio settings dialog, and any change made via shortcut is reflected there immediately (and vice versa).\n"
+msgstr ""
+"\n"
+"**Poprawka rozpoznawania muzyki dla strumieni HLS (`.m3u8`)**\n"
+"\n"
+"Poprzednio program rozwiązujący adresy URL wyodrębniał pojedynczy segment multimediów z listy odtwarzania HLS i przekazywał go do ffmpeg, co dawało tylko około 6 sekund dźwięku — zbyt mało, aby Shazam mógł zidentyfikować utwór. Adresy URL list odtwarzania HLS są teraz przekazywane bezpośrednio do ffmpeg, który natywnie obsługuje łączenie segmentów i tworzy pełną 12-sekundową próbkę wymaganą do rozpoznania.\n"
+"## FreeRadio — Nowe nieprzypisane skróty\n"
+"Ta wersja dodaje kilka nowych gestów wejścia (wszystkie domyślnie nieprzypisane — przypisz je w oknie dialogowym Gesty wejścia NVDA w kategorii FreeRadio):\n"
+"- **Włącz/wyłącz backend BASS** — włącza lub wyłącza silnik audio BASS (wymagane jest ponowne uruchomienie NVDA, aby zmiana zaczęła obowiązywać).\n"
+"- **Wzmocnienie basów / wysokich tonów / wokalu** — szybkie włączanie lub wyłączanie poszczególnych efektów korektora bez otwierania okna ustawień. Wymaga backendu BASS.\n"
+"- **Przejście między stacjami** — przełącza między opcjami przenikania (natychmiastowe przycięcie, krótkie, normalne).\n"
+"- **Automatyczne ogłaszanie zmian utworu** — włącza lub wyłącza automatyczne ogłaszanie metadanych ICY przy zmianie utworu.\n"
+"- **Głos ogłaszania zmiany utworu** — przełącza ogłaszanie zmiany utworu między głosem NVDA a SAPI5.\n"
+"- **Zapisywanie polubionych piosenek** — włącza lub wyłącza funkcję zapisywania polubionych piosenek do pliku tekstowego.\n"
+"Wszystkie te ustawienia pozostają dostępne w oknie dialogowym ustawień FreeRadio, a wszelkie zmiany dokonane za pomocą skrótu są natychmiast odzwierciedlane w oknie dialogowym (i odwrotnie).\n"

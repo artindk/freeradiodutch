@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FreeRadio 2026.19.8\n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
-"POT-Creation-Date: 2026-06-05 12:10+0300\n"
-"PO-Revision-Date: 2026-06-05 12:17+0300\n"
+"POT-Creation-Date: 2026-06-14 19:48+0300\n"
+"PO-Revision-Date: 2026-06-14 20:16+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -67,7 +67,15 @@ msgstr "Sesi ek bir çıkış cihazına yansıt"
 #: addon/globalPlugins/freeradio/__init__.py:1205
 #: addon/globalPlugins/freeradio/__init__.py:1314
 #: addon/globalPlugins/freeradio/__init__.py:1331
-#: addon/globalPlugins/freeradio/__init__.py:2094
+#: addon/globalPlugins/freeradio/__init__.py:1345
+#: addon/globalPlugins/freeradio/__init__.py:1367
+#: addon/globalPlugins/freeradio/__init__.py:1375
+#: addon/globalPlugins/freeradio/__init__.py:1383
+#: addon/globalPlugins/freeradio/__init__.py:1460
+#: addon/globalPlugins/freeradio/__init__.py:1497
+#: addon/globalPlugins/freeradio/__init__.py:1520
+#: addon/globalPlugins/freeradio/__init__.py:1539
+#: addon/globalPlugins/freeradio/__init__.py:2309
 msgid "FreeRadio"
 msgstr "FreeRadio"
 
@@ -302,7 +310,7 @@ msgid "Song recording stopped: %s"
 msgstr "Şarkı kaydı durduruldu: %s"
 
 #: addon/globalPlugins/freeradio/__init__.py:1230
-#: addon/globalPlugins/freeradio/__init__.py:1968
+#: addon/globalPlugins/freeradio/__init__.py:2183
 msgid "Song recording stopped"
 msgstr "Şarkı kaydı durduruldu"
 
@@ -361,25 +369,151 @@ msgstr "Bildirimler sessiz"
 msgid "Notifications unmuted"
 msgstr "Bildirimlerin sesi açıldı"
 
-#: addon/globalPlugins/freeradio/__init__.py:1481
+#: addon/globalPlugins/freeradio/__init__.py:1344
+msgid "Enable or disable the BASS audio backend"
+msgstr "BASS arka ucunu etkinleştir / devre dışı bırak"
+
+#: addon/globalPlugins/freeradio/__init__.py:1358
+#: addon/globalPlugins/freeradio/__init__.py:2317
+msgid "&Disable BASS backend (use VLC/PotPlayer/WMP instead)"
+msgstr "&BASS arka ucunu devre dışı bırak (yerine VLC/PotPlayer/WMP kullan)"
+
+#: addon/globalPlugins/freeradio/__init__.py:1359
+#: addon/globalPlugins/freeradio/__init__.py:1453
+#: addon/globalPlugins/freeradio/__init__.py:1513
+#: addon/globalPlugins/freeradio/__init__.py:1553
+#: addon/globalPlugins/freeradio/__init__.py:2751
+#: addon/globalPlugins/freeradio/__init__.py:2762
+#: addon/globalPlugins/freeradio/radioDialog.py:791
+#: addon/globalPlugins/freeradio/radioDialog.py:805
+#, python-format
+msgid "%(effect)s %(state)s"
+msgstr "%(effect)s %(state)s"
+
+#: addon/globalPlugins/freeradio/__init__.py:1361
+#: addon/globalPlugins/freeradio/__init__.py:1455
+#: addon/globalPlugins/freeradio/__init__.py:1515
+#: addon/globalPlugins/freeradio/__init__.py:1555
+#: addon/globalPlugins/freeradio/__init__.py:2753
+#: addon/globalPlugins/freeradio/__init__.py:2764
+#: addon/globalPlugins/freeradio/radioDialog.py:793
+#: addon/globalPlugins/freeradio/radioDialog.py:807
+msgid "enabled"
+msgstr "açık"
+
+#: addon/globalPlugins/freeradio/__init__.py:1361
+#: addon/globalPlugins/freeradio/__init__.py:1455
+#: addon/globalPlugins/freeradio/__init__.py:1515
+#: addon/globalPlugins/freeradio/__init__.py:1555
+#: addon/globalPlugins/freeradio/__init__.py:2753
+#: addon/globalPlugins/freeradio/__init__.py:2764
+#: addon/globalPlugins/freeradio/radioDialog.py:793
+#: addon/globalPlugins/freeradio/radioDialog.py:807
+msgid "disabled"
+msgstr "kapalı"
+
+#: addon/globalPlugins/freeradio/__init__.py:1363
+msgid "Restart NVDA for this change to take effect."
+msgstr "Bu değişikliğin etkili olması için NVDA'yı yeniden başlatın."
+
+#: addon/globalPlugins/freeradio/__init__.py:1366
+msgid "Toggle bass boost"
+msgstr "Bas güçlendirmeyi aç/kapatToggle bass boos"
+
+#: addon/globalPlugins/freeradio/__init__.py:1371
+#: addon/globalPlugins/freeradio/__init__.py:2364
+#: addon/globalPlugins/freeradio/radioDialog.py:170
+msgid "EQ: Bass Boost"
+msgstr "EQ: Bas Güçlendirme"
+
+#: addon/globalPlugins/freeradio/__init__.py:1374
+#| msgid "EQ: Treble Boost"
+msgid "Toggle treble boost"
+msgstr "Tiz güçlendirmeyi aç/kapa"
+
+#: addon/globalPlugins/freeradio/__init__.py:1379
+#: addon/globalPlugins/freeradio/__init__.py:2365
+#: addon/globalPlugins/freeradio/radioDialog.py:170
+msgid "EQ: Treble Boost"
+msgstr "EQ: Tiz Güçlendirme"
+
+#: addon/globalPlugins/freeradio/__init__.py:1382
+msgid "Toggle vocal boost"
+msgstr "Vokal güçlendirmeyi aç/kapa"
+
+#: addon/globalPlugins/freeradio/__init__.py:1387
+#: addon/globalPlugins/freeradio/__init__.py:2366
+#: addon/globalPlugins/freeradio/radioDialog.py:170
+msgid "EQ: Vocal Boost"
+msgstr "EQ: Vokal Güçlendirme"
+
+#: addon/globalPlugins/freeradio/__init__.py:1398
+#: addon/globalPlugins/freeradio/__init__.py:2326
+msgid ""
+"Note: Audio device selection, effects, and mirroring require BASS backend."
+msgstr ""
+"Not: Ses cihazı seçimi, efektler ve yansıtma BASS arka ucunu gerektirir."
+
+#: addon/globalPlugins/freeradio/__init__.py:1459
+msgid "Toggle station switch transition (crossfade)"
+msgstr "İstasyon değiştirirken çapraz geçiş ayarını değiştir"
+
+#: addon/globalPlugins/freeradio/__init__.py:1466
+#: addon/globalPlugins/freeradio/__init__.py:2401
+msgid "Instant cut (no crossfade)"
+msgstr "Anında kes (çapraz geçiş yok)"
+
+#: addon/globalPlugins/freeradio/__init__.py:1467
+#: addon/globalPlugins/freeradio/__init__.py:2402
+msgid "Short crossfade (1 second)"
+msgstr "Kısa çapraz geçiş (1 saniye)"
+
+#: addon/globalPlugins/freeradio/__init__.py:1468
+#: addon/globalPlugins/freeradio/__init__.py:2403
+msgid "Normal crossfade (2 seconds)"
+msgstr "Normal çapraz geçiş (2 saniye)"
+
+#: addon/globalPlugins/freeradio/__init__.py:1496
+msgid "Enable or disable auto-announce track changes (ICY metadata)"
+msgstr "Parça değişiminin otomatik bildirimini aç / kapa"
+
+#: addon/globalPlugins/freeradio/__init__.py:1514
+#: addon/globalPlugins/freeradio/__init__.py:2423
+msgid "&Auto-announce track changes (ICY metadata)"
+msgstr "Parça değişince &otomatik olarak duyur (ICY meta verileri)"
+
+#: addon/globalPlugins/freeradio/__init__.py:1519
+msgid "Switch track change announcement voice"
+msgstr "Parça değişim bildirim sesini değiştir"
+
+#: addon/globalPlugins/freeradio/__init__.py:1538
+msgid "Turn on or off saving liked songs to a text file"
+msgstr "Beğenilen şarkıların metin dosyasına kaydını aç / kapa"
+
+#: addon/globalPlugins/freeradio/__init__.py:1554
+#: addon/globalPlugins/freeradio/__init__.py:2500
+msgid "&Save liked songs to a text file"
+msgstr "Be&ğenilen şarkıları bir metin dosyasına kaydet"
+
+#: addon/globalPlugins/freeradio/__init__.py:1696
 msgid "No releases found on GitHub yet."
 msgstr "GitHub'da henüz bir sürüm bulunamadı."
 
-#: addon/globalPlugins/freeradio/__init__.py:1485
+#: addon/globalPlugins/freeradio/__init__.py:1700
 #, python-format
 msgid "Update check failed (HTTP %d)."
 msgstr "Güncelleme kontrolü başarısız (HTTP %d)."
 
-#: addon/globalPlugins/freeradio/__init__.py:1490
+#: addon/globalPlugins/freeradio/__init__.py:1705
 msgid "Update check failed. Please check your internet connection."
 msgstr ""
 "Güncelleme kontrolü başarısız. Lütfen internet bağlantınızı kontrol edin."
 
-#: addon/globalPlugins/freeradio/__init__.py:1505
+#: addon/globalPlugins/freeradio/__init__.py:1720
 msgid "Could not determine latest version."
 msgstr "En son sürüm belirlenemedi."
 
-#: addon/globalPlugins/freeradio/__init__.py:1523
+#: addon/globalPlugins/freeradio/__init__.py:1738
 #, python-format
 msgid ""
 "A new version of FreeRadio is available: %s.\n"
@@ -392,17 +526,17 @@ msgstr ""
 "\n"
 "Şimdi indirip yüklemek ister misiniz?"
 
-#: addon/globalPlugins/freeradio/__init__.py:1526
-#: addon/globalPlugins/freeradio/__init__.py:1533
-#: addon/globalPlugins/freeradio/__init__.py:1594
+#: addon/globalPlugins/freeradio/__init__.py:1741
+#: addon/globalPlugins/freeradio/__init__.py:1748
+#: addon/globalPlugins/freeradio/__init__.py:1809
 msgid "unknown"
 msgstr "Bilinmeyen"
 
-#: addon/globalPlugins/freeradio/__init__.py:1527
+#: addon/globalPlugins/freeradio/__init__.py:1742
 msgid "&Install"
 msgstr "&Yükle"
 
-#: addon/globalPlugins/freeradio/__init__.py:1530
+#: addon/globalPlugins/freeradio/__init__.py:1745
 #, python-format
 msgid ""
 "A new version of FreeRadio is available: %s.\n"
@@ -415,156 +549,156 @@ msgstr ""
 "\n"
 "İndirme sayfasını açmak ister misiniz?"
 
-#: addon/globalPlugins/freeradio/__init__.py:1534
+#: addon/globalPlugins/freeradio/__init__.py:1749
 msgid "&Open Page"
 msgstr "&Sayfayı Aç"
 
-#: addon/globalPlugins/freeradio/__init__.py:1539
+#: addon/globalPlugins/freeradio/__init__.py:1754
 msgid "FreeRadio Update Available"
 msgstr "FreeRadio Güncellemesi Mevcut"
 
-#: addon/globalPlugins/freeradio/__init__.py:1542
+#: addon/globalPlugins/freeradio/__init__.py:1757
 msgid "&Cancel"
 msgstr "&İptal"
 
-#: addon/globalPlugins/freeradio/__init__.py:1557
+#: addon/globalPlugins/freeradio/__init__.py:1772
 #, python-format
 msgid "Downloading FreeRadio %s…"
 msgstr "FreeRadio %s indiriliyor…"
 
-#: addon/globalPlugins/freeradio/__init__.py:1575
+#: addon/globalPlugins/freeradio/__init__.py:1790
 #, python-format
 msgid "Download failed: %s"
 msgstr "İndirme başarısız: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1585
+#: addon/globalPlugins/freeradio/__init__.py:1800
 #, python-format
 msgid "Could not launch installer. File saved to: %s"
 msgstr "Yükleyici başlatılamadı. Dosya şuraya kaydedildi: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1594
+#: addon/globalPlugins/freeradio/__init__.py:1809
 #, python-format
 msgid "FreeRadio is up to date. Installed: %s"
 msgstr "FreeRadio güncel. Yüklenen: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1595
+#: addon/globalPlugins/freeradio/__init__.py:1810
 msgid "FreeRadio Update Check"
 msgstr "FreeRadio Güncelleme Kontrolü"
 
-#: addon/globalPlugins/freeradio/__init__.py:1705
-#: addon/globalPlugins/freeradio/__init__.py:1844
+#: addon/globalPlugins/freeradio/__init__.py:1920
+#: addon/globalPlugins/freeradio/__init__.py:2059
 #: addon/globalPlugins/freeradio/radioDialog.py:1882
 msgid "Station"
 msgstr "İstasyon"
 
-#: addon/globalPlugins/freeradio/__init__.py:1709
-#: addon/globalPlugins/freeradio/__init__.py:1826
+#: addon/globalPlugins/freeradio/__init__.py:1924
+#: addon/globalPlugins/freeradio/__init__.py:2041
 msgid "Now playing"
 msgstr "Şimdi çalan"
 
-#: addon/globalPlugins/freeradio/__init__.py:1717
-#: addon/globalPlugins/freeradio/__init__.py:1719
+#: addon/globalPlugins/freeradio/__init__.py:1932
+#: addon/globalPlugins/freeradio/__init__.py:1934
 #: addon/globalPlugins/freeradio/radioDialog.py:1889
 #: addon/globalPlugins/freeradio/radioDialog.py:1891
 msgid "Country"
 msgstr "Ülke"
 
-#: addon/globalPlugins/freeradio/__init__.py:1723
+#: addon/globalPlugins/freeradio/__init__.py:1938
 #: addon/globalPlugins/freeradio/radioDialog.py:1894
 msgid "Language"
 msgstr "Dil"
 
-#: addon/globalPlugins/freeradio/__init__.py:1730
+#: addon/globalPlugins/freeradio/__init__.py:1945
 #: addon/globalPlugins/freeradio/radioDialog.py:1898
 msgid "Genre"
 msgstr "Tür"
 
-#: addon/globalPlugins/freeradio/__init__.py:1739
+#: addon/globalPlugins/freeradio/__init__.py:1954
 #: addon/globalPlugins/freeradio/radioDialog.py:1906
 msgid "Format"
 msgstr "Format"
 
-#: addon/globalPlugins/freeradio/__init__.py:1741
+#: addon/globalPlugins/freeradio/__init__.py:1956
 #: addon/globalPlugins/freeradio/radioDialog.py:1908
 msgid "Bitrate"
 msgstr "Bit hızı"
 
-#: addon/globalPlugins/freeradio/__init__.py:1743
+#: addon/globalPlugins/freeradio/__init__.py:1958
 #: addon/globalPlugins/freeradio/radioDialog.py:1910
 msgid "Codec"
 msgstr "Kodek"
 
-#: addon/globalPlugins/freeradio/__init__.py:1747
+#: addon/globalPlugins/freeradio/__init__.py:1962
 #: addon/globalPlugins/freeradio/radioDialog.py:1913
 msgid "Website"
 msgstr "Web sitesi"
 
-#: addon/globalPlugins/freeradio/__init__.py:1751
+#: addon/globalPlugins/freeradio/__init__.py:1966
 #: addon/globalPlugins/freeradio/radioDialog.py:1916
 msgid "Stream URL"
 msgstr "Yayın adresi"
 
-#: addon/globalPlugins/freeradio/__init__.py:1759
+#: addon/globalPlugins/freeradio/__init__.py:1974
 #: addon/globalPlugins/freeradio/radioDialog.py:1923
 msgid "Votes"
 msgstr "Oy"
 
 # ── İstasyon detayları (__init__.py) ─────────────────────────────────────────
-#: addon/globalPlugins/freeradio/__init__.py:1767
-#: addon/globalPlugins/freeradio/__init__.py:1886
+#: addon/globalPlugins/freeradio/__init__.py:1982
+#: addon/globalPlugins/freeradio/__init__.py:2101
 #: addon/globalPlugins/freeradio/radioDialog.py:1926
 msgid "No station detail available"
 msgstr "İstasyon ayrıntısı bulunamadı"
 
-#: addon/globalPlugins/freeradio/__init__.py:1772
+#: addon/globalPlugins/freeradio/__init__.py:1987
 #: addon/globalPlugins/freeradio/radioDialog.py:1931
 msgid "Station Details"
 msgstr "İstasyon Ayrıntıları"
 
-#: addon/globalPlugins/freeradio/__init__.py:1804
+#: addon/globalPlugins/freeradio/__init__.py:2019
 #: addon/globalPlugins/freeradio/radioDialog.py:1958
 msgid "&Copy all to clipboard"
 msgstr "&Tümünü panoya kopyala"
 
-#: addon/globalPlugins/freeradio/__init__.py:1810
+#: addon/globalPlugins/freeradio/__init__.py:2025
 #: addon/globalPlugins/freeradio/radioDialog.py:1964
 msgid "Station details copied to clipboard"
 msgstr "İstasyon ayrıntıları panoya kopyalandı"
 
-#: addon/globalPlugins/freeradio/__init__.py:1892
+#: addon/globalPlugins/freeradio/__init__.py:2107
 #, python-format
 msgid "Copied: %s"
 msgstr "Kopyalandı: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1894
+#: addon/globalPlugins/freeradio/__init__.py:2109
 msgid "Could not access clipboard"
 msgstr "Panoya ulaşılamadı"
 
-#: addon/globalPlugins/freeradio/__init__.py:1911
+#: addon/globalPlugins/freeradio/__init__.py:2126
 #, python-format
 msgid "Already in liked songs: %s"
 msgstr "Zaten beğenilen şarkılarda: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1939
-#: addon/globalPlugins/freeradio/__init__.py:1965
+#: addon/globalPlugins/freeradio/__init__.py:2154
+#: addon/globalPlugins/freeradio/__init__.py:2180
 #, python-format
 msgid "Song recording saved: %s"
 msgstr "Şarkı kaydedildi: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:2007
+#: addon/globalPlugins/freeradio/__init__.py:2222
 msgid "Unknown station"
 msgstr "Bilinmeyen istasyon"
 
-#: addon/globalPlugins/freeradio/__init__.py:2013
+#: addon/globalPlugins/freeradio/__init__.py:2228
 msgid "No stream URL available for this station"
 msgstr "Bu istasyon için yayın adresi bulunamadı"
 
-#: addon/globalPlugins/freeradio/__init__.py:2020
+#: addon/globalPlugins/freeradio/__init__.py:2235
 msgid "No internet connection. Please check your connection and try again."
 msgstr ""
 "İnternet bağlantısı yok. Lütfen bağlantınızı kontrol edip tekrar deneyin."
 
-#: addon/globalPlugins/freeradio/__init__.py:2084
+#: addon/globalPlugins/freeradio/__init__.py:2299
 msgid ""
 "Could not play station: Windows Media Player is not available on this "
 "system. Please install VLC media player."
@@ -572,275 +706,230 @@ msgstr ""
 "İstasyon çalınamadı: Bu sistemde Windows Media Player kullanılamıyor. Lütfen "
 "VLC medya oynatıcı kurun."
 
-#: addon/globalPlugins/freeradio/__init__.py:2088
-#: addon/globalPlugins/freeradio/__init__.py:2090
+#: addon/globalPlugins/freeradio/__init__.py:2303
+#: addon/globalPlugins/freeradio/__init__.py:2305
 #, python-format
 msgid "Could not play station: %s"
 msgstr "İstasyon çalınamadı: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:2102
-msgid "&Disable BASS backend (use VLC/PotPlayer/WMP instead)"
-msgstr "&BASS arka ucunu devre dışı bırak (yerine VLC/PotPlayer/WMP kullan)"
-
-#: addon/globalPlugins/freeradio/__init__.py:2111
-msgid ""
-"Note: Audio device selection, effects, and mirroring require BASS backend."
-msgstr ""
-"Not: Ses cihazı seçimi, efektler ve yansıtma BASS arka ucunu gerektirir."
-
-#: addon/globalPlugins/freeradio/__init__.py:2118
-#: addon/globalPlugins/freeradio/__init__.py:2465
+#: addon/globalPlugins/freeradio/__init__.py:2333
+#: addon/globalPlugins/freeradio/__init__.py:2680
 msgid "Audio output device (BASS backend):"
 msgstr "Ses çıkış cihazı (BASS arka ucu):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2122
-#: addon/globalPlugins/freeradio/__init__.py:2493
+#: addon/globalPlugins/freeradio/__init__.py:2337
+#: addon/globalPlugins/freeradio/__init__.py:2708
 msgid "Loading devices..."
 msgstr "Cihazlar yükleniyor..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2127
+#: addon/globalPlugins/freeradio/__init__.py:2342
 msgid "Volume (0-100):"
 msgstr "Ses düzeyi (0-100):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2135
+#: addon/globalPlugins/freeradio/__init__.py:2350
 msgid "Audio Effects (BASS backend only):"
 msgstr "Ses Efektleri (yalnızca BASS arka ucu):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2142
+#: addon/globalPlugins/freeradio/__init__.py:2357
 #: addon/globalPlugins/freeradio/radioDialog.py:168
 msgid "Chorus"
 msgstr "Koro"
 
-#: addon/globalPlugins/freeradio/__init__.py:2143
+#: addon/globalPlugins/freeradio/__init__.py:2358
 #: addon/globalPlugins/freeradio/radioDialog.py:168
 msgid "Compressor"
 msgstr "Kompresör"
 
-#: addon/globalPlugins/freeradio/__init__.py:2144
+#: addon/globalPlugins/freeradio/__init__.py:2359
 #: addon/globalPlugins/freeradio/radioDialog.py:168
 msgid "Distortion"
 msgstr "Distorsiyon"
 
-#: addon/globalPlugins/freeradio/__init__.py:2145
+#: addon/globalPlugins/freeradio/__init__.py:2360
 #: addon/globalPlugins/freeradio/radioDialog.py:169
 msgid "Echo"
 msgstr "Eko"
 
-#: addon/globalPlugins/freeradio/__init__.py:2146
+#: addon/globalPlugins/freeradio/__init__.py:2361
 #: addon/globalPlugins/freeradio/radioDialog.py:169
 msgid "Flanger"
 msgstr "Flanger"
 
-#: addon/globalPlugins/freeradio/__init__.py:2147
+#: addon/globalPlugins/freeradio/__init__.py:2362
 #: addon/globalPlugins/freeradio/radioDialog.py:169
 msgid "Gargle"
 msgstr "Gargara"
 
-#: addon/globalPlugins/freeradio/__init__.py:2148
+#: addon/globalPlugins/freeradio/__init__.py:2363
 #: addon/globalPlugins/freeradio/radioDialog.py:169
 msgid "Reverb"
 msgstr "Yankı"
 
-#: addon/globalPlugins/freeradio/__init__.py:2149
-#: addon/globalPlugins/freeradio/radioDialog.py:170
-msgid "EQ: Bass Boost"
-msgstr "EQ: Bas Güçlendirme"
-
-#: addon/globalPlugins/freeradio/__init__.py:2150
-#: addon/globalPlugins/freeradio/radioDialog.py:170
-msgid "EQ: Treble Boost"
-msgstr "EQ: Tiz Güçlendirme"
-
-#: addon/globalPlugins/freeradio/__init__.py:2151
-#: addon/globalPlugins/freeradio/radioDialog.py:170
-msgid "EQ: Vocal Boost"
-msgstr "EQ: Vokal Güçlendirme"
-
-#: addon/globalPlugins/freeradio/__init__.py:2155
-#: addon/globalPlugins/freeradio/__init__.py:2474
+#: addon/globalPlugins/freeradio/__init__.py:2370
+#: addon/globalPlugins/freeradio/__init__.py:2689
 msgid "Audio &effects:"
 msgstr "Ses &efektleri:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2168
+#: addon/globalPlugins/freeradio/__init__.py:2383
 msgid "&Bass gain (dB):"
 msgstr "&Bas kazancı (dB):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2169
+#: addon/globalPlugins/freeradio/__init__.py:2384
 msgid "&Treble gain (dB):"
 msgstr "&Tiz kazancı (dB):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2170
+#: addon/globalPlugins/freeradio/__init__.py:2385
 msgid "&Vocal gain (dB):"
 msgstr "&Vokal kazancı (dB):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2184
+#: addon/globalPlugins/freeradio/__init__.py:2399
 msgid "Station &switch transition (BASS backend only):"
 msgstr "İstasyon deği&ştirirken çapraz geçiş(yalnızca BASS arka ucu):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2186
-msgid "Instant cut (no crossfade)"
-msgstr "Anında kes (çapraz geçiş yok)"
-
-#: addon/globalPlugins/freeradio/__init__.py:2187
-msgid "Short crossfade (1 second)"
-msgstr "Kısa çapraz geçiş (1 saniye)"
-
-#: addon/globalPlugins/freeradio/__init__.py:2188
-msgid "Normal crossfade (2 seconds)"
-msgstr "Normal çapraz geçiş (2 saniye)"
-
-#: addon/globalPlugins/freeradio/__init__.py:2202
+#: addon/globalPlugins/freeradio/__init__.py:2417
 msgid "&Resume last station on NVDA startup"
 msgstr "NVDA başladığında son istasyonu &yeniden çal"
 
-#: addon/globalPlugins/freeradio/__init__.py:2208
-msgid "&Auto-announce track changes (ICY metadata)"
-msgstr "Parça değişince &otomatik olarak duyur (ICY meta verileri)"
-
-#: addon/globalPlugins/freeradio/__init__.py:2215
+#: addon/globalPlugins/freeradio/__init__.py:2430
 msgid "Track change &voice:"
 msgstr "&Parça değişim sesi"
 
-#: addon/globalPlugins/freeradio/__init__.py:2219
+#: addon/globalPlugins/freeradio/__init__.py:2434
 msgid "NVDA"
 msgstr "NVDA"
 
-#: addon/globalPlugins/freeradio/__init__.py:2219
+#: addon/globalPlugins/freeradio/__init__.py:2434
 msgid "SAPI5"
 msgstr "SAPI5"
 
-#: addon/globalPlugins/freeradio/__init__.py:2230
+#: addon/globalPlugins/freeradio/__init__.py:2445
 msgid "SAPI5 &voice:"
 msgstr "SAPI5 sesi:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2232
-#: addon/globalPlugins/freeradio/__init__.py:2248
+#: addon/globalPlugins/freeradio/__init__.py:2447
+#: addon/globalPlugins/freeradio/__init__.py:2463
 msgid "Default (system)"
 msgstr "Varsayılan (sistem)"
 
-#: addon/globalPlugins/freeradio/__init__.py:2276
+#: addon/globalPlugins/freeradio/__init__.py:2491
 msgid "&Mute notifications (station changes, playback, recording)"
 msgstr "Bildiri&mleri sessize al (istasyon değişiklikleri, oynatma, kayıt)"
 
-#: addon/globalPlugins/freeradio/__init__.py:2285
-msgid "&Save liked songs to a text file"
-msgstr "Be&ğenilen şarkıları bir metin dosyasına kaydet"
-
-#: addon/globalPlugins/freeradio/__init__.py:2292
+#: addon/globalPlugins/freeradio/__init__.py:2507
 msgid "When Ctrl+Win+P is pressed with no active playback:"
 msgstr ""
 "CTRL+Win+P tuşlarına çalan ya da duraklatılmış bir istasyon yokken "
 "basıldığında:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2294
+#: addon/globalPlugins/freeradio/__init__.py:2509
 msgid "Resume last station"
 msgstr "Son çalan istasyonu başlat"
 
-#: addon/globalPlugins/freeradio/__init__.py:2295
-#: addon/globalPlugins/freeradio/__init__.py:2308
-#: addon/globalPlugins/freeradio/__init__.py:2331
+#: addon/globalPlugins/freeradio/__init__.py:2510
+#: addon/globalPlugins/freeradio/__init__.py:2523
+#: addon/globalPlugins/freeradio/__init__.py:2546
 msgid "Open favourites list"
 msgstr "Favori listesini aç"
 
-#: addon/globalPlugins/freeradio/__init__.py:2305
+#: addon/globalPlugins/freeradio/__init__.py:2520
 msgid "When Ctrl+Win+P is pressed twice:"
 msgstr "CTRL+Win+p tuşlarına iki kez basıldığında:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2307
-#: addon/globalPlugins/freeradio/__init__.py:2330
+#: addon/globalPlugins/freeradio/__init__.py:2522
+#: addon/globalPlugins/freeradio/__init__.py:2545
 msgid "Do nothing"
 msgstr "Hiçbir şey yapma"
 
-#: addon/globalPlugins/freeradio/__init__.py:2309
-#: addon/globalPlugins/freeradio/__init__.py:2332
+#: addon/globalPlugins/freeradio/__init__.py:2524
+#: addon/globalPlugins/freeradio/__init__.py:2547
 msgid "Open station search"
 msgstr "İstasyon aramayı aç"
 
-#: addon/globalPlugins/freeradio/__init__.py:2310
-#: addon/globalPlugins/freeradio/__init__.py:2333
+#: addon/globalPlugins/freeradio/__init__.py:2525
+#: addon/globalPlugins/freeradio/__init__.py:2548
 msgid "Open recording tab"
 msgstr "Kayıt sekmesini aç"
 
-#: addon/globalPlugins/freeradio/__init__.py:2311
-#: addon/globalPlugins/freeradio/__init__.py:2334
+#: addon/globalPlugins/freeradio/__init__.py:2526
+#: addon/globalPlugins/freeradio/__init__.py:2549
 msgid "Open timer tab"
 msgstr "Zamanlayıcı sekmesini aç"
 
-#: addon/globalPlugins/freeradio/__init__.py:2312
-#: addon/globalPlugins/freeradio/__init__.py:2335
+#: addon/globalPlugins/freeradio/__init__.py:2527
+#: addon/globalPlugins/freeradio/__init__.py:2550
 msgid "Open liked songs tab"
 msgstr "Beğenilen şarkılar sekmesini aç"
 
-#: addon/globalPlugins/freeradio/__init__.py:2313
-#: addon/globalPlugins/freeradio/__init__.py:2336
+#: addon/globalPlugins/freeradio/__init__.py:2528
+#: addon/globalPlugins/freeradio/__init__.py:2551
 msgid "Open addon settings"
 msgstr "Eklenti ayarlarını aç"
 
-#: addon/globalPlugins/freeradio/__init__.py:2314
-#: addon/globalPlugins/freeradio/__init__.py:2337
+#: addon/globalPlugins/freeradio/__init__.py:2529
+#: addon/globalPlugins/freeradio/__init__.py:2552
 msgid "Announce currently playing station"
 msgstr "Şimdi çalanı söyle"
 
-#: addon/globalPlugins/freeradio/__init__.py:2315
-#: addon/globalPlugins/freeradio/__init__.py:2338
+#: addon/globalPlugins/freeradio/__init__.py:2530
+#: addon/globalPlugins/freeradio/__init__.py:2553
 msgid "Stop radio"
 msgstr "Radyoyu durdur"
 
-#: addon/globalPlugins/freeradio/__init__.py:2328
+#: addon/globalPlugins/freeradio/__init__.py:2543
 msgid "When Ctrl+Win+P is pressed three times:"
 msgstr "CTRL+Win+p tuşlarına üç kez basıldığında:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2352
+#: addon/globalPlugins/freeradio/__init__.py:2567
 msgid "Music Recognition via Shazam (Ctrl+Win+I × 3):"
 msgstr "Shazam'la Müzik Tanıma (Ctrl+Win+I × 3):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2353
+#: addon/globalPlugins/freeradio/__init__.py:2568
 msgid "ffmpeg.exe path (optional; auto-used from addon folder if empty):"
 msgstr ""
 "ffmpeg.exe yolu (isteğe bağlı; boşsa ve varsa eklenti klasöründeki otomatik "
 "olarak kullanılır):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2361
+#: addon/globalPlugins/freeradio/__init__.py:2576
 msgid "Brows&e..."
 msgstr "&Gözat..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2367
+#: addon/globalPlugins/freeradio/__init__.py:2582
 msgid "VLC path (optional, auto-detected if empty):"
 msgstr "VLC yolu (isteğe bağlı, boşsa otomatik bulunur):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2372
+#: addon/globalPlugins/freeradio/__init__.py:2587
 msgid "&Browse..."
 msgstr "&Gözat..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2378
+#: addon/globalPlugins/freeradio/__init__.py:2593
 msgid "wmplayer.exe path (optional, used if VLC not found):"
 msgstr "wmplayer.exe yolu (isteğe bağlı, VLC bulunamazsa kullanılır):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2383
+#: addon/globalPlugins/freeradio/__init__.py:2598
 msgid "B&rowse..."
 msgstr "G&özat..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2389
+#: addon/globalPlugins/freeradio/__init__.py:2604
 msgid "PotPlayer path (optional, auto-detected if empty):"
 msgstr "PotPlayer yolu (isteğe bağlı, boşsa otomatik bulunur):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2394
+#: addon/globalPlugins/freeradio/__init__.py:2609
 msgid "Bro&wse..."
 msgstr "Gö&zat..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2401
+#: addon/globalPlugins/freeradio/__init__.py:2616
 msgid "Recordings folder:"
 msgstr "Kayıtların tutulduğu klasör:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2411
+#: addon/globalPlugins/freeradio/__init__.py:2626
 msgid "(empty = default: Documents\\FreeRadio Recordings)"
 msgstr "(boş = varsayılan: Belgeler\\FreeRadio Recordings)"
 
-#: addon/globalPlugins/freeradio/__init__.py:2414
+#: addon/globalPlugins/freeradio/__init__.py:2629
 msgid "Brow&se folder..."
 msgstr "K&lasöre göz at..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2424
+#: addon/globalPlugins/freeradio/__init__.py:2639
 msgid ""
 "&Disable internet connectivity check before playing (recommended if DNS is "
 "blocked)"
@@ -848,77 +937,55 @@ msgstr ""
 "&Çalma öncesi internet bağlantısı kontrolünü devre dışı bırak (DNS "
 "engellenmişse önerilir)"
 
-#: addon/globalPlugins/freeradio/__init__.py:2434
+#: addon/globalPlugins/freeradio/__init__.py:2649
 msgid "&Automatically check for updates on startup"
 msgstr "&Başlangıçta güncellemeleri otomatik olarak kontrol et"
 
-#: addon/globalPlugins/freeradio/__init__.py:2441
-#: addon/globalPlugins/freeradio/__init__.py:2645
+#: addon/globalPlugins/freeradio/__init__.py:2656
+#: addon/globalPlugins/freeradio/__init__.py:2860
 msgid "Check for Updates &Now"
 msgstr "Güncellemeleri &şimdi Kontrol Et"
 
-#: addon/globalPlugins/freeradio/__init__.py:2517
+#: addon/globalPlugins/freeradio/__init__.py:2732
 #: addon/globalPlugins/freeradio/radioDialog.py:739
 msgid "System default"
 msgstr "Sistem varsayılanı"
 
-#: addon/globalPlugins/freeradio/__init__.py:2536
-#: addon/globalPlugins/freeradio/__init__.py:2547
-#: addon/globalPlugins/freeradio/radioDialog.py:791
-#: addon/globalPlugins/freeradio/radioDialog.py:805
-#, python-format
-msgid "%(effect)s %(state)s"
-msgstr "%(effect)s %(state)s"
-
-#: addon/globalPlugins/freeradio/__init__.py:2538
-#: addon/globalPlugins/freeradio/__init__.py:2549
-#: addon/globalPlugins/freeradio/radioDialog.py:793
-#: addon/globalPlugins/freeradio/radioDialog.py:807
-msgid "enabled"
-msgstr "açık"
-
-#: addon/globalPlugins/freeradio/__init__.py:2538
-#: addon/globalPlugins/freeradio/__init__.py:2549
-#: addon/globalPlugins/freeradio/radioDialog.py:793
-#: addon/globalPlugins/freeradio/radioDialog.py:807
-msgid "disabled"
-msgstr "kapalı"
-
-#: addon/globalPlugins/freeradio/__init__.py:2592
+#: addon/globalPlugins/freeradio/__init__.py:2807
 msgid "Select VLC executable"
 msgstr "VLC uygulamasını seçin"
 
-#: addon/globalPlugins/freeradio/__init__.py:2602
+#: addon/globalPlugins/freeradio/__init__.py:2817
 msgid "Select wmplayer.exe"
 msgstr "wmplayer.exe dosyasını seçin"
 
-#: addon/globalPlugins/freeradio/__init__.py:2612
+#: addon/globalPlugins/freeradio/__init__.py:2827
 msgid "Select PotPlayer executable"
 msgstr "PotPlayer uygulamasını seçin"
 
-#: addon/globalPlugins/freeradio/__init__.py:2622
+#: addon/globalPlugins/freeradio/__init__.py:2837
 msgid "Select ffmpeg.exe"
 msgstr "Ffmpeg.exe'yi seçin"
 
-#: addon/globalPlugins/freeradio/__init__.py:2632
+#: addon/globalPlugins/freeradio/__init__.py:2847
 msgid "Checking..."
 msgstr "Kontrol ediliyor..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2654
+#: addon/globalPlugins/freeradio/__init__.py:2869
 msgid "Select recordings folder"
 msgstr "Kayıtların tutulacağı klasörü seç"
 
-#: addon/globalPlugins/freeradio/__init__.py:2827
+#: addon/globalPlugins/freeradio/__init__.py:3042
 #: addon/globalPlugins/freeradio/radioDialog.py:2531
 msgid "Sleep timer"
 msgstr "Uyku zamanlayıcısı"
 
-#: addon/globalPlugins/freeradio/__init__.py:2951
-#: addon/globalPlugins/freeradio/__init__.py:2977
+#: addon/globalPlugins/freeradio/__init__.py:3166
+#: addon/globalPlugins/freeradio/__init__.py:3192
 msgid "Sleep timer: radio stopped"
 msgstr "Uyku zamanlayıcısı: Radyo durduruldu"
 
-#: addon/globalPlugins/freeradio/__init__.py:2962
+#: addon/globalPlugins/freeradio/__init__.py:3177
 msgid "Sleep timer: fading out…"
 msgstr "Uyku zamanlayıcısı: Radyo durduruluyor"
 
@@ -1514,369 +1581,62 @@ msgstr ""
 #: buildVars.py:25
 msgid ""
 "\n"
-"- Fixed playback of HTTPS Icecast streams that caused BASS to fail with\n"
-"  BASS_ERROR_FILEFORM (err=40). Affected streams sent ICY response headers\n"
-"  immediately after the TLS handshake, before a standard HTTP status line,\n"
-"  which BASS's SSL layer could not parse.\n"
-"- Implemented a local loopback proxy in bass_host.py to work around the\n"
-"  issue: urllib opens the HTTPS connection (which tolerates ICY quirks),\n"
-"  and BASS reads plain HTTP audio from a localhost socket instead.\n"
-"- The remote HTTPS connection and BASS's local connect now happen in\n"
-"  parallel, keeping startup latency close to that of a normal stream.\n"
-"- ICY headers (content-type, icy-metaint, icy-br, icy-sr, etc.) are\n"
-"  forwarded accurately from the remote server to BASS. Previously sending\n"
-"  icy-metaint: 0 caused garbled audio and a phaser/chorus-like artifact.\n"
-"- Removed the _BASS_SKIP_HOSTS workaround in radioPlayer.py that\n"
-"  bypassed BASS entirely for icecast.walmradio.com, restoring full BASS\n"
-"  features (ICY metadata, bass boost, FX, volume mixer entry) for that\n"
-"  station.\n"
-"---\n"
-"**New: Adjustable EQ Effect Levels**\n"
-"The Bass Boost, Treble Boost, and Vocal Boost effects now include individual "
-"gain controls. When one of these effects is enabled, a dB slider appears "
-"next to it, letting you fine-tune the intensity from −15 dB to +15 dB.\n"
-"Previously, each EQ effect had a fixed strength (Bass: +9 dB, Treble: +9 dB, "
-"Vocal: +6 dB). These defaults are unchanged — the controls simply let you go "
-"lower or higher as needed.\n"
-"**What's new:**\n"
-"- Gain controls appear automatically when an EQ effect is turned on, and "
-"hide when it is turned off.\n"
-"- Values are saved globally and restored when the add-on starts.\n"
-"- If you save an audio profile for a favourite station, the EQ gain levels "
-"are included in that profile and restored whenever you tune to that "
-"station.\n"
+"**Fix music recognition for HLS streams (`.m3u8`)**\n"
+"\n"
+"Previously, the URL resolver extracted a single media segment from the HLS "
+"playlist and passed it to ffmpeg. This yielded only ~6 seconds of audio — "
+"too short for Shazam to identify a track. HLS playlist URLs are now passed "
+"directly to ffmpeg, which handles segment concatenation natively and "
+"produces the full 12-second sample required for recognition.\n"
+"## FreeRadio — New unassigned shortcuts\n"
+"This release adds several new input gestures (all unassigned by default — "
+"bind them via NVDA's Input Gestures dialog under the FreeRadio category):\n"
+"- **Enable/disable BASS backend** — toggles the BASS audio engine on or off "
+"(a restart of NVDA is required for this to take effect).\n"
+"- **Toggle Bass Boost / Treble Boost / Vocal Boost** — quickly turn each EQ "
+"effect on or off without opening the settings dialog. Requires the BASS "
+"backend.\n"
+"- **Toggle station switch transition** — cycles through the crossfade "
+"options (instant cut, short, normal).\n"
+"- **Toggle auto-announce track changes** — enables or disables automatic "
+"announcement of ICY metadata when the track changes.\n"
+"- **Switch track change voice** — switches the track-change announcement "
+"between NVDA's speech and SAPI5.\n"
+"- **Toggle save liked songs to a text file** — turns the \"save liked "
+"songs\" feature on or off.\n"
+"All of these settings remain available in the FreeRadio settings dialog, and "
+"any change made via shortcut is reflected there immediately (and vice "
+"versa).\n"
 msgstr ""
 "\n"
-"**Hata Düzeltmeleri**\n"
-"- BASS'ın BASS_ERROR_FILEFORM (hata=40) ile başarısız olduğu HTTPS Icecast "
-"akışlarındaki oynatma sorunu düzeltildi. Etkilenen akışlar, TLS el "
-"sıkışmasının hemen ardından standart bir HTTP durum satırı gelmeden ICY "
-"yanıt başlıkları gönderiyordu; BASS'ın SSL katmanı bu başlıkları "
-"ayrıştıramıyordu.\n"
-"- Sorunu aşmak için `bass_host.py` içine yerel bir geri döngü proxy'si "
-"eklendi: urllib HTTPS bağlantısını kuruyor (ICY farklılıklarını tolere "
-"eder), BASS ise sesi bir localhost soketi üzerinden düz HTTP olarak okuyor.\n"
-"- Uzak HTTPS bağlantısı ile BASS'ın yerel bağlantısı artık paralel olarak "
-"kuruluyor; bu sayede başlangıç gecikmesi normal bir akışa yakın kalıyor.\n"
-"- ICY başlıkları (content-type, icy-metaint, icy-br, icy-sr vb.) uzak "
-"sunucudan BASS'a eksiksiz iletiliyor. Daha önce `icy-metaint: 0` "
-"gönderilmesi seste bozulmaya ve faz/chorus benzeri bir artefakta yol "
-"açıyordu.\n"
-"- `radioPlayer.py` içindeki, icecast.walmradio.com için BASS'ı tamamen devre "
-"dışı bırakan `_BASS_SKIP_HOSTS` geçici çözümü kaldırıldı; bu sayede söz "
-"konusu istasyon için ICY metadata, bass boost, efektler ve ses mikseri "
-"girişi gibi tüm BASS özellikleri yeniden kullanılabilir hale geldi.\n"
-"**Yeni: Ayarlanabilir EQ Efekt Seviyeleri**\n"
-"- Bas Güçlendirme, Tiz Güçlendirme ve Vokal Güçlendirme efektlerine artık "
-"ayrı ayrı kazanç denetimleri eklendi. Bu efektlerden biri "
-"etkinleştirildiğinde, yoğunluğu −15 dB ile +15 dB arasında ince ayarlamanıza "
-"olanak tanıyan bir dB denetimi otomatik olarak görünür.\n"
-"- Daha önce her EQ efektinin sabit bir gücü vardı (Bas: +9 dB, Tiz: +9 dB, "
-"Vokal: +6 dB). Bu varsayılan değerler değişmedi; denetimler yalnızca daha "
-"aşağı veya yukarı çıkmanızı mümkün kılıyor.\n"
-"**Yenilikler:**\n"
-"- Kazanç denetimleri bir EQ efekti açıldığında otomatik olarak görünür, "
-"kapatıldığında gizlenir.\n"
-"- Değerler kalıcı olarak kaydedilir ve eklenti bir sonraki oturumda geri "
-"yüklenir.\n"
-"- Bir favori istasyon için ses profili kaydederseniz EQ kazanç seviyeleri de "
-"profile dahil edilir ve o istasyona her geçişte geri yüklenir.\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "**New Languages for Freeradio**\n"
-#~ "- Czech by jiri Holzinger.\n"
-#~ "- Arabic by ALI ALOMARI\n"
-#~ "- French and Spanish by Rémy Ruiz\n"
-#~ "- Khmer by Phearith\n"
-#~ "- Russian by Валентин Куприянов\n"
-#~ "**Station Manager: resilient mirror selection**\n"
-#~ "- The Radio Browser server list is now fetched dynamically via DNS lookup "
-#~ "(`all.api.radio-browser.info`) at startup, following the approach "
-#~ "recommended by the Radio Browser API. Servers are shuffled before use so "
-#~ "load is distributed across the network. When DNS discovery fails, the "
-#~ "previous hardcoded mirror list is used as a fallback. Temporary HTTP 5xx "
-#~ "errors (e.g. 503 Service Unavailable) are now retried once after a short "
-#~ "delay before moving on to the next mirror, reducing failed loads during "
-#~ "brief server outages.\n"
-#~ "**Search: multi-token filtering for All Stations and Favourites**\n"
-#~ "- Local filtering in both the All Stations tab and the Favourites tab now "
-#~ "splits the search query into individual tokens and requires all of them "
-#~ "to match (AND logic). For example, searching \"jazz france\" returns only "
-#~ "stations whose metadata contains both \"jazz\" and \"france\". The last "
-#~ "token is matched as a prefix so that results remain visible while the "
-#~ "user is still typing a word. The status label in the All Stations tab now "
-#~ "always reflects the actual number of visible stations after filtering, "
-#~ "rather than the raw count returned by the API.\n"
-#~ "- Added a \"Result limit\" setting to the All Stations tab to control the "
-#~ "maximum number of results fetched for searches and country filters.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Freeradio'da Yenilikler\n"
-#~ "• Çekçe çeviri: Jiří Holzinger\n"
-#~ "• Arapça çeviri: Ali Alomari\n"
-#~ "• Fransızca ve İspanyolca çeviri: Rémy Ruiz\n"
-#~ "• Khmer çeviri: Phearith\n"
-#~ "• Rusça çeviri: Валентин Куприянов\n"
-#~ "İstasyon Yöneticisi: dayanıklı yansıtıcı seçimi\n"
-#~ "• Radio Browser sunucu listesi artık başlangıçta DNS sorgusu "
-#~ "(all.api.radio-browser.info) aracılığıyla dinamik olarak alınıyor; bu, "
-#~ "Radio Browser API'sinin önerdiği yaklaşımı izliyor. Ağ üzerindeki yük "
-#~ "dağıtımı için sunucular kullanılmadan önce rastgele sıralanıyor. DNS "
-#~ "keşfi başarısız olursa önceki sabit kodlanmış yansıtıcı listesi yedek "
-#~ "olarak kullanılıyor. Geçici HTTP 5xx hataları (ör. 503 Service "
-#~ "Unavailable) artık bir sonraki yansıtıcıya geçmeden önce kısa bir "
-#~ "gecikmenin ardından bir kez daha deneniyor; böylece kısa süreli sunucu "
-#~ "kesintilerinde başarısız yükleme sayısı azalıyor.\n"
-#~ "Arama: Tüm İstasyonlar ve Favoriler için çok sözcüklü filtreleme\n"
-#~ "• Hem Tüm İstasyonlar hem de Favoriler sekmesindeki yerel filtreleme "
-#~ "artık arama sorgusunu ayrı sözcüklere bölüyor ve tümünün eşleşmesini "
-#~ "gerektiriyor (VE mantığı). Örneğin \"jazz france\" araması yalnızca meta "
-#~ "verilerinde hem \"jazz\" hem \"france\" geçen istasyonları döndürüyor. "
-#~ "Son sözcük önek olarak eşleştiriliyor; böylece kullanıcı yazmayı "
-#~ "sürdürürken sonuçlar görünür kalıyor. Tüm İstasyonlar sekmesindeki durum "
-#~ "etiketi artık API'nin döndürdüğü ham sayı yerine filtreleme sonrasında "
-#~ "görünen gerçek istasyon sayısını yansıtıyor.\n"
-#~ "• Aramalar ve ülke filtreleri için getirilen maksimum sonuç sayısını "
-#~ "denetlemek amacıyla Tüm İstasyonlar sekmesine \"Sonuç limiti\" ayarı "
-#~ "eklendi.\n"
-
-#, python-format
-#~| msgid "%s in %s"
-#~ msgid "\"%s\" in %s: %d"
-#~ msgstr "%s içinde \"%s\" : %d"
-
-#, python-format
-#~ msgid "\"%s\": %d"
-#~ msgstr "\"%s\": %d"
-
-#~ msgid ""
-#~ "\n"
-#~ "**Liked Songs: duplicate detection**\n"
-#~ "- Before adding a track to `likedSongs.txt`, the file is now read and "
-#~ "checked for an existing entry with the same text. If the track is already "
-#~ "present, it is not written again and NVDA announces \"Already in liked "
-#~ "songs: [track]\" instead. This prevents the list from accumulating "
-#~ "repeated entries when the same track is recognised or copied multiple "
-#~ "times during a session.\n"
-#~ "**F2 in station browser: 4-press behaviour now mirrors Ctrl+Win+I**\n"
-#~ "- The in-dialog F2 handler (`_whats_playing_from_dialog`) has been "
-#~ "rewritten to match `script_whatsPlaying` press-for-press:\n"
-#~ "- **1×** — announce the currently playing station and track\n"
-#~ "- **2×** — open the station details dialog (delayed 350 ms so a 3rd press "
-#~ "can cancel it)\n"
-#~ "- **3×** — copy ICY track title to clipboard; fall back to Shazam if no "
-#~ "metadata is available\n"
-#~ "- **4×** — force Shazam music recognition regardless of ICY metadata, "
-#~ "then reset the counter\n"
-#~ "- Previously the handler merged the 3rd and all subsequent presses into a "
-#~ "single `elif count >= 2` branch, so the 4th press was never reached. A "
-#~ "cancellation token is now also passed into the 3rd-press background "
-#~ "thread so that a 4th press arriving while the thread is still running "
-#~ "correctly aborts the clipboard/Shazam action before the forced-"
-#~ "recognition path takes over.\n"
-#~ "**Music Recognizer: improved recognition of non-mainstream tracks**\n"
-#~ "- Previously, the signature generator stopped processing audio after ~3.1 "
-#~ "seconds or 255 peaks, whichever came first. The full 12-second audio "
-#~ "sample is now used to build the fingerprint, sending significantly richer "
-#~ "data to Shazam. This hopefully improves recognition accuracy for folk, "
-#~ "regional, and other non-mainstream music.\n"
-#~ "**All Stations tab: Sort combo box**\n"
-#~ "- Added a *Sort* combo box to the All Stations tab, placed before the "
-#~ "Country filter. Options are **Alphabetical** (default) and **By Rating** "
-#~ "(sorted by vote count, highest first). Changing the sort order instantly "
-#~ "re-sorts the current station list without triggering a new network "
-#~ "request.\n"
-#~ "**Settings: SAPI5 voice selector for track change announcements**\n"
-#~ "- Added a *SAPI5 voice* dropdown to the settings panel, appearing below "
-#~ "the existing *Track change voice* option. - When SAPI5 is selected as the "
-#~ "announcement voice, users can now choose which installed SAPI5 voice to "
-#~ "use. The list is populated automatically from the system's available "
-#~ "voices. Selecting *Default (system)* uses whatever voice Windows has set "
-#~ "as the default. The dropdown is disabled when NVDA is selected as the "
-#~ "announcement voice, or when auto-announce is turned off.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "**Beğenilen Şarkılar: mükerrer kayıt önleme**\n"
-#~ "- Bir parça `likedSongs.txt` dosyasına eklenmeden önce, dosya okunarak "
-#~ "aynı metne sahip bir kayıt olup olmadığı kontrol edilir. Parça zaten "
-#~ "listede mevcutsa tekrar yazılmaz; bunun yerine NVDA \"Zaten beğenilen "
-#~ "şarkılarda: [parça]\" şeklinde bildirim yapar. Bu sayede aynı parçanın "
-#~ "bir oturum içinde birden fazla kez tanınması veya kopyalanması durumunda "
-#~ "listede yinelenen kayıtlar oluşmasının önüne geçilir.\n"
-#~ "**İstasyon tarayıcısında F2: 4 basış davranışı artık Ctrl+Win+I ile "
-#~ "aynı**\n"
-#~ "- Diyalog içi F2 işleyicisi (`_whats_playing_from_dialog`), "
-#~ "`script_whatsPlaying` ile birebir eşleşecek şekilde yeniden yazıldı:\n"
-#~ "- **1×** — çalmakta olan istasyonu ve parçayı sesli olarak bildirir\n"
-#~ "- **2×** — istasyon ayrıntıları iletişim kutusunu açar (3. basışın iptal "
-#~ "edebilmesi için 350 ms gecikmeyle)\n"
-#~ "- **3×** — ICY parça başlığını panoya kopyalar; meta veri yoksa Shazam'a "
-#~ "geri düşer\n"
-#~ "- **4×** — ICY meta verisinden bağımsız olarak Shazam tanımasını zorla "
-#~ "başlatır, ardından sayacı sıfırlar\n"
-#~ "- Daha önce işleyici, 3. ve sonraki tüm basışları tek bir `elif count >= "
-#~ "2` dalında birleştiriyordu; bu nedenle 4. basışa hiçbir zaman "
-#~ "ulaşılamıyordu. Ayrıca 3. basışın arka plan thread'ine artık bir iptal "
-#~ "token'ı aktarılmaktadır; böylece thread çalışırken 4. basış geldiğinde "
-#~ "pano/Shazam işlemi doğru biçimde iptal edilerek zorla tanıma yoluna "
-#~ "geçilir.\n"
-#~ "**Müzik Tanıyıcı: ana akım dışı parçaların tanınmasında iyileştirme**\n"
-#~ "- Daha önce imza üretici, hangisi önce gerçekleşirse yaklaşık 3,1 saniye "
-#~ "ya da 255 tepe noktasından sonra ses işlemeyi durduruyordu. Artık parmak "
-#~ "izini oluşturmak için 12 saniyelik ses örneğinin tamamı kullanılmakta ve "
-#~ "Shazam'a çok daha zengin veri gönderilmektedir. Bu değişikliğin folk, "
-#~ "yöresel ve diğer ana akım dışı müziklerin tanınma doğruluğunu artırması "
-#~ "beklenmektedir.\n"
-#~ "**Tüm İstasyonlar sekmesi: Sıralama açılır kutusu**\n"
-#~ "- Tüm İstasyonlar sekmesine, Ülke filtresinin önüne bir *Sıralama* açılır "
-#~ "kutusu eklendi. Seçenekler **Alfabetik** (varsayılan) ve **Puana Göre** "
-#~ "(oy sayısına göre azalan sıra) şeklindedir. Sıralama değiştirildiğinde "
-#~ "mevcut istasyon listesi yeni bir ağ isteği yapılmadan anında yeniden "
-#~ "sıralanır.\n"
-#~ "**Ayarlar: Parça değişikliği duyuruları için SAPI5 ses seçici**\n"
-#~ "- Ayarlar paneline, mevcut *Sesi değiştir* seçeneğinin altında görünen "
-#~ "bir *SAPI5 sesi* açılır menüsü eklendi. - Duyuru sesi olarak SAPI5 "
-#~ "seçildiğinde kullanıcılar artık hangi yüklü SAPI5 sesini kullanacaklarını "
-#~ "seçebilirler. Liste sistemin mevcut seslerinden otomatik olarak "
-#~ "doldurulur. *Varsayılan (sistem)* seçildiğinde, Windows'un varsayılan "
-#~ "olarak ayarladığı ses kullanılır. Duyuru sesi olarak NVDA seçildiğinde "
-#~ "veya otomatik anons kapatıldığında açılır menü devre dışı bırakılır.\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "- Change reorder favorite key to comma because * doesn't work for many "
-#~ "keyboard layout.\n"
-#~ "**Fixed**\n"
-#~ "- `ctrl+win+r` and other hotkeys silently failing to reopen the station "
-#~ "browser dialog after it had been hidden at least once.\n"
-#~ "\n"
-#~ "**Root cause:** NVDA maintains an internal popup counter that is "
-#~ "incremented by `prePopup()` and decremented by `postPopup()`. "
-#~ "`prePopup()` was called once when the dialog was first created, but none "
-#~ "of the code paths that hide the dialog (`_on_close_btn`, "
-#~ "`_on_window_close`, ESC key, Enter on Close button, Alt+K, "
-#~ "`_force_destroy`) ever called `postPopup()`. The counter therefore grew "
-#~ "by one on every open/hide cycle and never decreased. After enough cycles "
-#~ "NVDA interpreted the accumulated count as \"another popup is already "
-#~ "open\" and silently blocked subsequent `Show()` calls, causing the dialog "
-#~ "to appear completely unresponsive to all hotkeys with no error logged.\n"
-#~ "\n"
-#~ "**Fix:** Added `gui.mainFrame.postPopup()` after every `self.Hide()` and "
-#~ "`self.Destroy()` call in `radioDialog.py`. Added a matching "
-#~ "`gui.mainFrame.prePopup()` in `_open_dialog()` (`__init__.py`) for the re-"
-#~ "show path, so each `prePopup` is correctly paired with a `postPopup` for "
-#~ "the full lifetime of the dialog.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "- Sık kullanılanları yeniden sıralama kısayol tuşu, birçok klavye "
-#~ "düzeninde çalışmayan `*` yerine virgül (`,`) olarak değiştirildi.\n"
-#~ "**Düzeltildi**\n"
-#~ "- `ctrl+win+r` ve diğer kısayol tuşlarının, istasyon tarayıcısı iletişim "
-#~ "kutusu en az bir kez gizlendikten sonra onu yeniden açmak için sessiz "
-#~ "seçimde başarısız olması.\n"
-#~ "**Temel neden:** NVDA, `prePopup()` tarafından artırılan ve `postPopup()` "
-#~ "tarafından azaltılan dahili bir açılır pencere sayacı tutar. `prePopup()` "
-#~ "iletişim kutusu ilk oluşturulduğunda bir kez çağrılıyordu; ancak iletişim "
-#~ "kutusunu gizleyen kod yollarından hiçbiri (`_on_close_btn`, "
-#~ "`_on_window_close`, ESC tuşu, Kapat düğmesinde Enter, Alt+K, "
-#~ "`_force_destroy`) hiçbir zaman `postPopup()` çağırmıyordu. Bu nedenle "
-#~ "sayaç her açma/gizleme döngüsünde bir artıyor ve hiç azalmıyordu. Yeterli "
-#~ "döngü sonrasında NVDA, biriken sayıyı \"başka bir açılır pencere zaten "
-#~ "açık\" olarak yorumluyor ve sonraki `Show()` çağrılarını sessizce "
-#~ "engelliyordu; bu da iletişim kutusunun hiçbir hata kaydedilmeksizin tüm "
-#~ "kısayol tuşlarına tamamen yanıt vermez görünmesine yol açıyordu.\n"
-#~ "**Düzeltme:** `radioDialog.py` dosyasındaki her `self.Hide()` ve "
-#~ "`self.Destroy()` çağrısının ardından `gui.mainFrame.postPopup()` eklendi. "
-#~ "Yeniden gösterme yolu için `__init__.py` dosyasındaki `_open_dialog()` "
-#~ "fonksiyonuna eşleşen bir `gui.mainFrame.prePopup()` çağrısı eklendi; "
-#~ "böylece her `prePopup`, iletişim kutusunun tüm ömrü boyunca doğru şekilde "
-#~ "bir `postPopup` ile eşleştirilmiş oldu.\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "**Focus management after item removal**\n"
-#~ "- Favorites list: after deleting a station, focus and selection "
-#~ "automatically move to the next item in the list. If the deleted station "
-#~ "was the last one, focus moves to the previous item. If the list becomes "
-#~ "empty, focus moves to the Play button.\n"
-#~ "- Liked Songs list: same behaviour — after removing a song, focus stays "
-#~ "on the next item, or moves to the Refresh button if the list is empty.\n"
-#~ "**Delete key shortcut**\n"
-#~ "- Pressing `Delete` while a station is selected in the Favorites list now "
-#~ "triggers the Delete Station button (equivalent to clicking it), provided "
-#~ "the button is enabled.\n"
-#~ "- Pressing `Delete` while a song is selected in the Liked Songs list now "
-#~ "triggers the Remove button, provided the button is enabled.\n"
-#~ "- In both cases the key has no effect when no valid item is selected or "
-#~ "the corresponding button is disabled.\n"
-#~ "- Added a new \"Mute notifications\" checkbox to FreeRadio settings "
-#~ "(unchecked by default).\n"
-#~ "- When enabled, NVDA no longer announces station changes, playback state "
-#~ "changes (play, pause, stop), or recording events (started, stopped, "
-#~ "finished).\n"
-#~ "- Error messages, favourites feedback, music recognition results, and "
-#~ "update notifications are intentionally unaffected.\n"
-#~ "- Added an unassigned script_toggleMuteNotifications input gesture that "
-#~ "toggles the setting on the fly. Assign a key combination via NVDA's Input "
-#~ "Gestures dialog under the FreeRadio category.\n"
-#~ "- Two module-level helpers (_notify, _notify_on_demand) centralise the "
-#~ "mute check, keeping call sites clean.\n"
-#~ "**Changed: Search now filters by selected country automatically**\n"
-#~ "- Search queries are now scoped to the selected country. When a country "
-#~ "is chosen in the combo box, results are fetched from the API already "
-#~ "filtered by that country rather than searching globally and filtering "
-#~ "locally afterward.\n"
-#~ "- The Search button has been removed. Results update automatically as you "
-#~ "type (debounced, 500 ms delay), so a manual trigger is no longer needed.\n"
-#~ "- Removed the Enter key and Alt+A shortcuts that previously triggered a "
-#~ "manual search.\n"
-#~ "- The search status message has been shortened. It now reads `\"query\": "
-#~ "N in Country` instead of the previous `Search \"query\": N results (N in "
-#~ "Country)`.\n"
-#~ "- The key used for reordering favorites was changed from X to * (star).\n"
-#~ msgstr ""
-#~ "\n"
-#~ "**Öğe silindikten sonra odak yönetimi**\n"
-#~ "- Favoriler listesi: bir istasyon silindiğinde odak ve seçim otomatik "
-#~ "olarak listedeki bir sonraki öğeye taşınır. Silinen istasyon listedeki "
-#~ "son öğeyse odak bir önceki öğeye geçer. Liste tamamen boşalırsa odak "
-#~ "Oynat düğmesine taşınır.\n"
-#~ "- Beğenilen Şarkılar listesi: aynı davranış — şarkı kaldırıldığında odak "
-#~ "bir sonraki öğede kalır; liste boşalırsa odak Yenile düğmesine taşınır.\n"
-#~ "**Delete tuşu kısayolu**\n"
-#~ "- Favoriler listesinde bir istasyon seçiliyken `Delete` tuşuna basmak, "
-#~ "düğme etkin durumdaysa İstasyonu Sil düğmesine tıklamakla eşdeğerdir.\n"
-#~ "- Beğenilen Şarkılar listesinde bir şarkı seçiliyken `Delete` tuşuna "
-#~ "basmak, düğme etkin durumdaysa Kaldır düğmesini tetikler.\n"
-#~ "- Her iki durumda da geçerli bir öğe seçili değilse veya ilgili düğme "
-#~ "devre dışıysa tuşun hiçbir etkisi olmaz.\n"
-#~ "**Bildirimleri sessize al**\n"
-#~ "- FreeRadio ayarlarına yeni bir \"Bildirimleri sessize al\" onay kutusu "
-#~ "eklendi (varsayılan olarak işaretsiz).\n"
-#~ "- Etkinleştirildiğinde NVDA; istasyon değişikliklerini, oynatma durumu "
-#~ "değişikliklerini (oynat, duraklat, durdur) ve kayıt olaylarını (başladı, "
-#~ "durdu, bitti) artık anons etmez.\n"
-#~ "- Hata mesajları, favori geri bildirimleri, müzik tanıma sonuçları ve "
-#~ "güncelleme bildirimleri kasıtlı olarak bu kapsam dışında tutulmuştur.\n"
-#~ "- Ayarı anlık olarak değiştirmek için FreeRadio kategorisi altında "
-#~ "NVDA'nın Girdi Hareketleri iletişim kutusundan atanabilecek, varsayılan "
-#~ "kısayol tuşu bulunmayan bir `script_toggleMuteNotifications` girdi "
-#~ "hareketi eklendi.\n"
-#~ "- Sessizleştirme kontrolünü merkeze alan iki modül düzeyinde yardımcı "
-#~ "fonksiyon (`_notify`, `_notify_on_demand`) eklendi; bu sayede ilgili "
-#~ "çağrı noktaları sade kalmaktadır.\n"
-#~ "**Değişti: Artık arama, seçilen ülkeye göre otomatik olarak "
-#~ "filtreleniyor**\n"
-#~ "- Arama sorguları artık seçilen ülkeyi kapsamaktadır. Birleşik giriş "
-#~ "kutusunda bir ülke seçildiğinde, sonuçlar genel olarak arama yapıp daha "
-#~ "sonra yerel olarak filtrelenmek yerine, zaten o ülke tarafından "
-#~ "filtrelenmiş olan API'den getirilir.\n"
-#~ "- Ara butonu kaldırıldı. Sonuçlar siz yazarken otomatik olarak "
-#~ "güncellenir, dolayısıyla artık manuel tetiklemeye gerek kalmaz.\n"
-#~ "- Daha önce manuel aramayı tetikleyen Enter tuşu ve Alt+A kısayolları "
-#~ "kaldırıldı.\n"
-#~ "- Arama durumu mesajı kısaltıldı. Artık önceki \"Arama \"sorgu\": N sonuç "
-#~ "(Ülkede N)\" yerine \"\"sorgu\": Ülkede N\" yazıyor\n"
-#~ "- Favorileri yeniden sıralamak için kullanılan tuş, X yerine  * (yıldız) "
-#~ "olarak değiştirildi.\n"
+"**HLS akışlarında (.m3u8) müzik tanıma düzeltmesi**\n"
+"Daha önce URL çözümleyici, HLS oynatma listesinden tek bir medya segmenti "
+"çıkarıp ffmpeg'e iletiyordu. Bu yöntem yalnızca ~6 saniyelik ses "
+"ürettiğinden Shazam parçayı tanıyamıyordu. HLS oynatma listesi URL'leri "
+"artık doğrudan ffmpeg'e aktarılmaktadır; ffmpeg segmentleri yerel olarak "
+"birleştirerek tanıma için gereken 12 saniyelik örneği üretmektedir.\n"
+"## FreeRadio — Yeni atanmamış kısayollar\n"
+"\n"
+"Bu sürümde varsayılan olarak hiçbir tuşa atanmamış yeni girdi hareketleri "
+"eklenmiştir. Tuş atamak için NVDA'nın Girdi Hareketleri iletişim kutusunda "
+"FreeRadio kategorisini kullanabilirsiniz:\n"
+"- **BASS arka ucunu etkinleştir/devre dışı bırak** — BASS ses motorunu açar "
+"veya kapatır (değişikliğin geçerli olması için NVDA'nın yeniden başlatılması "
+"gerekmektedir).\n"
+"- **Bas artışını/Tiz artışını/Vokal artışını aç/kapat** — ayarlar iletişim "
+"kutusunu açmadan her bir EQ efektini hızlıca etkinleştirir ya da devre dışı "
+"bırakır. BASS arka ucu gerektirir.\n"
+"- **İstasyon geçiş efektini aç/kapat** — çapraz geçiş seçenekleri arasında "
+"geçiş yapar (anında kesme, kısa, normal).\n"
+"- **Parça değişikliği otomatik duyurusunu aç/kapat** — parça değiştiğinde "
+"ICY meta verilerinin otomatik olarak duyurulmasını etkinleştirir veya devre "
+"dışı bırakır.\n"
+"- **Parça değişikliği sesini değiştir** — parça değişikliği duyurusunu NVDA "
+"konuşması ile SAPI5 arasında değiştirir.\n"
+"- **Beğenilen şarkıları metin dosyasına kaydetmeyi aç/kapat** — beğenilen "
+"şarkıları kaydetme özelliğini etkinleştirir veya devre dışı bırakır.\n"
+"\n"
+"Bu ayarların tamamı FreeRadio ayarlar iletişim kutusundan da ulaşılabilir "
+"durumdadır; kısayol tuşuyla yapılan değişiklikler iletişim kutusuna, "
+"iletişim kutusunda yapılan değişiklikler de kısayol tuşlarına anında "
+"yansır.\n"
