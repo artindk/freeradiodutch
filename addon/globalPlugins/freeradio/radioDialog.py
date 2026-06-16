@@ -1865,6 +1865,11 @@ class RadioDialog(wx.Dialog):
 		ui.message(_("Added to favorites"))
 		self._refresh_fav_list()
 		self._update_fav_button()
+		if self._plugin is not None:
+			try:
+				self._plugin._rebuild_station_scripts()
+			except Exception:
+				pass
 
 	def _on_details_clicked(self, event):
 		station, _ = self._get_selected_station()
@@ -1998,6 +2003,11 @@ class RadioDialog(wx.Dialog):
 			ui.message(_("Station deleted"))
 			self._refresh_fav_list()
 			self._update_fav_button()
+			if self._plugin is not None:
+				try:
+					self._plugin._rebuild_station_scripts()
+				except Exception:
+					pass
 			# After deletion keep focus on the next item (or the last one if the
 			# deleted item was at the end); move to Play button if the list is empty.
 			count = self._fav_list.GetCount()
@@ -2018,6 +2028,11 @@ class RadioDialog(wx.Dialog):
 				self._apply_filters()
 				self._refresh_fav_list()
 				ui.message(_("Station added: %s") % name)
+				if self._plugin is not None:
+					try:
+						self._plugin._rebuild_station_scripts()
+					except Exception:
+						pass
 		dlg.Destroy()
 
 

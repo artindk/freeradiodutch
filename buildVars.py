@@ -18,23 +18,14 @@ addon_info = AddonInfo(
 	addon_description=_("""FreeRadio is an internet radio add-on for NVDA that provides seamless access to thousands of stations via the Radio Browser open directory. It features a fully accessible station browser with search, country filter, favourites management, and per-station audio profiles. Playback is handled by a prioritised backend chain (BASS, VLC, PotPlayer, Windows Media Player) with support for volume control, audio effects, output device selection, and simultaneous audio mirroring to a second device. Additional features include instant and scheduled recording, sleep and alarm timers, automatic ICY metadata announcements, Shazam-based music recognition, and a liked-songs log. All controls and shortcuts are designed for NVDA accessibility."""),
 	
 	# version
-	addon_version="2026.19.9",
+	addon_version="2026.20.0",
 	
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version
 	addon_changelog=_("""
-**Fix music recognition for HLS streams (`.m3u8`)**
-
-Previously, the URL resolver extracted a single media segment from the HLS playlist and passed it to ffmpeg. This yielded only ~6 seconds of audio — too short for Shazam to identify a track. HLS playlist URLs are now passed directly to ffmpeg, which handles segment concatenation natively and produces the full 12-second sample required for recognition.
-## FreeRadio — New unassigned shortcuts
-This release adds several new input gestures (all unassigned by default — bind them via NVDA's Input Gestures dialog under the FreeRadio category):
-- **Enable/disable BASS backend** — toggles the BASS audio engine on or off (a restart of NVDA is required for this to take effect).
-- **Toggle Bass Boost / Treble Boost / Vocal Boost** — quickly turn each EQ effect on or off without opening the settings dialog. Requires the BASS backend.
-- **Toggle station switch transition** — cycles through the crossfade options (instant cut, short, normal).
-- **Toggle auto-announce track changes** — enables or disables automatic announcement of ICY metadata when the track changes.
-- **Switch track change voice** — switches the track-change announcement between NVDA's speech and SAPI5.
-- **Toggle save liked songs to a text file** — turns the "save liked songs" feature on or off.
-All of these settings remain available in the FreeRadio settings dialog, and any change made via shortcut is reflected there immediately (and vice versa).
+-Added: Favourite stations now appear as individual scripts in NVDA's Input Gestures dialog under the "FreeRadio Stations" category.
+- Each favourite station can be assigned a custom keyboard shortcut, allowing direct playback without opening the station browser. Assigned shortcuts are updated automatically when favourites are added or removed.
+- Added three unbound input gestures as alternatives to the double, triple, and quadruple press of Control+Windows+I (or F2 in the dialog): Show station details, Copy track info to clipboard or start music recognition, and Force music recognition. These allow users who have difficulty with rapid key presses to assign a single keystroke to each action via NVDA's Input Gestures dialog.
 """),
 	
 	# Author(s)

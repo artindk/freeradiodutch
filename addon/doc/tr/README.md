@@ -50,6 +50,7 @@ NVDA Menüsü → Tercihler → Girdi Hareketleri → FreeRadio bölümünden ye
 | `Ctrl+Win+E` | Anlık kayıt | Bir kez basıldığında çalan istasyonu kaydetmeye başlar; tekrar basıldığında durdurur. **İki kez** basıldığında **şarkı kaydı** başlar — dosya o anki parça adıyla adlandırılır ve parça değiştiğinde kayıt otomatik olarak durur. Şarkı kaydı aktifken tekrar iki kez basılması kaydı erken sonlandırır. Oynatma tüm kayıt modlarında kesintisiz sürer. Yalnızca ICY metadata yayınlayan istasyonlarda kullanılabilir. |
 | `Ctrl+Win+W` | Kayıt klasörünü aç | Kaydedilen dosyaların bulunduğu klasörü Dosya Gezgini'nde açar. |
 | *(atanmamış)* | Bildirimleri sessize al / aç | Bildirim sessize alma ayarını anlık olarak değiştirir. NVDA Menüsü → Tercihler → Girdi Hareketleri → FreeRadio bölümünden bir tuş kombinasyonu atanabilir. |
+| *(atanmamış)* | Favori istasyonu doğrudan çal | Favoriler listenizdeki her istasyon, NVDA Menüsü → Tercihler → Girdi Hareketleri → **FreeRadio Stations** kategorisinde ayrı bir girdi olarak görünür. Bir istasyona klavye kısayolu atayarak tarayıcıyı açmadan her yerden doğrudan çalmaya başlayabilirsiniz. |
 
 Sonraki / önceki kısayollar yalnızca favoriler listesinde dolaşır; tüm istasyonlar listesinde çalışmaz. Tarayıcı penceresinde listeler odaklanmışken sol ve sağ ok tuşları da aynı işlevi görür: bkz. Diyalog İçi Kısayollar.
 
@@ -132,6 +133,19 @@ Favoriler listesinden bir istasyonu silmek için istasyonu seçip **İstasyonu S
 ### Favorileri Yeniden Sıralama
 
 Favoriler sekmesinde bir istasyon seçiliyken `virgül` tuşuna basarak taşıma moduna girin — bir bip sesi duyarsınız. Ok tuşlarıyla hedef konuma gidin, ardından `virgül` tuşuna tekrar basın. İstasyon seçilen konuma yerleştirilir ve yeni sıra anında kaydedilir. Aynı konumda tekrar `virgül` tuşuna basılması taşımayı iptal eder.
+
+### Favori İstasyonlar İçin Doğrudan Klavye Kısayolları
+
+Favoriler listenizdeki her istasyon, NVDA'nın Girdi Hareketleri iletişim kutusunda **FreeRadio Stations** kategorisinde ayrı bir script olarak kayıtlıdır. İstediğiniz istasyona herhangi bir klavye kısayolu atayabilir ve tarayıcı penceresini açmadan her yerden doğrudan çalmaya başlayabilirsiniz.
+
+Kısayol atamak için:
+
+1. NVDA Menüsü → Tercihler → Girdi Hareketleri'ni açın.
+2. **FreeRadio Stations** kategorisini genişletin.
+3. İstasyonu adıyla bulun, seçin ve **Ekle** düğmesine basın.
+4. İstediğiniz tuş kombinasyonuna basın ve onaylayın.
+
+Kısayola basıldığında istasyon hemen çalmaya başlar. Bir istasyon favorilerden silinirse kategorideki girişi de kaldırılır ve atanmış kısayol NVDA tarafından otomatik olarak temizlenir. Favorilere yeni bir istasyon eklendiğinde kategori hemen güncellenir — Girdi Hareketleri iletişim kutusunun yeniden açılması gerekmez.
 
 ### Özel İstasyon Ekleme
 

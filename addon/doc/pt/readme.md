@@ -52,6 +52,7 @@ Todos os atalhos podem ser reatribuídos em Menu NVDA → Preferências → Defi
 | `Ctrl+Win+E` | Gravação instantânea | Prima uma vez para iniciar a gravação da estação atual; prima novamente para parar. Prima **duas vezes** para iniciar uma **gravação de canção** — o ficheiro recebe o nome da faixa atual e a gravação para automaticamente quando a faixa muda. Prima duas vezes novamente enquanto uma gravação de canção está ativa para terminá-la antecipadamente. A reprodução continua sem interrupção em todos os modos de gravação. Disponível apenas em estações que difundem metadados ICY. |
 | `Ctrl+Win+W` | Abrir pasta de gravações | Abre a pasta com os ficheiros gravados no Explorador de Ficheiros. |
 | *(não atribuído)* | Alternar silenciamento de notificações | Ativa ou desativa o silenciamento de notificações em tempo real. Pode atribuir uma combinação de teclas em Menu NVDA → Preferências → Definir comandos → FreeRadio. |
+| *(não atribuído)* | Reproduzir estação favorita diretamente | Cada estação da lista de favoritos aparece como uma entrada separada em Menu NVDA → Preferências → Definir comandos → **FreeRadio Stations**. Atribua um atalho de teclado a qualquer estação para a iniciar imediatamente a partir de qualquer lugar, sem abrir o navegador. |
 
 Os atalhos seguinte/anterior apenas navegam na lista de favoritos; não funcionam com a lista de todas as estações. Quando uma lista está em foco na janela do navegador, as teclas de seta esquerda e direita têm a mesma função — consulte Atalhos na Caixa de Diálogo.
 
@@ -134,6 +135,19 @@ Para eliminar uma estação da lista de favoritos, selecione-a e prima o botão 
 ### Reordenar Favoritos
 
 Com uma estação selecionada no separador Favoritos, prima `vírgula` para entrar no modo de mover — ouvirá um sinal sonoro. Navegue até à posição pretendida com as teclas de seta e prima `vírgula` novamente. A estação é colocada na posição escolhida e a nova ordem é guardada imediatamente. Premir `vírgula` novamente na mesma posição cancela a operação.
+
+### Atalhos de Teclado Diretos para Estações Favoritas
+
+Cada estação da lista de favoritos é registada como um script separado na caixa de diálogo Definir Comandos do NVDA, na categoria **FreeRadio Stations**. Pode atribuir qualquer atalho de teclado a qualquer estação e premi-lo a partir de qualquer lugar — sem necessidade de abrir a janela do navegador.
+
+Para atribuir um atalho:
+
+1. Abra Menu NVDA → Preferências → Definir comandos.
+2. Expanda a categoria **FreeRadio Stations**.
+3. Encontre a estação pelo nome, selecione-a e prima **Adicionar**.
+4. Prima a combinação de teclas pretendida e confirme.
+
+O atalho inicia a estação imediatamente. Se a estação for removida dos favoritos, a sua entrada desaparece da categoria e qualquer atalho atribuído é automaticamente removido pelo NVDA. Quando uma nova estação é adicionada aos favoritos, aparece na categoria de imediato — não é necessário reabrir a caixa de diálogo Definir Comandos.
 
 ### Adicionar Estação Personalizada
 

@@ -296,6 +296,91 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		)
 		self._icy_poll_thread.start()
 
+		# Build dynamic scripts for favourite stations so they appear in
+		# NVDA's Input Gestures dialog under "FreeRadio Stations".
+		self._station_script_names = []   # track names for cleanup
+		self._rebuild_station_scripts()
+
+	def _rebuild_station_scripts(self):
+		"""Create or refresh one script per favourite station.
+
+		Each script is named  script_playFavoriteStation_<sanitised_uuid>
+		and appears in the "FreeRadio Stations" category of NVDA's Input
+		Gestures dialog.  The user can assign any keyboard shortcut there;
+		NVDA stores it in userGestureMap and it persists across sessions as
+		long as the station remains a favourite.
+
+		Call this whenever the favourites list changes (add / remove / reload).
+		"""
+		import inputCore
+
+		# ── 1. Remove scripts that no longer correspond to a favourite ───────
+		favs     = self._manager.get_favorites()
+		fav_uids = {self._sanitise_uuid(s.get("stationuuid", "")) for s in favs}
+
+		stale = [n for n in self._station_script_names if n not in
+		         {"script_playFavoriteStation_" + uid for uid in fav_uids}]
+		for name in stale:
+			try:
+				delattr(self.__class__, name)
+			except AttributeError:
+				pass
+		self._station_script_names = [
+			n for n in self._station_script_names if n not in stale
+		]
+
+		# ── 2. Create / refresh a script for every favourite ─────────────────
+		_CATEGORY = _("FreeRadio Stations")
+
+		for station in favs:
+			uid        = self._sanitise_uuid(station.get("stationuuid", ""))
+			if not uid:
+				continue
+			script_name = "script_playFavoriteStation_" + uid
+			station_name = station.get("name", "").strip()
+
+			# Build the script function with a closure over *station*.
+			def _make_script(s):
+				def _script(self_plugin, gesture):
+					favs_now = self_plugin._manager.get_favorites()
+					match    = next(
+						(x for x in favs_now
+						 if x.get("stationuuid") == s.get("stationuuid")),
+						None,
+					)
+					if match is None:
+						ui.message(
+							_("Station no longer in favourites: %s")
+							% s.get("name", "").strip()
+						)
+						return
+					self_plugin._stations      = favs_now
+					self_plugin._current_index = favs_now.index(match)
+					self_plugin._play_station(match)
+				# NVDA reads __doc__ as the script description and
+				# __name__ as the script identifier.
+				_script.__doc__      = _("%s playback shortcut ()") % s.get("name", "").strip()
+				_script.__name__     = script_name
+				_script.category     = _CATEGORY
+				# No default gesture — user assigns one via Input Gestures dialog.
+				_script.__gestures__ = {}
+				return _script
+
+			fn = _make_script(station)
+			# Attach to the class so NVDA discovers it via introspection.
+			if not hasattr(self.__class__, script_name):
+				setattr(self.__class__, script_name, fn)
+				self._station_script_names.append(script_name)
+			else:
+				# Update description in case the station was renamed.
+				existing = getattr(self.__class__, script_name)
+				existing.__doc__ = fn.__doc__
+
+	@staticmethod
+	def _sanitise_uuid(uid):
+		"""Return a string safe to use as part of a Python identifier."""
+		return uid.replace("-", "_").replace(".", "_")
+
 	def _build_tools_menu(self):
 		"""Add a FreeRadio submenu under NVDA's Tools menu."""
 		tools_menu = gui.mainFrame.sysTrayIcon.toolsMenu
@@ -372,6 +457,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		musicRecognizer.recognize_async(stream_url, ffmpeg_path, "", _on_result)
 
 	def terminate(self):
+		# Remove all dynamically created favourite-station scripts from the class.
+		for name in getattr(self, "_station_script_names", []):
+			try:
+				delattr(self.__class__, name)
+			except AttributeError:
+				pass
+		self._station_script_names = []
+
 		try:
 			gui.NVDASettingsDialog.categoryClasses.remove(FreeRadioSettingsPanel)
 		except ValueError:
@@ -719,6 +812,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			return
 		self._manager.add_favorite(station)
 		ui.message(_("Added to favourites: %s") % station.get("name", "").strip())
+		self._rebuild_station_scripts()
 
 	@script(
 		description=_("Announce currently playing station. Press twice for full details, three times to copy track info, four times to force music recognition."),
@@ -874,6 +968,91 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			else:
 				_speak_on_demand(_("Starting music recognition…"))
 				self._start_music_recognition(stream_url)
+
+	@script(
+		# Equivalent to pressing Control+Windows+I (or F2 in the dialog) twice.
+		# Opens the station details dialog for the currently playing station.
+		# Provided as an unbound gesture so users who have difficulty with
+		# rapid key presses can assign a single keystroke to this action.
+		description=_("Show details of the currently playing station"),
+		category=_("FreeRadio"),
+	)
+	def script_showStationDetails(self, gesture):
+		if not self._player.has_media():
+			ui.message(_("FreeRadio is not active"))
+			return
+		if not getattr(self, "_whats_playing_dialog_open", False):
+			self._whats_playing_dialog_open = True
+			wx.CallAfter(self._show_station_details_dialog)
+
+	@script(
+		# Equivalent to pressing Control+Windows+I (or F2 in the dialog) three times.
+		# Copies the current ICY track title to the clipboard, or starts Shazam
+		# music recognition when no metadata is available.
+		# Provided as an unbound gesture so users who have difficulty with
+		# rapid key presses can assign a single keystroke to this action.
+		description=_("Copy current track info to clipboard, or start music recognition if unavailable"),
+		category=_("FreeRadio"),
+		speakOnDemand=True,
+	)
+	def script_copyTrackInfo(self, gesture):
+		if not self._player.has_media():
+			_speak_on_demand(_("FreeRadio is not active"))
+			return
+		import time as _time
+		token = _time.monotonic()
+		self._whats_playing_token = token
+
+		def _copy_or_recognize(tok=token):
+			from . import radioPlayer as _rp
+			icy = self._player.get_icy_title()
+			if not icy:
+				url = (
+					getattr(self._player, "_current_url_resolved", None)
+					or getattr(self._player, "_current_url", None)
+				)
+				if url:
+					icy = _rp._read_icy_title(url)
+			# Abort if a concurrent gesture (e.g. force-recognition) changed the token.
+			if getattr(self, "_whats_playing_token", None) != tok:
+				return
+			if icy:
+				wx.CallAfter(self._copy_to_clipboard, icy)
+			else:
+				stream_url = (
+					getattr(self._player, "_current_url_resolved", None)
+					or getattr(self._player, "_current_url", None)
+				)
+				if not stream_url:
+					wx.CallAfter(_speak_on_demand, _("No track info available"))
+					return
+				wx.CallAfter(_speak_on_demand, _("No track metadata found. Starting music recognition…"))
+				self._start_music_recognition(stream_url)
+
+		threading.Thread(target=_copy_or_recognize, daemon=True).start()
+
+	@script(
+		# Equivalent to pressing Control+Windows+I (or F2 in the dialog) four times.
+		# Forces Shazam music recognition regardless of whether ICY metadata is present.
+		# Provided as an unbound gesture so users who have difficulty with
+		# rapid key presses can assign a single keystroke to this action.
+		description=_("Force music recognition for the currently playing stream"),
+		category=_("FreeRadio"),
+		speakOnDemand=True,
+	)
+	def script_forceMusicRecognition(self, gesture):
+		if not self._player.has_media():
+			_speak_on_demand(_("FreeRadio is not active"))
+			return
+		stream_url = (
+			getattr(self._player, "_current_url_resolved", None)
+			or getattr(self._player, "_current_url", None)
+		)
+		if not stream_url:
+			_speak_on_demand(_("No track info available"))
+		else:
+			_speak_on_demand(_("Starting music recognition…"))
+			self._start_music_recognition(stream_url)
 
 	@script(
 		description=_("Increase FreeRadio volume by 5"),

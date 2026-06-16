@@ -50,6 +50,7 @@ All shortcuts can be reassigned from NVDA Menu → Preferences → Input Gesture
 | `Ctrl+Win+E` | Instant recording | Press once to start recording the current station; press again to stop. Press **twice** to start a **song recording** — the file is named after the current track and the recording stops automatically when the track changes. Press twice again while a song recording is active to stop it early. Playback continues uninterrupted in all recording modes. Only available for stations that broadcast ICY metadata. |
 | `Ctrl+Win+W` | Open recordings folder | Opens the folder containing recorded files in File Explorer. |
 | *(unassigned)* | Toggle mute notifications | Toggles the Mute Notifications setting on the fly. Assign a key combination via NVDA Menu → Preferences → Input Gestures → FreeRadio. |
+| *(unassigned)* | Play favourite station directly | Each station in your favourites list appears as a separate entry in NVDA Menu → Preferences → Input Gestures → **FreeRadio Stations**. Assign any keyboard shortcut to a station to start playing it instantly from anywhere, without opening the browser. |
 
 Next / previous shortcuts only navigate the favourites list; they do not work with the all stations list. When a list is focused in the browser window, the left and right arrow keys serve the same purpose — see In-Dialog Shortcuts.
 
@@ -132,6 +133,19 @@ To delete a station from the favourites list, select it and press the **Delete S
 ### Reordering Favourites
 
 With a station selected in the Favourites tab, press `comma` to enter move mode — you will hear a beep. Navigate to the target position with the arrow keys, then press `comma` again. The station is placed at the chosen position and the new order is saved immediately. Pressing `comma` again at the same position cancels the move.
+
+### Direct Keyboard Shortcuts for Favourite Stations
+
+Every station in your favourites list is registered as a separate script in NVDA's Input Gestures dialog, under the **FreeRadio Stations** category. You can assign any keyboard shortcut to any station and press it from anywhere — no need to open the browser window first.
+
+To assign a shortcut:
+
+1. Open NVDA Menu → Preferences → Input Gestures.
+2. Expand the **FreeRadio Stations** category.
+3. Find the station by name, select it, and press **Add**.
+4. Press the desired key combination and confirm.
+
+The shortcut activates the station immediately. If the station is later removed from your favourites, its entry disappears from the category and any shortcut assigned to it is automatically cleared by NVDA. When a new station is added to favourites, it appears in the category straight away — the Input Gestures dialog does not need to be reopened.
 
 ### Adding a Custom Station
 
