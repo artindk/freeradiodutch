@@ -14,6 +14,7 @@ import ui
 import wx
 import winsound
 import gui
+from gui import nvdaControls
 
 _ = _tr
 del _tr
@@ -99,6 +100,7 @@ class RadioDialog(wx.Dialog):
 		self._search_fetch_id = 0
 		self._total_found = None  # Total stations found by API (may exceed displayed limit)
 		self._country_station_counts = {}  # code -> stationcount from API, populated by _fetch_countries
+		self._sched_index_map = []  # Maps schedule listbox rows to ScheduledRecording objects (None for headers)
 
 		self._build_ui()
 		self._prepopulate_country_combo()
@@ -495,6 +497,68 @@ class RadioDialog(wx.Dialog):
 		self._sched_dur.SetName(dur_label)
 		sizer.Add(self._sched_dur, 0, wx.LEFT | wx.RIGHT, 8)
 
+		# --- Recurrence mode ---
+		sizer.Add(
+			wx.StaticText(self._rec_panel, label=_("Recurrence:")),
+			0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8,
+		)
+		self._sched_rec_once = wx.RadioButton(
+			self._rec_panel,
+			label=_("Record &once"),
+			style=wx.RB_GROUP,
+		)
+		self._sched_rec_weekly = wx.RadioButton(
+			self._rec_panel,
+			label=_("Repeat &weekly (fixed number of times)"),
+		)
+		self._sched_rec_indef = wx.RadioButton(
+			self._rec_panel,
+			label=_("Repeat &indefinitely"),
+		)
+		self._sched_rec_once.SetValue(True)
+		sizer.Add(self._sched_rec_once,   0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
+		sizer.Add(self._sched_rec_weekly, 0, wx.LEFT | wx.RIGHT | wx.TOP, 4)
+		sizer.Add(self._sched_rec_indef,  0, wx.LEFT | wx.RIGHT | wx.TOP, 4)
+
+		# Occurrence count — shown only when "weekly (fixed)" is selected
+		occ_row = wx.BoxSizer(wx.HORIZONTAL)
+		self._sched_occ_label = wx.StaticText(
+			self._rec_panel, label=_("Number of occurrences:"),
+		)
+		self._sched_occ_spin = wx.SpinCtrl(
+			self._rec_panel, min=1, max=520, initial=4,
+		)
+		self._sched_occ_spin.SetName(_("Number of occurrences:"))
+		occ_row.Add(self._sched_occ_label, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 8)
+		occ_row.Add(self._sched_occ_spin,  0)
+		sizer.Add(occ_row, 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
+		self._sched_occ_label.Hide()
+		self._sched_occ_spin.Hide()
+
+		# --- Day-of-week selection ---
+		# nvdaControls.CustomCheckListBox exposes each item as
+		# ROLE_SYSTEM_CHECKBUTTON so NVDA announces state natively.
+		# Hidden when recurrence is "once" since day selection is irrelevant.
+		self._sched_days_label = wx.StaticText(
+			self._rec_panel, label=_("Active days:"),
+		)
+		sizer.Add(self._sched_days_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
+		_day_labels = [
+			_("Monday"), _("Tuesday"), _("Wednesday"), _("Thursday"),
+			_("Friday"), _("Saturday"), _("Sunday"),
+		]
+		self._sched_days_clb = nvdaControls.CustomCheckListBox(
+			self._rec_panel, choices=_day_labels,
+		)
+		self._sched_days_clb.SetName(_("Active days:"))
+		# Default: Mon-Fri (indices 0-4) checked
+		self._sched_days_clb.Checked = list(range(5))
+		self._sched_days_clb.Select(0)
+		sizer.Add(self._sched_days_clb, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
+		# Hidden initially because "Record once" is the default
+		self._sched_days_label.Hide()
+		self._sched_days_clb.Hide()
+
 		sizer.Add(wx.StaticText(self._rec_panel, label=_("Playback during recording:")),
 		          0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
 		self._sched_mode_play = wx.RadioButton(
@@ -520,16 +584,26 @@ class RadioDialog(wx.Dialog):
 
 		self._sched_del_btn = wx.Button(self._rec_panel, label=_("&Remove Selected"))
 		self._sched_del_btn.Enable(False)
-		sizer.Add(self._sched_del_btn, 0, wx.LEFT | wx.BOTTOM, 8)
+		self._sched_edit_btn = wx.Button(self._rec_panel, label=_("&Edit Selected"))
+		self._sched_edit_btn.Enable(False)
+		sched_btn_row = wx.BoxSizer(wx.HORIZONTAL)
+		sched_btn_row.Add(self._sched_del_btn,  0, wx.RIGHT, 8)
+		sched_btn_row.Add(self._sched_edit_btn, 0)
+		sizer.Add(sched_btn_row, 0, wx.LEFT | wx.BOTTOM, 8)
 
 		self._rec_panel.SetSizer(sizer)
 
 		self._rec_btn.Bind(wx.EVT_BUTTON,       self._on_rec_btn)
 		self._sched_add_btn.Bind(wx.EVT_BUTTON, self._on_sched_add)
 		self._sched_del_btn.Bind(wx.EVT_BUTTON, self._on_sched_del)
+		self._sched_edit_btn.Bind(wx.EVT_BUTTON, self._on_sched_edit)
 		self._sched_list.Bind(wx.EVT_LISTBOX,   self._on_sched_selected)
 		self._sched_list.Bind(wx.EVT_CHAR,      self._on_list_char)
 		self._sched_station_cb.Bind(wx.EVT_SET_FOCUS, self._on_sched_station_focus)
+		# Show/hide the occurrence spin when the recurrence mode changes.
+		self._sched_rec_weekly.Bind(wx.EVT_RADIOBUTTON, self._on_sched_recurrence_changed)
+		self._sched_rec_once.Bind(wx.EVT_RADIOBUTTON,   self._on_sched_recurrence_changed)
+		self._sched_rec_indef.Bind(wx.EVT_RADIOBUTTON,  self._on_sched_recurrence_changed)
 		# Type-ahead for the station listbox is handled in _on_char_hook.
 
 	def _build_timer_tab(self):
@@ -948,12 +1022,47 @@ class RadioDialog(wx.Dialog):
 		self._sched_station_pending_name = prev_name
 
 	def _refresh_sched_list(self):
-		"""Rebuild the scheduled recordings listbox."""
+		"""Rebuild the scheduled recordings listbox.
+
+		Each entry is a single line with station name first.  Recurring
+		entries show the day pattern; one-off entries show the full date.
+		  BBC Radio 4 — Every Monday, Saturday — 18:00, 60 min, Record only
+		  TRT Radyo 1 — Every day — 20:00, 30 min, Listen and record
+		  TRT FM — 15.06.2025 14:00 — 45 min, Record only
+		"""
+		_FULL_DAY_NAMES = [
+			_("Monday"), _("Tuesday"), _("Wednesday"), _("Thursday"),
+			_("Friday"), _("Saturday"), _("Sunday"),
+		]
+
 		self._sched_list.Clear()
-		if self._recorder:
-			for rec in self._recorder.get_schedules():
-				self._sched_list.Append(str(rec))
-		self._sched_del_btn.Enable(self._sched_list.GetCount() > 0)
+		self._sched_index_map = []
+
+		if not self._recorder:
+			self._sched_del_btn.Enable(False)
+			return
+
+		for rec in self._recorder.get_schedules():
+			station = rec.station.get("name", "?").strip()
+			mode    = _("Record only") if rec.record_only else _("Listen and record")
+
+			if rec.recurrence != "once":
+				days = sorted(rec.active_days) if rec.active_days else list(range(7))
+				if days == list(range(7)):
+					when = _("Every day")
+				else:
+					when = _("Every %s") % ", ".join(_FULL_DAY_NAMES[d] for d in days)
+				t    = rec.start_time.strftime("%H:%M")
+				line = "%s — %s — %s, %d min, %s" % (station, when, t, rec.duration_minutes, mode)
+			else:
+				ts   = rec.start_time.strftime("%d.%m.%Y %H:%M")
+				line = "%s — %s — %d min, %s" % (station, ts, rec.duration_minutes, mode)
+
+			self._sched_list.Append(line)
+			self._sched_index_map.append(rec)
+
+		self._sched_del_btn.Enable(bool(self._sched_index_map))
+		self._sched_edit_btn.Enable(bool(self._sched_index_map))
 
 	def _on_sched_station_focus(self, event):
 		"""Apply the pending selection when the station listbox actually gets focus.
@@ -967,6 +1076,20 @@ class RadioDialog(wx.Dialog):
 			pending = getattr(self, "_sched_station_pending_name", "")
 			idx = self._sched_station_cb.FindString(pending) if pending else wx.NOT_FOUND
 			self._sched_station_cb.SetSelection(idx if idx != wx.NOT_FOUND else 0)
+		event.Skip()
+
+
+	def _on_sched_recurrence_changed(self, event):
+		"""Show/hide occurrence count and active-days list based on recurrence mode."""
+		is_once         = self._sched_rec_once.GetValue()
+		is_weekly_fixed = self._sched_rec_weekly.GetValue()
+		# Occurrence count only visible for "weekly (fixed)"
+		self._sched_occ_label.Show(is_weekly_fixed)
+		self._sched_occ_spin.Show(is_weekly_fixed)
+		# Day selection hidden when recording only once
+		self._sched_days_label.Show(not is_once)
+		self._sched_days_clb.Show(not is_once)
+		self._rec_panel.Layout()
 		event.Skip()
 
 
@@ -1009,12 +1132,46 @@ class RadioDialog(wx.Dialog):
 			self._sched_time.SetFocus()
 			return
 
+		# --- Collect active days (0=Mon … 6=Sun) ---
+		active_days = list(self._sched_days_clb.Checked)
+		# If no days are checked, treat as all days active (no restriction).
+
 		now   = datetime.datetime.now()
 		start = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
 		next_day = False
 		if start <= now:
-			start    += datetime.timedelta(days=1)
-			next_day  = True
+			# Advance to the next candidate day that is in active_days (or tomorrow
+			# when active_days is empty / all days are allowed).
+			candidate = start + datetime.timedelta(days=1)
+			if active_days:
+				# Walk forward up to 7 days to find an allowed weekday.
+				for _day in range(7):
+					if candidate.weekday() in active_days:
+						break
+					candidate += datetime.timedelta(days=1)
+			start    = candidate
+			next_day = True
+		elif active_days and start.weekday() not in active_days:
+			# Today's time is still in the future but today is not an active day —
+			# advance to the next active day.
+			candidate = start + datetime.timedelta(days=1)
+			for _day in range(7):
+				if candidate.weekday() in active_days:
+					break
+				candidate += datetime.timedelta(days=1)
+			start    = candidate
+			next_day = True
+
+		# --- Recurrence mode ---
+		if self._sched_rec_indef.GetValue():
+			recurrence      = "indefinite"
+			max_occurrences = 0
+		elif self._sched_rec_weekly.GetValue():
+			recurrence      = "weekly"
+			max_occurrences = self._sched_occ_spin.GetValue()
+		else:
+			recurrence      = "once"
+			max_occurrences = 0
 
 		dur = self._sched_dur.GetValue()
 		station = self._resolve_station_from_combo(
@@ -1034,11 +1191,14 @@ class RadioDialog(wx.Dialog):
 			station, start, dur,
 			player_paths=player_paths,
 			record_only=record_only,
+			recurrence=recurrence,
+			active_days=active_days,
+			max_occurrences=max_occurrences,
 		)
 		self._refresh_sched_list()
 		# record_only may have been forced on due to conflict — read back from rec
 		record_only = _rec.record_only
-		mode_str  = _("record only") if record_only else _("listen and record")
+		mode_str  = _("Record only") if record_only else _("Listen and record")
 		date_str  = start.strftime("%d.%m.%Y")
 		if next_day:
 			ui.message(_("Time has passed today. Schedule added for tomorrow: %(station)s at %(time)s (%(mode)s)") % {
@@ -1063,14 +1223,56 @@ class RadioDialog(wx.Dialog):
 		idx = self._sched_list.GetSelection()
 		if idx == wx.NOT_FOUND:
 			return
-		schedules = self._recorder.get_schedules()
-		if idx < len(schedules):
-			self._recorder.remove_schedule(schedules[idx])
+		index_map = getattr(self, "_sched_index_map", [])
+		if idx >= len(index_map):
+			return
+		self._recorder.remove_schedule(index_map[idx])
+		self._refresh_sched_list()
+		ui.message(_("Schedule deleted"))
+
+	def _on_sched_edit(self, event):
+		if not self._recorder:
+			return
+		idx = self._sched_list.GetSelection()
+		if idx == wx.NOT_FOUND:
+			return
+		index_map = getattr(self, "_sched_index_map", [])
+		if idx >= len(index_map):
+			return
+		rec = index_map[idx]
+		dlg = EditScheduleDialog(
+			self,
+			rec,
+			player_paths={
+				"vlc":       self._player._vlc_path,
+				"potplayer": self._player._potplayer_path,
+				"wmp":       self._player._wmp_path,
+			},
+		)
+		if dlg.ShowModal() == wx.ID_OK:
+			updated = dlg.get_values()
+			# Apply changes to the existing ScheduledRecording in-place
+			rec.start_time       = updated["start_time"]
+			rec.duration_minutes = updated["duration_minutes"]
+			rec.recurrence       = updated["recurrence"]
+			rec.active_days      = updated["active_days"]
+			rec.max_occurrences  = updated["max_occurrences"]
+			rec.record_only      = updated["record_only"]
+			rec.fired            = False   # reset so scheduler picks it up again
+			# Re-sort and persist
+			self._recorder._scheduled.sort(key=lambda r: r.start_time)
+			from . import recorder as _rec_mod
+			_rec_mod._save_schedules(self._recorder._scheduled)
 			self._refresh_sched_list()
-			ui.message(_("Schedule deleted"))
+			ui.message(_("Schedule updated"))
+		dlg.Destroy()
 
 	def _on_sched_selected(self, event):
-		self._sched_del_btn.Enable(self._sched_list.GetSelection() != wx.NOT_FOUND)
+		idx = self._sched_list.GetSelection()
+		has = idx != wx.NOT_FOUND
+		self._sched_del_btn.Enable(has)
+		self._sched_edit_btn.Enable(has)
+
 
 
 	def _fetch_all(self):
@@ -2878,3 +3080,159 @@ class AddCustomStationDialog(wx.Dialog):
 
 	def get_values(self):
 		return self._name.GetValue().strip(), self._url.GetValue().strip()
+
+class EditScheduleDialog(wx.Dialog):
+	"""Dialog for editing an existing ScheduledRecording.
+
+	Pre-fills all fields from the given rec object.  On OK, call get_values()
+	to retrieve a dict with the updated settings.
+	"""
+
+	def __init__(self, parent, rec, player_paths=None):
+		super().__init__(
+			parent,
+			title=_("Edit Schedule — %s") % rec.station.get("name", "?"),
+			style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER,
+		)
+		self._rec          = rec
+		self._player_paths = player_paths or {}
+
+		sizer = wx.BoxSizer(wx.VERTICAL)
+
+		# --- Time ---
+		sizer.Add(wx.StaticText(self, label=_("Start time (HH:MM):")), 0, wx.EXPAND | wx.ALL, 8)
+		self._time_ctrl = wx.TextCtrl(self, value=rec.start_time.strftime("%H:%M"))
+		self._time_ctrl.SetName(_("Start time (HH:MM):"))
+		sizer.Add(self._time_ctrl, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 8)
+
+		# --- Duration ---
+		sizer.Add(wx.StaticText(self, label=_("Duration (minutes):")), 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
+		self._dur_spin = wx.SpinCtrl(self, min=1, max=600, initial=rec.duration_minutes)
+		self._dur_spin.SetName(_("Duration (minutes):"))
+		sizer.Add(self._dur_spin, 0, wx.LEFT | wx.RIGHT | wx.BOTTOM, 8)
+
+		# --- Recurrence ---
+		sizer.Add(wx.StaticText(self, label=_("Recurrence:")), 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
+		self._rec_once   = wx.RadioButton(self, label=_("Record &once"),                            style=wx.RB_GROUP)
+		self._rec_weekly = wx.RadioButton(self, label=_("Repeat &weekly (fixed number of times)"))
+		self._rec_indef  = wx.RadioButton(self, label=_("Repeat &indefinitely"))
+		for rb in (self._rec_once, self._rec_weekly, self._rec_indef):
+			sizer.Add(rb, 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
+		if rec.recurrence == "weekly":
+			self._rec_weekly.SetValue(True)
+		elif rec.recurrence == "indefinite":
+			self._rec_indef.SetValue(True)
+		else:
+			self._rec_once.SetValue(True)
+
+		# Occurrence count
+		occ_row = wx.BoxSizer(wx.HORIZONTAL)
+		self._occ_label = wx.StaticText(self, label=_("Number of occurrences:"))
+		self._occ_spin  = wx.SpinCtrl(self, min=1, max=520, initial=max(1, rec.max_occurrences))
+		self._occ_spin.SetName(_("Number of occurrences:"))
+		occ_row.Add(self._occ_label, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 8)
+		occ_row.Add(self._occ_spin,  0)
+		sizer.Add(occ_row, 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
+
+		# --- Active days ---
+		_day_labels = [
+			_("Monday"), _("Tuesday"), _("Wednesday"), _("Thursday"),
+			_("Friday"), _("Saturday"), _("Sunday"),
+		]
+		self._days_label = wx.StaticText(self, label=_("Active days:"))
+		sizer.Add(self._days_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
+		self._days_clb = nvdaControls.CustomCheckListBox(self, choices=_day_labels)
+		self._days_clb.SetName(_("Active days:"))
+		checked = rec.active_days if rec.active_days else list(range(7))
+		self._days_clb.Checked = checked
+		if checked:
+			self._days_clb.Select(checked[0])
+		sizer.Add(self._days_clb, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
+
+		# --- Playback mode ---
+		sizer.Add(wx.StaticText(self, label=_("Playback during recording:")), 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
+		self._mode_play = wx.RadioButton(self, label=_("Record while &listening (play and record simultaneously)"),  style=wx.RB_GROUP)
+		self._mode_rec  = wx.RadioButton(self, label=_("Record &only (no audio output)"))
+		sizer.Add(self._mode_play, 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
+		sizer.Add(self._mode_rec,  0, wx.LEFT | wx.RIGHT | wx.TOP, 4)
+		if rec.record_only:
+			self._mode_rec.SetValue(True)
+		else:
+			self._mode_play.SetValue(True)
+
+		# --- OK / Cancel ---
+		btn_sizer = wx.StdDialogButtonSizer()
+		ok_btn = wx.Button(self, wx.ID_OK, label=_("&Save"))
+		ok_btn.SetDefault()
+		btn_sizer.AddButton(ok_btn)
+		btn_sizer.AddButton(wx.Button(self, wx.ID_CANCEL))
+		btn_sizer.Realize()
+		sizer.Add(btn_sizer, 0, wx.EXPAND | wx.ALL, 8)
+
+		self.SetSizer(sizer)
+		self.Fit()
+		self.SetMinSize((360, -1))
+
+		# Wire up visibility toggles
+		for rb in (self._rec_once, self._rec_weekly, self._rec_indef):
+			rb.Bind(wx.EVT_RADIOBUTTON, self._on_recurrence_changed)
+		ok_btn.Bind(wx.EVT_BUTTON, self._on_ok)
+
+		self._update_visibility()
+		wx.CallAfter(self._time_ctrl.SetFocus)
+
+	# ------------------------------------------------------------------
+	def _update_visibility(self):
+		is_once   = self._rec_once.GetValue()
+		is_weekly = self._rec_weekly.GetValue()
+		self._occ_label.Show(is_weekly)
+		self._occ_spin.Show(is_weekly)
+		self._days_label.Show(not is_once)
+		self._days_clb.Show(not is_once)
+		self.Layout()
+
+	def _on_recurrence_changed(self, event):
+		self._update_visibility()
+		event.Skip()
+
+	def _on_ok(self, event):
+		time_str = self._time_ctrl.GetValue().strip()
+		try:
+			parts = time_str.split(":")
+			if len(parts) != 2:
+				raise ValueError()
+			hour, minute = int(parts[0]), int(parts[1])
+			if not (0 <= hour <= 23 and 0 <= minute <= 59):
+				raise ValueError()
+		except (ValueError, IndexError):
+			ui.message(_("Invalid time format. Use HH:MM"))
+			self._time_ctrl.SetFocus()
+			return
+
+		# Build new start_time, keeping original date for once-off entries,
+		# or using today/tomorrow for recurring ones.
+		import datetime as _dt
+		rec = self._rec
+		if rec.recurrence == "once":
+			# Keep the original date; only the time changes.
+			new_start = rec.start_time.replace(hour=hour, minute=minute, second=0, microsecond=0)
+		else:
+			now       = _dt.datetime.now()
+			new_start = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+			if new_start <= now:
+				new_start += _dt.timedelta(days=1)
+
+		self._result = {
+			"start_time":       new_start,
+			"duration_minutes": self._dur_spin.GetValue(),
+			"recurrence":       ("weekly" if self._rec_weekly.GetValue()
+			                     else "indefinite" if self._rec_indef.GetValue()
+			                     else "once"),
+			"active_days":      list(self._days_clb.Checked),
+			"max_occurrences":  self._occ_spin.GetValue() if self._rec_weekly.GetValue() else 0,
+			"record_only":      self._mode_rec.GetValue(),
+		}
+		self.EndModal(wx.ID_OK)
+
+	def get_values(self):
+		return self._result

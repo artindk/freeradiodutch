@@ -18,14 +18,13 @@ addon_info = AddonInfo(
 	addon_description=_("""FreeRadio is an internet radio add-on for NVDA that provides seamless access to thousands of stations via the Radio Browser open directory. It features a fully accessible station browser with search, country filter, favourites management, and per-station audio profiles. Playback is handled by a prioritised backend chain (BASS, VLC, PotPlayer, Windows Media Player) with support for volume control, audio effects, output device selection, and simultaneous audio mirroring to a second device. Additional features include instant and scheduled recording, sleep and alarm timers, automatic ICY metadata announcements, Shazam-based music recognition, and a liked-songs log. All controls and shortcuts are designed for NVDA accessibility."""),
 	
 	# version
-	addon_version="2026.20.0",
+	addon_version="2026.20.1",
 	
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version
 	addon_changelog=_("""
--Added: Favourite stations now appear as individual scripts in NVDA's Input Gestures dialog under the "FreeRadio Stations" category.
-- Each favourite station can be assigned a custom keyboard shortcut, allowing direct playback without opening the station browser. Assigned shortcuts are updated automatically when favourites are added or removed.
-- Added three unbound input gestures as alternatives to the double, triple, and quadruple press of Control+Windows+I (or F2 in the dialog): Show station details, Copy track info to clipboard or start music recognition, and Force music recognition. These allow users who have difficulty with rapid key presses to assign a single keystroke to each action via NVDA's Input Gestures dialog.
+- Added: Scheduled recordings now support recurring modes. When adding a schedule, three recurrence options are available: Record once (original behaviour), Repeat weekly for a fixed number of occurrences, and Repeat indefinitely. For recurring schedules, active days of the week can be selected; leaving all days unchecked means the schedule fires every day.
+- Added: Edit Selected button in the Recording tab. Selecting a scheduled entry and pressing Edit opens a dialog pre-filled with all current settings — time, duration, recurrence mode, active days, occurrence count, and playback mode — which can be adjusted and saved without deleting and re-creating the entry.
 """),
 	
 	# Author(s)

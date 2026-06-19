@@ -572,21 +572,105 @@ def _resolve_playlist(url):
 	return url
 
 
+_DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+
 class ScheduledRecording:
+	"""Represents one scheduled (possibly recurring) recording entry.
+
+	recurrence values:
+	  "once"       – fire exactly once (default / legacy behaviour)
+	  "weekly"     – repeat every week on the specified active_days
+	  "indefinite" – repeat every week on active_days with no end limit
+
+	active_days: list of weekday integers 0–6 (0=Monday … 6=Sunday).
+	  An empty list or None means all days are active.
+
+	max_occurrences: how many times to fire before auto-removing.
+	  Ignored when recurrence is "indefinite" or "once".
+
+	occurrences_done: counter incremented after each successful fire.
+	"""
+
 	def __init__(self, station, start_time, duration_minutes,
-	             player_paths=None, record_only=False):
-		self.station          = station
-		self.start_time       = start_time
-		self.duration_minutes = duration_minutes
-		self.player_paths     = player_paths or {}   # {vlc, potplayer, wmp}
-		self.record_only      = record_only
-		self.fired            = False
-		self.output_path      = None
+	             player_paths=None, record_only=False,
+	             recurrence="once", active_days=None,
+	             max_occurrences=0, occurrences_done=0):
+		self.station           = station
+		self.start_time        = start_time
+		self.duration_minutes  = duration_minutes
+		self.player_paths      = player_paths or {}   # {vlc, potplayer, wmp}
+		self.record_only       = record_only
+		self.fired             = False
+		self.output_path       = None
+		# Recurrence fields
+		self.recurrence        = recurrence       # "once" | "weekly" | "indefinite"
+		self.active_days       = active_days or []  # [] means all days
+		self.max_occurrences   = max_occurrences  # 0 = unlimited (for "indefinite")
+		self.occurrences_done  = occurrences_done
+
+	# ------------------------------------------------------------------
+	# Recurrence helpers
+	# ------------------------------------------------------------------
+
+	def is_recurring(self):
+		"""Return True when this entry should be re-scheduled after firing."""
+		return self.recurrence in ("weekly", "indefinite")
+
+	def has_more_occurrences(self):
+		"""Return True when there are still firings left for this entry."""
+		if self.recurrence == "once":
+			return False
+		if self.recurrence == "indefinite":
+			return True
+		# "weekly" with a fixed count
+		if self.max_occurrences > 0:
+			return self.occurrences_done < self.max_occurrences
+		return True  # weekly with no cap → treat as indefinite
+
+	def next_occurrence(self):
+		"""Compute and return the next start_time for a recurring entry.
+
+		Advances from the current start_time by one week, then keeps
+		stepping forward one day at a time until a day that is in
+		active_days (if any restriction is set).
+
+		Returns a new datetime or None when no valid day is found within
+		the next 7 days.
+		"""
+		candidate = self.start_time + datetime.timedelta(weeks=1)
+		if not self.active_days:
+			return candidate
+		# Walk forward up to 7 days to find an allowed weekday.
+		for _ in range(7):
+			if candidate.weekday() in self.active_days:
+				return candidate
+			candidate += datetime.timedelta(days=1)
+		return None
 
 	def __str__(self):
 		ts   = self.start_time.strftime("%d.%m.%Y %H:%M")
 		mode = _("Record only") if self.record_only else _("Listen and record")
-		return f"{self.station.get('name','?')} — {ts} ({self.duration_minutes} min, {mode})"
+		base = f"{self.station.get('name','?')} — {ts} ({self.duration_minutes} min, {mode})"
+
+		if self.recurrence == "weekly":
+			day_labels = (
+				", ".join(_DAY_NAMES[d] for d in sorted(self.active_days))
+				if self.active_days else "every day"
+			)
+			remaining = ""
+			if self.max_occurrences > 0:
+				left = max(0, self.max_occurrences - self.occurrences_done)
+				remaining = f", {left} left"
+			base += f" [weekly: {day_labels}{remaining}]"
+		elif self.recurrence == "indefinite":
+			day_labels = (
+				", ".join(_DAY_NAMES[d] for d in sorted(self.active_days))
+				if self.active_days else "every day"
+			)
+			base += f" [indefinite: {day_labels}]"
+
+		return base
 
 
 def _schedules_path():
@@ -603,11 +687,16 @@ def _save_schedules(schedules):
 			continue
 		try:
 			data.append({
-				"station":          rec.station,
-				"start_time":       rec.start_time.isoformat(),
-				"duration_minutes": rec.duration_minutes,
-				"player_paths":     rec.player_paths,
-				"record_only":      rec.record_only,
+				"station":           rec.station,
+				"start_time":        rec.start_time.isoformat(),
+				"duration_minutes":  rec.duration_minutes,
+				"player_paths":      rec.player_paths,
+				"record_only":       rec.record_only,
+				# Recurrence fields (absent in legacy files → defaults apply on load)
+				"recurrence":        rec.recurrence,
+				"active_days":       rec.active_days,
+				"max_occurrences":   rec.max_occurrences,
+				"occurrences_done":  rec.occurrences_done,
 			})
 		except Exception as e:
 			log.warning("FreeRadio Recorder: could not serialize schedule: %s", e)
@@ -621,6 +710,19 @@ def _save_schedules(schedules):
 
 
 def _load_schedules():
+	"""Load scheduled recordings from JSON.
+
+	Two special cases compared to the original implementation:
+
+	1. Crash recovery — if a recurring or one-shot entry should currently
+	   be active (its start_time has passed but the deadline has not yet
+	   been reached), it is returned with start_time=now so the scheduler
+	   fires it immediately and records for the remaining duration.
+
+	2. Recurrence fields — "recurrence", "active_days", "max_occurrences",
+	   and "occurrences_done" are read back from the JSON.  Missing keys
+	   (legacy files) fall back to "once" / [] / 0 / 0.
+	"""
 	import json
 	try:
 		path = _schedules_path()
@@ -632,15 +734,47 @@ def _load_schedules():
 		result = []
 		for item in data:
 			try:
-				start = datetime.datetime.fromisoformat(item["start_time"])
+				start            = datetime.datetime.fromisoformat(item["start_time"])
+				duration_minutes = item["duration_minutes"]
+				recurrence       = item.get("recurrence", "once")
+				active_days      = item.get("active_days", [])
+				max_occurrences  = item.get("max_occurrences", 0)
+				occurrences_done = item.get("occurrences_done", 0)
+
+				deadline = start + datetime.timedelta(minutes=duration_minutes)
+
 				if start <= now:
-					continue
+					if now < deadline:
+						# --- Crash recovery ---
+						# The recording should be active right now.
+						# Reschedule it to start immediately with the remaining duration.
+						remaining_minutes = int((deadline - now).total_seconds() / 60)
+						if remaining_minutes < 1:
+							# Less than a minute left — not worth resuming.
+							continue
+						log.info(
+							"FreeRadio Recorder: crash recovery — resuming '%s' "
+							"with %d minutes remaining",
+							item.get("station", {}).get("name", "?"),
+							remaining_minutes,
+						)
+						start            = now
+						duration_minutes = remaining_minutes
+						# Don't count the resumed firing as a new occurrence.
+					else:
+						# Entirely in the past — skip (no crash recovery possible).
+						continue
+
 				rec = ScheduledRecording(
 					station          = item["station"],
 					start_time       = start,
-					duration_minutes = item["duration_minutes"],
+					duration_minutes = duration_minutes,
 					player_paths     = item.get("player_paths", {}),
 					record_only      = item.get("record_only", False),
+					recurrence       = recurrence,
+					active_days      = active_days,
+					max_occurrences  = max_occurrences,
+					occurrences_done = occurrences_done,
 				)
 				result.append(rec)
 			except Exception as e:
@@ -786,13 +920,18 @@ class Recorder:
 		return self._station_name
 
 	def add_schedule(self, station, start_time, duration_minutes,
-	                 player_paths=None, record_only=False):
+	                 player_paths=None, record_only=False,
+	                 recurrence="once", active_days=None,
+	                 max_occurrences=0):
 		"""Schedule a recording.
 
 		player_paths: dict with optional keys 'vlc', 'potplayer', 'wmp'.
 		              Used only when record_only=False (listen + record mode)
 		              to launch a player for audio output.  Recording itself
 		              never requires a player.
+		recurrence:   "once" | "weekly" | "indefinite"
+		active_days:  list of weekday ints 0–6 (0=Mon). [] means all days.
+		max_occurrences: for "weekly" mode — 0 means no cap.
 		Returns (ScheduledRecording, conflict_names_str_or_None).
 		"""
 		conflict_names = None
@@ -806,6 +945,9 @@ class Recorder:
 			station, start_time, duration_minutes,
 			player_paths=player_paths or {},
 			record_only=record_only,
+			recurrence=recurrence,
+			active_days=active_days or [],
+			max_occurrences=max_occurrences,
 		)
 		self._scheduled.append(rec)
 		self._scheduled.sort(key=lambda r: r.start_time)
@@ -862,7 +1004,42 @@ class Recorder:
 						args=(rec,),
 						daemon=True,
 					).start()
+
+			# Remove fired entries from the pending list.
 			self._scheduled = [r for r in self._scheduled if not r.fired]
+
+			# Re-queue recurring entries that have more occurrences left.
+			for rec in fired:
+				rec.occurrences_done += 1
+				if rec.is_recurring() and rec.has_more_occurrences():
+					next_start = rec.next_occurrence()
+					if next_start is not None:
+						next_rec = ScheduledRecording(
+							station          = rec.station,
+							start_time       = next_start,
+							duration_minutes = rec.duration_minutes,
+							player_paths     = rec.player_paths,
+							record_only      = rec.record_only,
+							recurrence       = rec.recurrence,
+							active_days      = rec.active_days,
+							max_occurrences  = rec.max_occurrences,
+							occurrences_done = rec.occurrences_done,
+						)
+						self._scheduled.append(next_rec)
+						self._scheduled.sort(key=lambda r: r.start_time)
+						log.info(
+							"FreeRadio Recorder: recurring entry re-queued — "
+							"'%s' next at %s",
+							rec.station.get("name", "?"),
+							next_start.strftime("%d.%m.%Y %H:%M"),
+						)
+					else:
+						log.warning(
+							"FreeRadio Recorder: could not find next valid day "
+							"for '%s'; stopping recurrence",
+							rec.station.get("name", "?"),
+						)
+
 			if fired:
 				_save_schedules(self._scheduled)
 			time.sleep(1)

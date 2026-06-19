@@ -1,9 +1,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FreeRadio\n"
-"POT-Creation-Date: 2026-06-16 07:10+0300\n"
-"PO-Revision-Date: 2026-06-16 07:10+0300\n"
+"Project-Id-Version: FreeRadio2026.20.1\n"
+"POT-Creation-Date: 2026-06-19 07:44+0300\n"
+"PO-Revision-Date: 2026-06-19 09:40+0300\n"
 "Last-Translator: nvda.ru\n"
 "Language-Team: nvda.ru\n"
 "Language: ru_RU\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: addon/globalPlugins/freeradio/__init__.py:267
 #: addon/globalPlugins/freeradio/__init__.py:1483
-#: addon/globalPlugins/freeradio/radioDialog.py:992
+#: addon/globalPlugins/freeradio/radioDialog.py:1115
 #, python-format
 msgid "Recording started: %s"
 msgstr "Запись начата: %s"
@@ -45,15 +45,15 @@ msgstr "Горячая клавиша воспроизведения %s ()"
 
 #: addon/globalPlugins/freeradio/__init__.py:392
 msgid "Station &Browser...\tCtrl+Win+R"
-msgstr "Обозреватель станций...\tCtrl+Win+R"
+msgstr "&Обозреватель станций...\tCtrl+Win+R"
 
 #: addon/globalPlugins/freeradio/__init__.py:401
 msgid "FreeRadio &Settings..."
-msgstr "Настройки FreeRadio..."
+msgstr "&Настройки FreeRadio..."
 
 #: addon/globalPlugins/freeradio/__init__.py:410
 msgid "Check for &Updates..."
-msgstr "Проверить обновления..."
+msgstr "Проверить &обновления..."
 
 #: addon/globalPlugins/freeradio/__init__.py:423
 msgid "&FreeRadio"
@@ -108,7 +108,7 @@ msgstr "Аудиозеркало остановлено"
 #: addon/globalPlugins/freeradio/__init__.py:808
 #: addon/globalPlugins/freeradio/__init__.py:1413
 #: addon/globalPlugins/freeradio/__init__.py:1477
-#: addon/globalPlugins/freeradio/radioDialog.py:986
+#: addon/globalPlugins/freeradio/radioDialog.py:1109
 msgid "No station is playing"
 msgstr "Ни одна станция не играет"
 
@@ -143,15 +143,15 @@ msgid "Pause or resume FreeRadio playback"
 msgstr "Приостановить или возобновить воспроизведение FreeRadio"
 
 #: addon/globalPlugins/freeradio/__init__.py:657
-#: addon/globalPlugins/freeradio/radioDialog.py:1838
-#: addon/globalPlugins/freeradio/radioDialog.py:2172
-#: addon/globalPlugins/freeradio/radioDialog.py:2391
-#: addon/globalPlugins/freeradio/radioDialog.py:2441
+#: addon/globalPlugins/freeradio/radioDialog.py:2040
+#: addon/globalPlugins/freeradio/radioDialog.py:2374
+#: addon/globalPlugins/freeradio/radioDialog.py:2593
+#: addon/globalPlugins/freeradio/radioDialog.py:2643
 msgid "Radio paused"
 msgstr "Радио приостановлено"
 
 #: addon/globalPlugins/freeradio/__init__.py:660
-#: addon/globalPlugins/freeradio/radioDialog.py:2176
+#: addon/globalPlugins/freeradio/radioDialog.py:2378
 msgid "Playing"
 msgstr "Воспроизводится"
 
@@ -187,7 +187,7 @@ msgstr ""
 "Следующие записи активны и будут остановлены:\n"
 "%s\n"
 "\n"
-"Остановить радио и завершить все записи?"
+"Остановить radio и завершить все записи?"
 
 #: addon/globalPlugins/freeradio/__init__.py:702
 #: addon/globalPlugins/freeradio/__init__.py:1299
@@ -265,7 +265,7 @@ msgstr "Воспроизводится: %s"
 #: addon/globalPlugins/freeradio/__init__.py:885
 #: addon/globalPlugins/freeradio/__init__.py:1197
 #: addon/globalPlugins/freeradio/__init__.py:1205
-#: addon/globalPlugins/freeradio/radioDialog.py:991
+#: addon/globalPlugins/freeradio/radioDialog.py:1114
 #, python-format
 msgid "Recording: %s"
 msgstr "Запись: %s"
@@ -320,10 +320,10 @@ msgstr "Увеличить громкость FreeRadio на 5"
 
 #: addon/globalPlugins/freeradio/__init__.py:1066
 #: addon/globalPlugins/freeradio/__init__.py:1078
-#: addon/globalPlugins/freeradio/radioDialog.py:2140
-#: addon/globalPlugins/freeradio/radioDialog.py:2153
-#: addon/globalPlugins/freeradio/radioDialog.py:2243
-#: addon/globalPlugins/freeradio/radioDialog.py:2250
+#: addon/globalPlugins/freeradio/radioDialog.py:2342
+#: addon/globalPlugins/freeradio/radioDialog.py:2355
+#: addon/globalPlugins/freeradio/radioDialog.py:2445
+#: addon/globalPlugins/freeradio/radioDialog.py:2452
 #, python-format
 msgid "Volume %d"
 msgstr "Громкость %d"
@@ -373,7 +373,7 @@ msgid "Recording stopped: %s"
 msgstr "Запись остановлена: %s"
 
 #: addon/globalPlugins/freeradio/__init__.py:1473
-#: addon/globalPlugins/freeradio/radioDialog.py:983
+#: addon/globalPlugins/freeradio/radioDialog.py:1106
 msgid "Recording stopped"
 msgstr "Запись остановлена"
 
@@ -421,8 +421,8 @@ msgstr "&Отключить движок BASS (использовать VLC/PotP
 #: addon/globalPlugins/freeradio/__init__.py:1732
 #: addon/globalPlugins/freeradio/__init__.py:2930
 #: addon/globalPlugins/freeradio/__init__.py:2941
-#: addon/globalPlugins/freeradio/radioDialog.py:791
-#: addon/globalPlugins/freeradio/radioDialog.py:805
+#: addon/globalPlugins/freeradio/radioDialog.py:865
+#: addon/globalPlugins/freeradio/radioDialog.py:879
 #, python-format
 msgid "%(effect)s %(state)s"
 msgstr "%(effect)s %(state)s"
@@ -433,8 +433,8 @@ msgstr "%(effect)s %(state)s"
 #: addon/globalPlugins/freeradio/__init__.py:1734
 #: addon/globalPlugins/freeradio/__init__.py:2932
 #: addon/globalPlugins/freeradio/__init__.py:2943
-#: addon/globalPlugins/freeradio/radioDialog.py:793
-#: addon/globalPlugins/freeradio/radioDialog.py:807
+#: addon/globalPlugins/freeradio/radioDialog.py:867
+#: addon/globalPlugins/freeradio/radioDialog.py:881
 msgid "enabled"
 msgstr "включен"
 
@@ -444,8 +444,8 @@ msgstr "включен"
 #: addon/globalPlugins/freeradio/__init__.py:1734
 #: addon/globalPlugins/freeradio/__init__.py:2932
 #: addon/globalPlugins/freeradio/__init__.py:2943
-#: addon/globalPlugins/freeradio/radioDialog.py:793
-#: addon/globalPlugins/freeradio/radioDialog.py:807
+#: addon/globalPlugins/freeradio/radioDialog.py:867
+#: addon/globalPlugins/freeradio/radioDialog.py:881
 msgid "disabled"
 msgstr "выключен"
 
@@ -459,7 +459,7 @@ msgstr "Включить или отключить усиление басов"
 
 #: addon/globalPlugins/freeradio/__init__.py:1550
 #: addon/globalPlugins/freeradio/__init__.py:2543
-#: addon/globalPlugins/freeradio/radioDialog.py:170
+#: addon/globalPlugins/freeradio/radioDialog.py:172
 msgid "EQ: Bass Boost"
 msgstr "Эквалайзер: подъем басов"
 
@@ -469,7 +469,7 @@ msgstr "Включить или отключить усиление высоки
 
 #: addon/globalPlugins/freeradio/__init__.py:1558
 #: addon/globalPlugins/freeradio/__init__.py:2544
-#: addon/globalPlugins/freeradio/radioDialog.py:170
+#: addon/globalPlugins/freeradio/radioDialog.py:172
 msgid "EQ: Treble Boost"
 msgstr "Эквалайзер: подъем высоких частот"
 
@@ -479,7 +479,7 @@ msgstr "Включить или отключить усиление вокала
 
 #: addon/globalPlugins/freeradio/__init__.py:1566
 #: addon/globalPlugins/freeradio/__init__.py:2545
-#: addon/globalPlugins/freeradio/radioDialog.py:170
+#: addon/globalPlugins/freeradio/radioDialog.py:172
 msgid "EQ: Vocal Boost"
 msgstr "Эквалайзер: подъем вокала"
 
@@ -624,7 +624,7 @@ msgstr "Проверка обновлений FreeRadio"
 
 #: addon/globalPlugins/freeradio/__init__.py:2099
 #: addon/globalPlugins/freeradio/__init__.py:2238
-#: addon/globalPlugins/freeradio/radioDialog.py:1887
+#: addon/globalPlugins/freeradio/radioDialog.py:2089
 msgid "Station"
 msgstr "Станция"
 
@@ -635,69 +635,69 @@ msgstr "Сейчас играет"
 
 #: addon/globalPlugins/freeradio/__init__.py:2111
 #: addon/globalPlugins/freeradio/__init__.py:2113
-#: addon/globalPlugins/freeradio/radioDialog.py:1894
-#: addon/globalPlugins/freeradio/radioDialog.py:1896
+#: addon/globalPlugins/freeradio/radioDialog.py:2096
+#: addon/globalPlugins/freeradio/radioDialog.py:2098
 msgid "Country"
 msgstr "Страна"
 
 #: addon/globalPlugins/freeradio/__init__.py:2117
-#: addon/globalPlugins/freeradio/radioDialog.py:1899
+#: addon/globalPlugins/freeradio/radioDialog.py:2101
 msgid "Language"
 msgstr "Язык"
 
 #: addon/globalPlugins/freeradio/__init__.py:2124
-#: addon/globalPlugins/freeradio/radioDialog.py:1903
+#: addon/globalPlugins/freeradio/radioDialog.py:2105
 msgid "Genre"
 msgstr "Жанр"
 
 #: addon/globalPlugins/freeradio/__init__.py:2133
-#: addon/globalPlugins/freeradio/radioDialog.py:1911
+#: addon/globalPlugins/freeradio/radioDialog.py:2113
 msgid "Format"
 msgstr "Формат"
 
 #: addon/globalPlugins/freeradio/__init__.py:2135
-#: addon/globalPlugins/freeradio/radioDialog.py:1913
+#: addon/globalPlugins/freeradio/radioDialog.py:2115
 msgid "Bitrate"
 msgstr "Битрейт"
 
 #: addon/globalPlugins/freeradio/__init__.py:2137
-#: addon/globalPlugins/freeradio/radioDialog.py:1915
+#: addon/globalPlugins/freeradio/radioDialog.py:2117
 msgid "Codec"
 msgstr "Кодек"
 
 #: addon/globalPlugins/freeradio/__init__.py:2141
-#: addon/globalPlugins/freeradio/radioDialog.py:1918
+#: addon/globalPlugins/freeradio/radioDialog.py:2120
 msgid "Website"
 msgstr "Веб-сайт"
 
 #: addon/globalPlugins/freeradio/__init__.py:2145
-#: addon/globalPlugins/freeradio/radioDialog.py:1921
+#: addon/globalPlugins/freeradio/radioDialog.py:2123
 msgid "Stream URL"
 msgstr "URL-адрес потока"
 
 #: addon/globalPlugins/freeradio/__init__.py:2153
-#: addon/globalPlugins/freeradio/radioDialog.py:1928
+#: addon/globalPlugins/freeradio/radioDialog.py:2130
 msgid "Votes"
 msgstr "Голоса"
 
 #: addon/globalPlugins/freeradio/__init__.py:2161
 #: addon/globalPlugins/freeradio/__init__.py:2280
-#: addon/globalPlugins/freeradio/radioDialog.py:1931
+#: addon/globalPlugins/freeradio/radioDialog.py:2133
 msgid "No station detail available"
 msgstr "Сведения о станции отсутствуют"
 
 #: addon/globalPlugins/freeradio/__init__.py:2166
-#: addon/globalPlugins/freeradio/radioDialog.py:1936
+#: addon/globalPlugins/freeradio/radioDialog.py:2138
 msgid "Station Details"
 msgstr "Сведения о станции"
 
 #: addon/globalPlugins/freeradio/__init__.py:2198
-#: addon/globalPlugins/freeradio/radioDialog.py:1963
+#: addon/globalPlugins/freeradio/radioDialog.py:2165
 msgid "&Copy all to clipboard"
 msgstr "&Копировать всё в буфер обмена"
 
 #: addon/globalPlugins/freeradio/__init__.py:2204
-#: addon/globalPlugins/freeradio/radioDialog.py:1969
+#: addon/globalPlugins/freeradio/radioDialog.py:2171
 msgid "Station details copied to clipboard"
 msgstr "Сведения о станции скопированы в буфер обмена"
 
@@ -766,37 +766,37 @@ msgid "Audio Effects (BASS backend only):"
 msgstr "Аудиоэффекты (только движок BASS):"
 
 #: addon/globalPlugins/freeradio/__init__.py:2536
-#: addon/globalPlugins/freeradio/radioDialog.py:168
+#: addon/globalPlugins/freeradio/radioDialog.py:170
 msgid "Chorus"
 msgstr "Хорус"
 
 #: addon/globalPlugins/freeradio/__init__.py:2537
-#: addon/globalPlugins/freeradio/radioDialog.py:168
+#: addon/globalPlugins/freeradio/radioDialog.py:170
 msgid "Compressor"
 msgstr "Компрессор"
 
 #: addon/globalPlugins/freeradio/__init__.py:2538
-#: addon/globalPlugins/freeradio/radioDialog.py:168
+#: addon/globalPlugins/freeradio/radioDialog.py:170
 msgid "Distortion"
 msgstr "Искажение"
 
 #: addon/globalPlugins/freeradio/__init__.py:2539
-#: addon/globalPlugins/freeradio/radioDialog.py:169
+#: addon/globalPlugins/freeradio/radioDialog.py:171
 msgid "Echo"
 msgstr "Эхо"
 
 #: addon/globalPlugins/freeradio/__init__.py:2540
-#: addon/globalPlugins/freeradio/radioDialog.py:169
+#: addon/globalPlugins/freeradio/radioDialog.py:171
 msgid "Flanger"
 msgstr "Фленжер"
 
 #: addon/globalPlugins/freeradio/__init__.py:2541
-#: addon/globalPlugins/freeradio/radioDialog.py:169
+#: addon/globalPlugins/freeradio/radioDialog.py:171
 msgid "Gargle"
 msgstr "Бульканье"
 
 #: addon/globalPlugins/freeradio/__init__.py:2542
-#: addon/globalPlugins/freeradio/radioDialog.py:169
+#: addon/globalPlugins/freeradio/radioDialog.py:171
 msgid "Reverb"
 msgstr "Реверберация"
 
@@ -968,7 +968,7 @@ msgid ""
 "&Disable internet connectivity check before playing (recommended if DNS is "
 "blocked)"
 msgstr ""
-"&Отключить проверку интернет-соединения перед воспроизведением "
+"&Отключить проверку internet-соединения перед воспроизведением "
 "(рекомендуется, если DNS заблокирован)"
 
 #: addon/globalPlugins/freeradio/__init__.py:2828
@@ -981,7 +981,7 @@ msgid "Check for Updates &Now"
 msgstr "Проверить обновления &сейчас"
 
 #: addon/globalPlugins/freeradio/__init__.py:2911
-#: addon/globalPlugins/freeradio/radioDialog.py:739
+#: addon/globalPlugins/freeradio/radioDialog.py:813
 msgid "System default"
 msgstr "Системное устройство по умолчанию"
 
@@ -1010,7 +1010,7 @@ msgid "Select recordings folder"
 msgstr "Выберите папку записей"
 
 #: addon/globalPlugins/freeradio/__init__.py:3221
-#: addon/globalPlugins/freeradio/radioDialog.py:2546
+#: addon/globalPlugins/freeradio/radioDialog.py:2748
 msgid "Sleep timer"
 msgstr "Таймер сна"
 
@@ -1041,240 +1041,327 @@ msgstr ""
 "поместите ffmpeg.exe в папку дополнения FreeRadio или укажите путь в "
 "настройках."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:82
+#: addon/globalPlugins/freeradio/radioDialog.py:83
 msgid "FreeRadio - Station Browser"
 msgstr "FreeRadio — обозреватель станций"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:121
+#: addon/globalPlugins/freeradio/radioDialog.py:123
 msgid "All Stations"
 msgstr "Все станции"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:122
-#: addon/globalPlugins/freeradio/radioDialog.py:351
+#: addon/globalPlugins/freeradio/radioDialog.py:124
+#: addon/globalPlugins/freeradio/radioDialog.py:353
 msgid "Favourites"
 msgstr "Избранное"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:123
+#: addon/globalPlugins/freeradio/radioDialog.py:125
 msgid "Recording"
 msgstr "Запись"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:124
+#: addon/globalPlugins/freeradio/radioDialog.py:126
 msgid "Timer"
 msgstr "Таймер"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:125
-#: addon/globalPlugins/freeradio/radioDialog.py:2665
+#: addon/globalPlugins/freeradio/radioDialog.py:127
+#: addon/globalPlugins/freeradio/radioDialog.py:2867
 msgid "Liked Songs"
 msgstr "Понравившиеся треки"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:133
-#: addon/globalPlugins/freeradio/radioDialog.py:136
+#: addon/globalPlugins/freeradio/radioDialog.py:135
+#: addon/globalPlugins/freeradio/radioDialog.py:138
 msgid "Output device:"
 msgstr "Устройство вывода:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:135
+#: addon/globalPlugins/freeradio/radioDialog.py:137
 msgid "Loading..."
 msgstr "Загрузка..."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:151
-#: addon/globalPlugins/freeradio/radioDialog.py:156
+#: addon/globalPlugins/freeradio/radioDialog.py:153
+#: addon/globalPlugins/freeradio/radioDialog.py:158
 msgid "Volume:"
 msgstr "Громкость:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:161
-#: addon/globalPlugins/freeradio/radioDialog.py:173
+#: addon/globalPlugins/freeradio/radioDialog.py:163
+#: addon/globalPlugins/freeradio/radioDialog.py:175
 msgid "Effects:"
 msgstr "Эффекты:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:189
+#: addon/globalPlugins/freeradio/radioDialog.py:191
 msgid "Bass gain (dB):"
 msgstr "Усиление басов (дБ):"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:190
+#: addon/globalPlugins/freeradio/radioDialog.py:192
 msgid "Treble gain (dB):"
 msgstr "Усиление высоких частот (дБ):"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:191
+#: addon/globalPlugins/freeradio/radioDialog.py:193
 msgid "Vocal gain (dB):"
 msgstr "Усиление вокала (дБ):"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:219
+#: addon/globalPlugins/freeradio/radioDialog.py:221
 msgid "&Play/Pause"
 msgstr "&Воспроизведение/Пауза"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:220
+#: addon/globalPlugins/freeradio/radioDialog.py:222
 msgid "&Delete Station"
 msgstr "&Удалить станцию"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:222
+#: addon/globalPlugins/freeradio/radioDialog.py:224
 msgid "Add to Fa&vorites"
 msgstr "Добавить в &избранное"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:223
+#: addon/globalPlugins/freeradio/radioDialog.py:225
 msgid "Station Detai&ls"
 msgstr "Сведения о ста&нции"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:225
+#: addon/globalPlugins/freeradio/radioDialog.py:227
 msgid "Add C&ustom Station..."
 msgstr "Добавить &пользовательскую станцию..."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:226
+#: addon/globalPlugins/freeradio/radioDialog.py:228
 msgid "&Close"
 msgstr "&Закрыть"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:343
+#: addon/globalPlugins/freeradio/radioDialog.py:345
 msgid "Filter:"
 msgstr "Фильтр:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:347
+#: addon/globalPlugins/freeradio/radioDialog.py:349
 msgid "Filter favourites"
 msgstr "Фильтр избранного"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:355
+#: addon/globalPlugins/freeradio/radioDialog.py:357
 msgid "Save Audio Pr&ofile for This Station"
 msgstr "Сохранить аудиопрофиль для этой станции"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:359
+#: addon/globalPlugins/freeradio/radioDialog.py:361
 msgid "Clear Audio Prof&ile"
 msgstr "Очистить аудиопрофиль"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:363
+#: addon/globalPlugins/freeradio/radioDialog.py:365
 msgid "Re&name Station"
 msgstr "Переименовать станцию"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:390
-#: addon/globalPlugins/freeradio/radioDialog.py:397
+#: addon/globalPlugins/freeradio/radioDialog.py:392
+#: addon/globalPlugins/freeradio/radioDialog.py:399
 msgid "Sort:"
 msgstr "Сортировка:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:395
+#: addon/globalPlugins/freeradio/radioDialog.py:397
 msgid "Alphabetical"
 msgstr "По алфавиту"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:395
+#: addon/globalPlugins/freeradio/radioDialog.py:397
 msgid "By Rating"
 msgstr "По рейтингу"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:402
+#: addon/globalPlugins/freeradio/radioDialog.py:404
 msgid "Country:"
 msgstr "Страна:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:405
-#: addon/globalPlugins/freeradio/radioDialog.py:1135
-#: addon/globalPlugins/freeradio/radioDialog.py:1168
-#: addon/globalPlugins/freeradio/radioDialog.py:1170
+#: addon/globalPlugins/freeradio/radioDialog.py:407
+#: addon/globalPlugins/freeradio/radioDialog.py:1337
+#: addon/globalPlugins/freeradio/radioDialog.py:1370
+#: addon/globalPlugins/freeradio/radioDialog.py:1372
 msgid "All"
 msgstr "Все"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:413
+#: addon/globalPlugins/freeradio/radioDialog.py:415
 msgid "Result limit per country:"
 msgstr "Ограничение результатов по стране:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:420
+#: addon/globalPlugins/freeradio/radioDialog.py:422
 msgid "Result limit:"
 msgstr "Ограничение результатов:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:425
+#: addon/globalPlugins/freeradio/radioDialog.py:427
 msgid "Search:"
 msgstr "Поиск:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:432
+#: addon/globalPlugins/freeradio/radioDialog.py:434
 msgid "Type to search · results update automatically"
 msgstr "Введите для поиска — результаты обновляются автоматически"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:437
+#: addon/globalPlugins/freeradio/radioDialog.py:439
 msgid "Loading stations..."
 msgstr "Загрузка станций..."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:440
+#: addon/globalPlugins/freeradio/radioDialog.py:442
 msgid "Stations:"
 msgstr "Станции:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:462
+#: addon/globalPlugins/freeradio/radioDialog.py:464
 msgid "Instant Recording"
 msgstr "Мгновенная запись"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:464
-#: addon/globalPlugins/freeradio/radioDialog.py:981
+#: addon/globalPlugins/freeradio/radioDialog.py:466
+#: addon/globalPlugins/freeradio/radioDialog.py:1104
 msgid "Not recording"
 msgstr "Не записывается"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:466
-#: addon/globalPlugins/freeradio/radioDialog.py:979
+#: addon/globalPlugins/freeradio/radioDialog.py:468
+#: addon/globalPlugins/freeradio/radioDialog.py:1102
 msgid "Start &Recording"
 msgstr "Начать &запись"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:471
+#: addon/globalPlugins/freeradio/radioDialog.py:473
 msgid "Scheduled Recording"
 msgstr "Запланированная запись"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:474
-#: addon/globalPlugins/freeradio/radioDialog.py:563
-#: addon/globalPlugins/freeradio/radioDialog.py:571
+#: addon/globalPlugins/freeradio/radioDialog.py:476
+#: addon/globalPlugins/freeradio/radioDialog.py:637
+#: addon/globalPlugins/freeradio/radioDialog.py:645
 msgid "Station:"
 msgstr "Станция:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:484
-#: addon/globalPlugins/freeradio/radioDialog.py:555
-#: addon/globalPlugins/freeradio/radioDialog.py:559
-#: addon/globalPlugins/freeradio/radioDialog.py:2508
+#: addon/globalPlugins/freeradio/radioDialog.py:486
+#: addon/globalPlugins/freeradio/radioDialog.py:629
+#: addon/globalPlugins/freeradio/radioDialog.py:633
+#: addon/globalPlugins/freeradio/radioDialog.py:2710
+#: addon/globalPlugins/freeradio/radioDialog.py:3103
+#: addon/globalPlugins/freeradio/radioDialog.py:3105
 msgid "Start time (HH:MM):"
 msgstr "Время начала (ЧЧ:ММ):"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:491
+#: addon/globalPlugins/freeradio/radioDialog.py:493
+#: addon/globalPlugins/freeradio/radioDialog.py:3109
+#: addon/globalPlugins/freeradio/radioDialog.py:3111
 msgid "Duration (minutes):"
 msgstr "Продолжительность (минуты):"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:498
+#: addon/globalPlugins/freeradio/radioDialog.py:502
+#: addon/globalPlugins/freeradio/radioDialog.py:3115
+msgid "Recurrence:"
+msgstr "Повторение:"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:507
+#: addon/globalPlugins/freeradio/radioDialog.py:3116
+msgid "Record &once"
+msgstr "Записать &один раз"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:512
+#: addon/globalPlugins/freeradio/radioDialog.py:3117
+msgid "Repeat &weekly (fixed number of times)"
+msgstr "Повторять е&женедельно (фиксированное количество раз)"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:516
+#: addon/globalPlugins/freeradio/radioDialog.py:3118
+msgid "Repeat &indefinitely"
+msgstr "Повторять &бессрочно"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:526
+#: addon/globalPlugins/freeradio/radioDialog.py:531
+#: addon/globalPlugins/freeradio/radioDialog.py:3130
+#: addon/globalPlugins/freeradio/radioDialog.py:3132
+msgid "Number of occurrences:"
+msgstr "Количество повторений:"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:543
+#: addon/globalPlugins/freeradio/radioDialog.py:553
+#: addon/globalPlugins/freeradio/radioDialog.py:3142
+#: addon/globalPlugins/freeradio/radioDialog.py:3145
+msgid "Active days:"
+msgstr "Активные дни:"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:547
+#: addon/globalPlugins/freeradio/radioDialog.py:1034
+#: addon/globalPlugins/freeradio/radioDialog.py:3139
+msgid "Monday"
+msgstr "Понедельник"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:547
+#: addon/globalPlugins/freeradio/radioDialog.py:1034
+#: addon/globalPlugins/freeradio/radioDialog.py:3139
+msgid "Tuesday"
+msgstr "Вторник"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:547
+#: addon/globalPlugins/freeradio/radioDialog.py:1034
+#: addon/globalPlugins/freeradio/radioDialog.py:3139
+msgid "Wednesday"
+msgstr "Среда"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:547
+#: addon/globalPlugins/freeradio/radioDialog.py:1034
+#: addon/globalPlugins/freeradio/radioDialog.py:3139
+msgid "Thursday"
+msgstr "Четверг"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:548
+#: addon/globalPlugins/freeradio/radioDialog.py:1035
+#: addon/globalPlugins/freeradio/radioDialog.py:3140
+msgid "Friday"
+msgstr "Пятница"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:548
+#: addon/globalPlugins/freeradio/radioDialog.py:1035
+#: addon/globalPlugins/freeradio/radioDialog.py:3140
+msgid "Saturday"
+msgstr "Суббота"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:548
+#: addon/globalPlugins/freeradio/radioDialog.py:1035
+#: addon/globalPlugins/freeradio/radioDialog.py:3140
+msgid "Sunday"
+msgstr "Воскресенье"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:562
+#: addon/globalPlugins/freeradio/radioDialog.py:3153
 msgid "Playback during recording:"
 msgstr "Воспроизведение во время записи:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:502
+#: addon/globalPlugins/freeradio/radioDialog.py:566
+#: addon/globalPlugins/freeradio/radioDialog.py:3154
 msgid "Record while &listening (play and record simultaneously)"
 msgstr ""
 "Записывать во время &прослушивания (воспроизводить и записывать одновременно)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:507
+#: addon/globalPlugins/freeradio/radioDialog.py:571
+#: addon/globalPlugins/freeradio/radioDialog.py:3155
 msgid "Record &only (no audio output)"
 msgstr "Только &запись (без вывода звука)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:513
+#: addon/globalPlugins/freeradio/radioDialog.py:577
 msgid "&Add to Schedule"
 msgstr "&Добавить в расписание"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:516
+#: addon/globalPlugins/freeradio/radioDialog.py:580
 msgid "Upcoming scheduled recordings:"
 msgstr "Предстоящие запланированные записи:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:521
+#: addon/globalPlugins/freeradio/radioDialog.py:585
 msgid "&Remove Selected"
 msgstr "&Удалить выбранное"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:539
+#: addon/globalPlugins/freeradio/radioDialog.py:587
+msgid "&Edit Selected"
+msgstr "&Редактировать выбранное"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:613
 msgid "Timer action:"
 msgstr "Действие таймера:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:543
+#: addon/globalPlugins/freeradio/radioDialog.py:617
 msgid "&Start radio at specified time (alarm)"
 msgstr "&Включить радио в указанное время (будильник)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:548
+#: addon/globalPlugins/freeradio/radioDialog.py:622
 msgid "St&op radio at specified time (sleep)"
 msgstr "Выкл&ючить радио в указанное время (сон)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:575
+#: addon/globalPlugins/freeradio/radioDialog.py:649
 msgid "&Add Timer"
 msgstr "&Добавить таймер"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:580
+#: addon/globalPlugins/freeradio/radioDialog.py:654
 msgid "Pending timers:"
 msgstr "Ожидающие таймеры:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:585
+#: addon/globalPlugins/freeradio/radioDialog.py:659
 msgid "&Remove Selected Timer"
 msgstr "&Удалить выбранный таймер"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:881
+#: addon/globalPlugins/freeradio/radioDialog.py:955
 msgid ""
 "Press comma to pick a station, navigate to the target position, then press "
 "comma again to drop."
@@ -1282,48 +1369,62 @@ msgstr ""
 "Нажмите запятую, чтобы выбрать станцию, перейдите на нужную позицию, затем "
 "снова нажмите запятую, чтобы переместить."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:896
+#: addon/globalPlugins/freeradio/radioDialog.py:970
 msgid "No favourites found"
 msgstr "Избранное не найдено"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:898
+#: addon/globalPlugins/freeradio/radioDialog.py:972
 #, python-format
 msgid "%d favourites"
 msgstr "%d в избранном"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:975
-#: addon/globalPlugins/freeradio/radioDialog.py:996
+#: addon/globalPlugins/freeradio/radioDialog.py:1047
+#: addon/globalPlugins/freeradio/radioDialog.py:1201
+#: addon/globalPlugins/freeradio/recorder.py:653
+msgid "Record only"
+msgstr "Только запись"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:1047
+#: addon/globalPlugins/freeradio/radioDialog.py:1201
+#: addon/globalPlugins/freeradio/recorder.py:653
+msgid "Listen and record"
+msgstr "Прослушивание и запись"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:1052
+msgid "Every day"
+msgstr "Каждый день"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:1054
+#, python-format
+msgid "Every %s"
+msgstr "Каждый день: %s"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:1098
+#: addon/globalPlugins/freeradio/radioDialog.py:1119
 msgid "Recording is not available"
 msgstr "Запись недоступна"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:981
+#: addon/globalPlugins/freeradio/radioDialog.py:1104
 #, python-format
 msgid "Saved: %s"
 msgstr "Сохранено: %s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:990
+#: addon/globalPlugins/freeradio/radioDialog.py:1113
 msgid "Stop &Recording"
 msgstr "Остановить &запись"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1008
-#: addon/globalPlugins/freeradio/radioDialog.py:2584
+#: addon/globalPlugins/freeradio/radioDialog.py:1131
+#: addon/globalPlugins/freeradio/radioDialog.py:2786
+#: addon/globalPlugins/freeradio/radioDialog.py:3208
 msgid "Invalid time format. Use HH:MM"
 msgstr "Неверный формат времени. Используйте ЧЧ:ММ"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1025
-#: addon/globalPlugins/freeradio/radioDialog.py:2604
+#: addon/globalPlugins/freeradio/radioDialog.py:1182
+#: addon/globalPlugins/freeradio/radioDialog.py:2806
 msgid "Please select a station"
 msgstr "Пожалуйста, выберите станцию"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1041
-msgid "record only"
-msgstr "только запись"
-
-#: addon/globalPlugins/freeradio/radioDialog.py:1041
-msgid "listen and record"
-msgstr "прослушивание и запись"
-
-#: addon/globalPlugins/freeradio/radioDialog.py:1044
+#: addon/globalPlugins/freeradio/radioDialog.py:1204
 #, python-format
 msgid ""
 "Time has passed today. Schedule added for tomorrow: %(station)s at %(time)s "
@@ -1332,125 +1433,129 @@ msgstr ""
 "Время уже прошло сегодня. Расписание добавлено на завтра: %(station)s в "
 "%(time)s (%(mode)s)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1048
+#: addon/globalPlugins/freeradio/radioDialog.py:1208
 #, python-format
 msgid "Schedule added: %(station)s on %(date)s at %(time)s (%(mode)s)"
 msgstr "Расписание добавлено: %(station)s на %(date)s в %(time)s (%(mode)s)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1054
+#: addon/globalPlugins/freeradio/radioDialog.py:1214
 #, python-format
 msgid "Time conflict with: %(names)s. Switched to record-only mode."
 msgstr "Конфликт времени с: %(names)s. Переключено в режим «только запись»."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1055
+#: addon/globalPlugins/freeradio/radioDialog.py:1215
 msgid "Schedule Conflict"
 msgstr "Конфликт расписаний"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1070
+#: addon/globalPlugins/freeradio/radioDialog.py:1231
 msgid "Schedule deleted"
 msgstr "Расписание удалено"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1128
+#: addon/globalPlugins/freeradio/radioDialog.py:1267
+msgid "Schedule updated"
+msgstr "Расписание обновлено"
+
+#: addon/globalPlugins/freeradio/radioDialog.py:1330
 #, python-format
 msgid "Top stations (%d)"
 msgstr "Популярные станции (%d)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1219
+#: addon/globalPlugins/freeradio/radioDialog.py:1421
 #, python-format
 msgid "\"%(query)s\" in %(country)s: %(count)d"
 msgstr "\"%(query)s\" в %(country)s: %(count)d"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1221
+#: addon/globalPlugins/freeradio/radioDialog.py:1423
 #, python-format
 msgid "%(count)d stations in %(country)s"
 msgstr "%(count)d станций в %(country)s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1223
+#: addon/globalPlugins/freeradio/radioDialog.py:1425
 #, python-format
 msgid "\"%(query)s\": %(count)d"
 msgstr "\"%(query)s\": %(count)d"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1225
+#: addon/globalPlugins/freeradio/radioDialog.py:1427
 #, python-format
 msgid "%(count)d stations"
 msgstr "%(count)d станций"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1242
+#: addon/globalPlugins/freeradio/radioDialog.py:1444
 #, python-format
 msgid "(%(shown)d of %(total)d shown — increase result limit to see more)"
 msgstr ""
 "(показано %(shown)d из %(total)d — увеличьте лимит результатов для просмотра "
 "большего)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1244
+#: addon/globalPlugins/freeradio/radioDialog.py:1446
 msgid "(limit reached — increase result limit to see more)"
 msgstr "(достигнут лимит — увеличьте лимит результатов, чтобы увидеть больше)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1327
+#: addon/globalPlugins/freeradio/radioDialog.py:1529
 msgid "Could not connect to radio directory. Check your internet connection."
 msgstr ""
 "Не удалось подключиться к каталогу радиостанций. Проверьте подключение к "
 "интернету."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1769
+#: addon/globalPlugins/freeradio/radioDialog.py:1971
 #, python-format
 msgid "Audio profile saved for %(station)s"
 msgstr "Аудиопрофиль сохранен для %(station)s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1781
+#: addon/globalPlugins/freeradio/radioDialog.py:1983
 #, python-format
 msgid "Audio profile cleared for %(station)s"
 msgstr "Аудиопрофиль очищен для %(station)s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1801
+#: addon/globalPlugins/freeradio/radioDialog.py:2003
 msgid "Enter a new name for the station:"
 msgstr "Введите новое название для станции:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1802
+#: addon/globalPlugins/freeradio/radioDialog.py:2004
 msgid "Rename Station"
 msgstr "Переименование станции"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1813
+#: addon/globalPlugins/freeradio/radioDialog.py:2015
 msgid "Name cannot be empty"
 msgstr "Название не может быть пустым"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1826
+#: addon/globalPlugins/freeradio/radioDialog.py:2028
 #, python-format
 msgid "Renamed to: %s"
 msgstr "Переименовано в: %s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1865
+#: addon/globalPlugins/freeradio/radioDialog.py:2067
 msgid "Added to favorites"
 msgstr "Добавлено в избранное"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1991
+#: addon/globalPlugins/freeradio/radioDialog.py:2193
 #: addon/globalPlugins/freeradio/utils.py:335
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1992
+#: addon/globalPlugins/freeradio/radioDialog.py:2194
 #, python-format
 msgid "Do you want to delete the station \"%s\"?"
 msgstr "Удалить станцию «%s»?"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:1994
+#: addon/globalPlugins/freeradio/radioDialog.py:2196
 msgid "Delete Station"
 msgstr "Удаление станции"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2003
+#: addon/globalPlugins/freeradio/radioDialog.py:2205
 msgid "Station deleted"
 msgstr "Станция удалена"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2030
+#: addon/globalPlugins/freeradio/radioDialog.py:2232
 #, python-format
 msgid "Station added: %s"
 msgstr "Станция добавлена: %s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2085
+#: addon/globalPlugins/freeradio/radioDialog.py:2287
 msgid "Help file not found."
 msgstr "Файл справки не найден."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2331
+#: addon/globalPlugins/freeradio/radioDialog.py:2533
 #, python-format
 msgid ""
 "%s selected. Navigate to the target position and press comma again to drop."
@@ -1458,130 +1563,131 @@ msgstr ""
 "%s выбрано. Перейдите на нужную позицию и снова нажмите запятую, чтобы "
 "переместить."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2337
+#: addon/globalPlugins/freeradio/radioDialog.py:2539
 msgid "Move cancelled"
 msgstr "Перемещение отменено"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2372
+#: addon/globalPlugins/freeradio/radioDialog.py:2574
 #, python-format
 msgid "Moved: %s"
 msgstr "Перемещено: %s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2508
+#: addon/globalPlugins/freeradio/radioDialog.py:2710
 msgid "Stop time (HH:MM):"
 msgstr "Время остановки (ЧЧ:ММ):"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2548
+#: addon/globalPlugins/freeradio/radioDialog.py:2750
 #, python-format
 msgid "Alarm %(time)s — %(station)s"
 msgstr "Будильник %(time)s — %(station)s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2552
+#: addon/globalPlugins/freeradio/radioDialog.py:2754
 #, python-format
 msgid "Sleep %(time)s"
 msgstr "Сон %(time)s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2572
+#: addon/globalPlugins/freeradio/radioDialog.py:2774
 msgid "Timer manager is not available"
 msgstr "Менеджер таймеров недоступен"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2612
+#: addon/globalPlugins/freeradio/radioDialog.py:2814
 #, python-format
 msgid "Alarm added: %(station)s at %(time)s"
 msgstr "Будильник добавлен: %(station)s в %(time)s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2618
+#: addon/globalPlugins/freeradio/radioDialog.py:2820
 #, python-format
 msgid "Sleep timer added: radio will stop at %s"
-msgstr "Таймер сна добавлен: радио остановится в %s"
+msgstr "Таймер сна добавлен: radio остановится в %s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2621
+#: addon/globalPlugins/freeradio/radioDialog.py:2823
 msgid "(tomorrow)"
 msgstr "(завтра)"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2636
+#: addon/globalPlugins/freeradio/radioDialog.py:2838
 msgid "Timer removed"
 msgstr "Таймер удален"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2661
+#: addon/globalPlugins/freeradio/radioDialog.py:2863
 msgid "Liked Songs:"
 msgstr "Понравившиеся треки:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2671
+#: addon/globalPlugins/freeradio/radioDialog.py:2873
 msgid "Play on &Spotify"
 msgstr "Воспроизвести на &Spotify"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2674
+#: addon/globalPlugins/freeradio/radioDialog.py:2876
 msgid "Play on Y&ouTube"
 msgstr "Воспроизвести на Yo&uTube"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2677
+#: addon/globalPlugins/freeradio/radioDialog.py:2879
 msgid "Re&move"
 msgstr "&Удалить"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2680
+#: addon/globalPlugins/freeradio/radioDialog.py:2882
 msgid "R&efresh"
 msgstr "О&бновить"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2727
+#: addon/globalPlugins/freeradio/radioDialog.py:2929
 #, python-format
 msgid "Could not read file: %s"
 msgstr "Не удалось прочитать файл: %s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2729
-#: addon/globalPlugins/freeradio/radioDialog.py:2739
-#: addon/globalPlugins/freeradio/radioDialog.py:2752
-#: addon/globalPlugins/freeradio/radioDialog.py:2795
-#: addon/globalPlugins/freeradio/radioDialog.py:2836
+#: addon/globalPlugins/freeradio/radioDialog.py:2931
+#: addon/globalPlugins/freeradio/radioDialog.py:2941
+#: addon/globalPlugins/freeradio/radioDialog.py:2954
+#: addon/globalPlugins/freeradio/radioDialog.py:2997
+#: addon/globalPlugins/freeradio/radioDialog.py:3038
 msgid "No liked songs yet."
 msgstr "Понравившихся треков пока нет."
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2800
+#: addon/globalPlugins/freeradio/radioDialog.py:3002
 #, python-format
 msgid "Do you want to remove \"%s\" from liked songs?"
 msgstr "Удалить «%s» из понравившихся треков?"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2801
+#: addon/globalPlugins/freeradio/radioDialog.py:3003
 msgid "Remove Song"
 msgstr "Удалить трек"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2825
+#: addon/globalPlugins/freeradio/radioDialog.py:3027
 #, python-format
 msgid "Could not remove song: %s"
 msgstr "Не удалось удалить трек: %s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2830
+#: addon/globalPlugins/freeradio/radioDialog.py:3032
 #, python-format
 msgid "Removed: %s"
 msgstr "Удалено: %s"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2849
+#: addon/globalPlugins/freeradio/radioDialog.py:3051
 msgid "Liked songs list refreshed"
 msgstr "Список понравившихся треков обновлен"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2855
+#: addon/globalPlugins/freeradio/radioDialog.py:3057
 msgid "Add Custom Station"
 msgstr "Добавление пользовательской станции"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2858
+#: addon/globalPlugins/freeradio/radioDialog.py:3060
 msgid "Station name:"
 msgstr "Название станции:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2862
+#: addon/globalPlugins/freeradio/radioDialog.py:3064
 msgid "Stream URL:"
 msgstr "URL-адрес потока:"
 
-#: addon/globalPlugins/freeradio/radioDialog.py:2867
+#: addon/globalPlugins/freeradio/radioDialog.py:3069
 msgid "&Add"
 msgstr "&Добавить"
 
-#: addon/globalPlugins/freeradio/recorder.py:588
-msgid "Record only"
-msgstr "Только запись"
+#: addon/globalPlugins/freeradio/radioDialog.py:3094
+#, python-format
+msgid "Edit Schedule — %s"
+msgstr "Редактировать расписание — %s"
 
-#: addon/globalPlugins/freeradio/recorder.py:588
-msgid "Listen and record"
-msgstr "Прослушивание и запись"
+#: addon/globalPlugins/freeradio/radioDialog.py:3165
+msgid "&Save"
+msgstr "&Сохранить"
 
 #: buildVars.py:14
 msgid "freeRadio"
@@ -1626,29 +1732,63 @@ msgstr ""
 #: buildVars.py:25
 msgid ""
 "\n"
-"-Added: Favourite stations now appear as individual scripts in NVDA's Input "
-"Gestures dialog under the \"FreeRadio Stations\" category.\n"
-"- Each favourite station can be assigned a custom keyboard shortcut, "
-"allowing direct playback without opening the station browser. Assigned "
-"shortcuts are updated automatically when favourites are added or removed.\n"
-"- Added three unbound input gestures as alternatives to the double, triple, "
-"and quadruple press of Control+Windows+I (or F2 in the dialog): Show station "
-"details, Copy track info to clipboard or start music recognition, and Force "
-"music recognition. These allow users who have difficulty with rapid key "
-"presses to assign a single keystroke to each action via NVDA's Input "
-"Gestures dialog.\n"
+"- Added: Scheduled recordings now support recurring modes. When adding a "
+"schedule, three recurrence options are available: Record once (original "
+"behaviour), Repeat weekly for a fixed number of occurrences, and Repeat "
+"indefinitely. For recurring schedules, active days of the week can be "
+"selected; leaving all days unchecked means the schedule fires every day.\n"
+"- Added: Edit Selected button in the Recording tab. Selecting a scheduled "
+"entry and pressing Edit opens a dialog pre-filled with all current settings "
+"— time, duration, recurrence mode, active days, occurrence count, and "
+"playback mode — which can be adjusted and saved without deleting and re-"
+"creating the entry.\n"
 msgstr ""
 "\n"
-"- Добавлено: Избранные станции теперь отображаются как отдельные скрипты "
-"в диалоге «Жесты ввода» NVDA в категории «Станции FreeRadio».\n"
-"- Каждой избранной станции можно назначить собственное сочетание клавиш, "
-"обеспечивая прямое воспроизведение без открытия браузера станций. "
-"Назначенные сочетания клавиш обновляются автоматически при добавлении или "
-"удалении избранного.\n"
-"- Добавлены три неназначенных жеста ввода в качестве альтернативы "
-"двойному, тройному и четырёхкратному нажатию Control+Windows+I (или F2 "
-"в диалоге): Показать подробности станции, Скопировать информацию о треке "
-"в буфер обмена или запустить распознавание музыки, и Принудительно "
-"запустить распознавание музыки. Они позволяют пользователям, которым "
-"трудно быстро нажимать клавиши, назначить одну клавишу для каждого "
-"действия через диалог «Жесты ввода» NVDA.\n"
+"- Добавлено: Запланированные записи теперь поддерживают повторяющиеся "
+"режимы. При добавлении расписания доступны три варианта повторения: Записать "
+"один раз (исходное поведение), Повторять еженедельно для фиксированного "
+"количества повторений и Повторять бессрочно. Для повторяющихся расписаний "
+"можно выбрать активные дни недели; если все дни оставить невыбранными, "
+"расписание будет срабатывать каждый день.\n"
+"- Добавлено: Кнопка «Редактировать выбранное» на вкладке «Запись». Выбор "
+"запланированной записи и нажатие кнопки «Редактировать» открывает диалоговое "
+"окно, предварительно заполненное всеми текущими настройками — временем, "
+"продолжительностью, режимом повторения, активными днями, количеством "
+"повторений и режимом воспроизведения — которые можно настроить и сохранить "
+"без удаления и повторного создания записи.\n"
+
+#~ msgid "record only"
+#~ msgstr "только запись"
+
+#~ msgid "listen and record"
+#~ msgstr "прослушивание и запись"
+
+#~ msgid ""
+#~ "\n"
+#~ "-Added: Favourite stations now appear as individual scripts in NVDA's "
+#~ "Input Gestures dialog under the \"FreeRadio Stations\" category.\n"
+#~ "- Each favourite station can be assigned a custom keyboard shortcut, "
+#~ "allowing direct playback without opening the station browser. Assigned "
+#~ "shortcuts are updated automatically when favourites are added or "
+#~ "removed.\n"
+#~ "- Added three unbound input gestures as alternatives to the double, "
+#~ "triple, and quadruple press of Control+Windows+I (or F2 in the dialog): "
+#~ "Show station details, Copy track info to clipboard or start music "
+#~ "recognition, and Force music recognition. These allow users who have "
+#~ "difficulty with rapid key presses to assign a single keystroke to each "
+#~ "action via NVDA's Input Gestures dialog.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "- Добавлено: Избранные станции теперь отображаются как отдельные скрипты "
+#~ "в диалоге «Жесты ввода» NVDA в категории «Станции FreeRadio».\n"
+#~ "- Каждой избранной станции можно назначить собственное сочетание клавиш, "
+#~ "обеспечивая прямое воспроизведение без открытия браузера станций. "
+#~ "Назначенные сочетания клавиш обновляются автоматически при добавлении или "
+#~ "удалении избранного.\n"
+#~ "- Добавлены три неназначенных жеста ввода в качестве альтернативы "
+#~ "двойному, тройному и четырёхкратному нажатию Control+Windows+I (or F2 в "
+#~ "диалоге): Показать подробности станции, Скопировать информацию о треке в "
+#~ "буфер обмена или запустить распознавание музыки, и Принудительно "
+#~ "запустить распознавание музыки. Они позволяют пользователям, которым "
+#~ "трудно быстро нажимать клавиши, назначить одну клавишу для каждого "
+#~ "действия через диалог «Жесты ввода» NVDA.\n"

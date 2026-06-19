@@ -50,6 +50,7 @@ _BASS_ACTIVE_PLAYING      = 1
 _BASS_ACTIVE_STALLED      = 2
 _BASS_ACTIVE_PAUSED       = 3
 _BASS_DATA_AVAILABLE      = 0   # flag for BASS_ChannelGetData — returns buffered bytes
+_BASS_POS_BYTE            = 0   # mode for BASS_ChannelGetPosition — byte position
 
 # basshls.dll config constants
 _BASS_CONFIG_HLS_BANDWIDTH = 0x10400  # master playlist'te bitrate selection
@@ -382,6 +383,15 @@ class BassHost:
         self._dll = dll
         dll.BASS_SetConfig(_BASS_CONFIG_NET_SSL_VERIFY, 0)
         dll.BASS_SetConfig(_BASS_CONFIG_NET_SSL, 1)
+        # BASS_ChannelGetPosition returns a QWORD; ctypes defaults unconfigured
+        # functions to a 32-bit c_int return, which would silently truncate
+        # the byte position on long-running streams. Used by the position-
+        # based stall check in _monitor_loop (see _BASS_POS_BYTE).
+        try:
+            dll.BASS_ChannelGetPosition.restype  = ctypes.c_int64
+            dll.BASS_ChannelGetPosition.argtypes = [ctypes.c_uint32, ctypes.c_uint32]
+        except Exception:
+            pass
         return True, "ok"
 
     def _cancel_pending_play(self):
@@ -621,6 +631,7 @@ class BassHost:
         # The proxy thread is started before BASS_StreamCreateURL so that BASS
         # finds an already-listening socket and connects without delay.
         if is_https:
+            t_proxy_start = time.time()
             stream = self._try_https_local_proxy(url)
             if stream:
                 return stream
@@ -685,40 +696,166 @@ class BassHost:
                 except:
                     pass
 
+    def _connect_https_ipv4(self, url_parts, headers, ssl_ctx, timeout):
+        """Connect directly over IPv4 (bypassing urllib's default dual-stack
+        address resolution) and return an http.client.HTTPResponse.
+
+        Some hosts (icecast.walmradio.com observed) have a slow/unreachable
+        IPv6 address that Python's standard connection logic tries FIRST and
+        waits out the full timeout on before falling back to a fast IPv4
+        address — there is no Happy-Eyeballs-style racing in the stdlib for
+        plain urllib.request. Restricting resolution to AF_INET up front
+        skips that wasted wait entirely on hosts where it applies.
+
+        Raises on any failure (including hosts with no IPv4 address at all)
+        — callers should catch and fall back to the standard urllib path.
+        """
+        import socket as _socket
+        import http.client
+
+        host = url_parts.hostname
+        port = url_parts.port or 443
+        path = url_parts.path or "/"
+        if url_parts.query:
+            path += "?" + url_parts.query
+
+        infos = _socket.getaddrinfo(host, port, _socket.AF_INET, _socket.SOCK_STREAM)
+        if not infos:
+            raise OSError(f"no IPv4 address found for {host}")
+
+        last_exc = None
+        for family, socktype, proto, _canon, sockaddr in infos:
+            raw = None
+            try:
+                raw = _socket.socket(family, socktype, proto)
+                raw.settimeout(timeout)
+                raw.connect(sockaddr)
+                ssl_sock = ssl_ctx.wrap_socket(raw, server_hostname=host)
+                ssl_sock.settimeout(timeout)
+
+                req_lines = [f"GET {path} HTTP/1.1", f"Host: {host}"]
+                for k, v in headers.items():
+                    req_lines.append(f"{k}: {v}")
+                req_lines.append("Connection: close")
+                req_lines.append("")
+                req_lines.append("")
+                ssl_sock.sendall("\r\n".join(req_lines).encode("ascii"))
+
+                resp = http.client.HTTPResponse(ssl_sock, method="GET")
+                resp.begin()
+                return resp
+            except Exception as e:
+                last_exc = e
+                try:
+                    if raw:
+                        raw.close()
+                except Exception:
+                    pass
+                continue
+
+        raise last_exc or OSError(f"could not connect to any IPv4 address for {host}")
+
     def _try_https_local_proxy(self, url):
         """Proxy an HTTPS Icecast stream through a local TCP socket for BASS.
 
         BASS fails with BASS_ERROR_FILEFORM (err=40) on HTTPS Icecast streams
-        that send ICY headers immediately after the TLS handshake.  This method
-        works around the issue by:
+        that send ICY headers immediately after the TLS handshake (e.g.
+        icecast.walmradio.com). This method works around the issue by:
 
-          1. Connecting to the remote server with urllib (ICY-tolerant).
-          2. Opening a local loopback TCP server on an ephemeral port.
-          3. Returning 'http://127.0.0.1:<port>' to BASS so it reads plain HTTP
-             audio from localhost — no SSL parsing needed on BASS's side.
-          4. Running a background thread that forwards bytes from the remote
-             connection into the loopback socket for as long as BASS is reading.
+          1. Opening the HTTPS connection first — trying a direct IPv4-only
+             connection (fast path, see _connect_https_ipv4) before falling
+             back to standard urllib (slower, dual-stack) if that fails.
+          2. Only AFTER the remote is ready: opening a local loopback TCP
+             server and pointing BASS at http://127.0.0.1:<port>.
+          3. Running a background thread that immediately answers BASS's HTTP
+             request (headers are already known) and then forwards audio bytes.
 
-        The proxy thread is started *before* BASS_StreamCreateURL so that the
-        listening socket is ready by the time BASS tries to connect.
+        Connecting remote first (sequential, not parallel) means BASS always
+        gets an instant HTTP response from the proxy — its own NET_READTIMEOUT
+        never triggers, so we never need to touch BASS_SetConfig globally.
+        The cost is that the caller blocks until the remote connects, but this
+        method is always called from a background play thread so it does not
+        stall NVDA's UI, and the user was already going to wait for the
+        remote to connect anyway.
         """
         import socket as _socket
         import ssl as _ssl
         import urllib.request
+        import urllib.parse
 
-        CONNECT_TIMEOUT = 10   # seconds — urllib connection timeout
+        # icecast.walmradio.com's connect time has been observed at both
+        # 20.5s and 42.5s across separate test runs — i.e. genuinely slow
+        # and variable, not a fixed quantity. 30s is the ceiling for the
+        # (rarely-needed) dual-stack fallback path; the IPv4 fast path below
+        # uses its own short 8s timeout since it should either connect
+        # quickly or not at all.
+        CONNECT_TIMEOUT = 30   # seconds — fallback-path urllib timeout
         CHUNK           = 8192 # bytes per forwarding iteration
 
         ssl_ctx = _ssl.create_default_context()
         ssl_ctx.check_hostname = False
         ssl_ctx.verify_mode    = _ssl.CERT_NONE
 
-        # --- Step 1: bind a local loopback server socket immediately ---
-        # We bind *before* opening the remote connection so BASS can be pointed
-        # at the local address right away.  The urllib connection is opened
-        # inside the proxy thread, in parallel with BASS's own connect attempt.
-        # This eliminates the sequential "wait for urllib, then tell BASS" delay
-        # that previously caused ~10 s startup time.
+        # --- Step 1: establish the remote HTTPS connection first ---
+        # We block here (in the background play thread) until the server
+        # responds. Only then do we set up the local proxy, so BASS never
+        # has to wait for a slow TLS handshake on the loopback side.
+        #
+        # walmradio's connect times have been observed at 20.5s and 42.5s
+        # across two test runs, both suspiciously close to (CONNECT_TIMEOUT
+        # + a few seconds) — the signature of Python trying an unreachable/
+        # slow IPv6 address first (no Happy-Eyeballs / RFC 8305 racing in
+        # urllib), burning the full timeout, before falling back to a IPv4
+        # address that connects quickly. We try a direct IPv4-only connection
+        # FIRST with a short timeout; if that fails for any reason (including
+        # the host genuinely having no IPv4 address), we fall back to the
+        # original urllib path, which handles redirects/odd encodings more
+        # robustly but may hit the slow dual-stack behaviour again.
+        t_remote_start = time.time()
+        url_parts  = urllib.parse.urlsplit(url)
+        req_headers = {
+            "User-Agent": "VLC/3.0.21 LibVLC/3.0.21",
+            "Icy-MetaData": "1",
+            "Accept":      "*/*",
+        }
+        remote_resp = None
+
+        try:
+            remote_resp = self._connect_https_ipv4(
+                url_parts, req_headers, ssl_ctx, timeout=8)
+        except Exception as e:
+            pass
+
+        if remote_resp is None:
+            t_fallback_start = time.time()
+            try:
+                req = urllib.request.Request(url, headers=req_headers)
+                remote_resp = urllib.request.urlopen(
+                    req, timeout=CONNECT_TIMEOUT, context=ssl_ctx)
+            except Exception as e:
+                return 0
+
+        ct = (remote_resp.headers.get("content-type") or "").lower()
+        if not ("audio/" in ct or "application/ogg" in ct or "video/" in ct):
+            try:
+                remote_resp.close()
+            except Exception:
+                pass
+            return 0
+
+        # Collect ICY/audio headers to pass through to BASS.
+        # icy-metaint must be forwarded accurately — sending 0 or omitting it
+        # causes BASS to misparse the byte stream (garbled audio / glitches).
+        passthrough_headers = []
+        for hdr in ("content-type", "icy-name", "icy-genre", "icy-br",
+                    "icy-sr", "icy-metaint", "icy-pub", "icy-url"):
+            val = remote_resp.headers.get(hdr)
+            if val:
+                passthrough_headers.append(f"{hdr}: {val}".encode())
+
+        # --- Step 2: bind a local loopback server socket ---
+        # The remote is already connected, so BASS will get an immediate
+        # HTTP response the moment it sends its GET request.
         try:
             srv = _socket.socket(_socket.AF_INET, _socket.SOCK_STREAM)
             srv.setsockopt(_socket.SOL_SOCKET, _socket.SO_REUSEADDR, 1)
@@ -726,62 +863,34 @@ class BassHost:
             srv.listen(1)
             srv.settimeout(15)   # BASS must connect within 15 s
             port = srv.getsockname()[1]
-        except Exception:
+        except Exception as e:
+            try:
+                remote_resp.close()
+            except Exception:
+                pass
             return 0
 
-        # --- Step 2: proxy thread ---
+
+        # Pre-build the HTTP response to send to BASS (all headers are known).
+        http_response = b"\r\n".join(
+            [b"HTTP/1.0 200 OK"] + passthrough_headers + [b"", b""])
+
+        # --- Step 3: proxy thread — waits for BASS then forwards ---
         proxy_ready = threading.Event()
 
         def _proxy():
             proxy_ready.set()
 
-            # Accept BASS's incoming connection
             try:
                 client, _ = srv.accept()
-            except Exception:
-                return
-            finally:
-                srv.close()
-
-            # Open the remote HTTPS stream now — BASS is already connected and
-            # waiting for our response, so this runs in parallel with BASS's
-            # internal buffer setup rather than blocking the caller.
-            try:
-                req = urllib.request.Request(
-                    url,
-                    headers={
-                        "User-Agent": "VLC/3.0.21 LibVLC/3.0.21",
-                        "Icy-MetaData": "1",
-                        "Accept":      "*/*",
-                    },
-                )
-                remote_resp = urllib.request.urlopen(
-                    req, timeout=CONNECT_TIMEOUT, context=ssl_ctx)
-            except Exception:
+            except Exception as e:
                 try:
-                    client.close()
-                except Exception:
-                    pass
-                return
-
-            ct = (remote_resp.headers.get("content-type") or "").lower()
-            if not ("audio/" in ct or "application/ogg" in ct or "video/" in ct):
-                try:
-                    client.close()
                     remote_resp.close()
                 except Exception:
                     pass
                 return
-
-            # Collect ICY/audio headers to pass through to BASS.
-            # icy-metaint must be forwarded accurately — sending 0 or omitting it
-            # causes BASS to misparse the byte stream (garbled audio / glitches).
-            passthrough_headers = []
-            for hdr in ("content-type", "icy-name", "icy-genre", "icy-br",
-                        "icy-sr", "icy-metaint", "icy-pub", "icy-url"):
-                val = remote_resp.headers.get(hdr)
-                if val:
-                    passthrough_headers.append(f"{hdr}: {val}".encode())
+            finally:
+                srv.close()
 
             # Drain BASS's HTTP GET request
             try:
@@ -796,10 +905,9 @@ class BassHost:
                 pass
 
             # Send HTTP response with forwarded ICY headers
-            header_lines = [b"HTTP/1.0 200 OK"] + passthrough_headers + [b"", b""]
             try:
-                client.sendall(b"\r\n".join(header_lines))
-            except Exception:
+                client.sendall(http_response)
+            except Exception as e:
                 try:
                     client.close()
                     remote_resp.close()
@@ -807,20 +915,30 @@ class BassHost:
                     pass
                 return
 
+
             # Forward remote audio bytes → BASS.
             # A generous timeout (30 s) prevents spurious disconnects during
             # brief network pauses without blocking indefinitely on dead streams.
             client.settimeout(30)
             read_fn = remote_resp.read
+            total_bytes  = 0
+            t_fwd_start  = time.time()
+            t_last_log   = t_fwd_start
+            stop_reason  = "eof"
             try:
                 while True:
                     data = read_fn(CHUNK)
                     if not data:
                         break
                     client.sendall(data)
-            except Exception:
-                pass
+                    total_bytes += len(data)
+                    now = time.time()
+                    if now - t_last_log >= 20:
+                        t_last_log = now
+            except Exception as e:
+                stop_reason = repr(e)
             finally:
+                elapsed = time.time() - t_fwd_start
                 try:
                     client.close()
                 except Exception:
@@ -833,7 +951,8 @@ class BassHost:
         t = threading.Thread(target=_proxy, daemon=True, name="bass-https-proxy")
         t.start()
 
-        # Wait until the server socket is bound and listening before telling BASS
+        # Wait until the proxy thread has called proxy_ready.set() (i.e. it is
+        # in srv.accept()) before pointing BASS at the local address.
         proxy_ready.wait(timeout=2)
 
         # --- Step 4: point BASS at the local proxy ---
@@ -1217,12 +1336,22 @@ class BassHost:
           2. Buffer drain while PLAYING     — AAC+ SBR decoder drift;
              BASS reports PLAYING but internal decode buffer empties silently.
              Detected via BASS_ChannelGetData(BASS_DATA_AVAILABLE).
-        Either condition increments stall_count; after _STALL_THRESHOLD
+          3. Position stuck while PLAYING and buffer non-empty — covers the
+             case where BASS keeps reporting PLAYING and keeps accepting/
+             buffering bytes (so ICY metadata can keep updating normally),
+             but the playback cursor itself never advances, i.e. nothing is
+             actually being heard. This is the scenario reported as "title
+             keeps changing but there's no sound" on icecast.walmradio.com.
+             Detected via BASS_ChannelGetPosition(BASS_POS_BYTE) not moving
+             across consecutive polls.
+        Either condition increments its own counter; after _STALL_THRESHOLD
         consecutive hits a stall event is sent to the parent process.
         """
         last_title      = ""
         stall_count     = 0
         buf_empty_count = 0
+        pos_stuck_count = 0
+        last_pos        = None
         _BUF_EMPTY_THRESHOLD = 2   # consecutive near-empty reads before stall
 
         while not self._meta_stop.is_set():
@@ -1238,6 +1367,8 @@ class BassHost:
                 if not h or not dll:
                     stall_count     = 0
                     buf_empty_count = 0
+                    pos_stuck_count = 0
+                    last_pos        = None
                     continue
 
                 # 1. ICY metadata
@@ -1261,6 +1392,8 @@ class BassHost:
                 if state in (_BASS_ACTIVE_STALLED, _BASS_ACTIVE_STOPPED):
                     stall_count += 1
                     buf_empty_count = 0
+                    pos_stuck_count = 0
+                    last_pos        = None
                     if stall_count >= self._STALL_THRESHOLD:
                         if not self._meta_stop.is_set():
                             _event(type="stall", state=state)
@@ -1273,6 +1406,7 @@ class BassHost:
                     # buffered decoded bytes without consuming them.
                     # Returning 0 while PLAYING means the decoder has stalled
                     # internally even though the channel is nominally active.
+                    available = None
                     try:
                         available = dll.BASS_ChannelGetData(h, None, _BASS_DATA_AVAILABLE)
                         if available == 0:
@@ -1285,6 +1419,26 @@ class BassHost:
                             buf_empty_count = 0
                     except Exception:
                         buf_empty_count = 0
+
+                    # 4. Position-stuck check — channel says PLAYING and the
+                    # buffer isn't empty, but the actual playback cursor has
+                    # frozen, so no audio is reaching the output. This is
+                    # invisible to checks 1-3, which is why it kept being
+                    # reported as "title updates but no sound".
+                    try:
+                        pos = dll.BASS_ChannelGetPosition(h, _BASS_POS_BYTE)
+                        if pos is not None and pos >= 0:
+                            if last_pos is not None and pos == last_pos:
+                                pos_stuck_count += 1
+                                if pos_stuck_count >= self._STALL_THRESHOLD:
+                                    if not self._meta_stop.is_set():
+                                        _event(type="stall", state=state)
+                                    pos_stuck_count = 0
+                            else:
+                                pos_stuck_count = 0
+                            last_pos = pos
+                    except Exception:
+                        pos_stuck_count = 0
                 # PAUSED: leave counters unchanged
 
             except Exception:

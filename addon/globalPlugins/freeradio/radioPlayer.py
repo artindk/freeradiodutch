@@ -759,9 +759,32 @@ class RadioPlayer:
                     if self._launch_bass(url, vol):
                         log.info("FreeRadio: BASS stall reconnect OK")
                         return
-                except Exception:
+                except Exception as e:
                     pass
             log.warning("FreeRadio: BASS stall reconnect exhausted")
+
+            # BASS could not recover after repeated attempts. Previously this
+            # just gave up here, leaving _is_playing True with no audio
+            # actually playing (and possibly stale ICY metadata still
+            # displayed). Fall back to the VLC/PotPlayer/WMP chain instead,
+            # same as a normal BASS-unavailable startup would.
+            if not self._is_playing or self._intentional_stop:
+                return
+            if self._play_gen != captured_gen:
+                return
+            with self._play_lock:
+                if self._play_gen != captured_gen:
+                    return
+                self._play_gen += 1
+                fallback_gen = self._play_gen
+            log.warning(
+                "FreeRadio: falling back to VLC/PotPlayer/WMP after BASS "
+                "exhaustion: %s", url)
+            try:
+                self._launch_non_bass_fallback(url, vol, fallback_gen)
+            except Exception:
+                log.warning(
+                    "FreeRadio: non-BASS fallback also failed", exc_info=True)
 
         threading.Thread(target=_reconnect, daemon=True,
                          name="FreeRadio-BassReconnect").start()
@@ -885,6 +908,48 @@ class RadioPlayer:
                 os.unlink(vbs)
             except:
                 pass
+
+    def _launch_non_bass_fallback(self, url, volume, gen):
+        """VLC -> PotPlayer -> WMP only — used when BASS has already been
+        retried and exhausted (see _on_bass_stall's _reconnect()). Mirrors
+        the tail of _launch() but deliberately skips the BASS step, since
+        BASS just failed repeatedly for this URL.
+        """
+        def _stale():
+            return gen is not None and self._play_gen != gen
+
+        self._stop_current()
+
+        if _stale():
+            return
+
+        if self._vlc_path:
+            try:
+                self._launch_vlc(url, volume)
+                if _stale():
+                    self._stop_process()
+                return
+            except Exception:
+                pass
+
+        if _stale():
+            return
+
+        if self._potplayer_path:
+            try:
+                self._launch_potplayer(url, volume)
+                if _stale():
+                    self._stop_process()
+                return
+            except Exception:
+                pass
+
+        if _stale():
+            return
+
+        self._launch_wmp(url, volume)
+        if _stale():
+            self._stop_process()
 
     def _launch(self, url, volume, gen=None):
         """Launch playback: BASS → VLC → PotPlayer → WMP.
