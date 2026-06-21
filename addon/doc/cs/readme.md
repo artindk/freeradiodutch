@@ -153,12 +153,19 @@ Nahrávky se ve výchozím nastavení ukládají do složky `Dokumenty\VolnéRad
 
 **Nahrávání skladby:** Během přehrávání stanice, která vysílá metadata ICY, stiskněte dvakrát po sobě tlačítko `Ctrl+Win+E`. Nahrávání se spustí okamžitě a je pojmenováno podle názvu aktuální skladby. Při změně skladby se nahrávání automaticky zastaví a NVDA oznámí název uloženého souboru. Pokud chcete nahrávání ukončit dříve, než skladba skončí, stiskněte znovu dvakrát klávesy `Ctrl+Win+E`. Pokud aktuální stanice nevysílá metadata ICY, nahrávání skladby není k dispozici a NVDA vás o tom informuje.
 
-**Naplánované nahrávání:** V prohlížeči otevřete kartu Nahrávání. Vyberte stanici z oblíbených, zadejte čas začátku ve formátu HH:MM a dobu trvání v minutách a poté vyberte režim nahrávání:
+**Naplánované nahrávání:** V prohlížeči otevřete kartu Nahrávání. Vyberte stanici z oblíbených, zadejte čas začátku ve formátu HH:MM a dobu trvání v minutách, vyberte jeden nebo více aktivních dnů a nastavte režim opakování a nahrávání:
 
-- **Nahrávat při poslechu** - přehrává a nahrává současně. Spustí se backend pro přehrávání pomocí prioritního pořadí BASS → VLC → PotPlayer → Windows Media Player.
-- **Pouze nahrávání** - nahrává tiše na pozadí bez jakéhokoli zvukového výstupu; nahrávací engine se připojuje přímo ke streamu.
+**Aktivní dny:** Zaškrtněte jeden nebo více dní v týdnu. V jednorázovém režimu se pro každý vybraný den vytvoří samostatná položka plánování; každá položka se nastaví na nejbližší příští výskyt daného dne. V opakujícím se režimu se nahrávání opakuje pouze ve vybraných dnech. Pokud nejsou vybrány žádné dny, nahrávání není omezeno na konkrétní dny.
 
-Pokud zadaný čas již uplynul, nahrávání se naplánuje na následující den. NVDA oznámí, kdy nahrávání začne a kdy skončí.
+**Režim opakování:**
+- **Nahrát jednou** — vytvoří jednorázové nahrávání pro každý vybraný den. Každá položka se nastaví na nejbližší příští výskyt daného dne; pokud dnešní čas již uplynul, položka se automaticky přesune na příští týden.
+- **Opakovat každý týden** — opakuje se každý týden ve vybraných aktivních dnech, dokud není odstraněno ze seznamu plánování.
+
+**Režim nahrávání:**
+- **Nahrávat při poslechu** — přehrává a nahrává současně. Spustí se backend pro přehrávání pomocí prioritního pořadí BASS → VLC → PotPlayer → Windows Media Player.
+- **Pouze nahrávání** — nahrává tiše na pozadí bez jakéhokoli zvukového výstupu; nahrávací engine se připojuje přímo ke streamu.
+
+NVDA oznámí, kdy nahrávání začne a kdy skončí. Pokud je NVDA restartována v průběhu plánovaného nahrávání, nahrávání se při spuštění automaticky obnoví.
 
 ## Časovač
 
@@ -168,7 +175,7 @@ Otevřete kartu Časovač v prohlížeči stanice (`Alt+4`). Lze přidat dva typ
 
 **Sleep - zastavení rádia:** Zastaví přehrávání v zadaný čas. Po spuštění časovače se hlasitost postupně snižuje po dobu 60 sekund, než se přehrávání zastaví. Není třeba vybírat žádnou stanici, stačí zadat čas.
 
-Platí pro oba typy, pokud zadaný čas již uplynul, je akce naplánována na následující den. Na kartě jsou uvedeny čekající časovače; vyberte jeden z nich a stisknutím tlačítka Odebrat vybraný časovač jej zrušte.
+Platí pro oba typy, pokud zadaný čas již uplynul, je akce naplánována na následující den. Pokud již existuje časovač ve stejnou dobu (bez ohledu na typ), přidání nového časovače je zablokováno; uživatel je informován o konfliktu a vyzván k odebrání stávající položky. Na kartě jsou uvedeny čekající časovače; vyberte jeden z nich a stisknutím tlačítka Odebrat vybraný časovač jej zrušte.
 
 ## Nastavení
 

@@ -507,33 +507,16 @@ class RadioDialog(wx.Dialog):
 			label=_("Record &once"),
 			style=wx.RB_GROUP,
 		)
-		self._sched_rec_weekly = wx.RadioButton(
-			self._rec_panel,
-			label=_("Repeat &weekly (fixed number of times)"),
-		)
+		# Repeats every week on the selected active days, with no end —
+		# the user removes it from the schedule list when they want it to
+		# stop (see "&Remove Selected").
 		self._sched_rec_indef = wx.RadioButton(
 			self._rec_panel,
-			label=_("Repeat &indefinitely"),
+			label=_("Repeat &weekly"),
 		)
 		self._sched_rec_once.SetValue(True)
 		sizer.Add(self._sched_rec_once,   0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
-		sizer.Add(self._sched_rec_weekly, 0, wx.LEFT | wx.RIGHT | wx.TOP, 4)
 		sizer.Add(self._sched_rec_indef,  0, wx.LEFT | wx.RIGHT | wx.TOP, 4)
-
-		# Occurrence count — shown only when "weekly (fixed)" is selected
-		occ_row = wx.BoxSizer(wx.HORIZONTAL)
-		self._sched_occ_label = wx.StaticText(
-			self._rec_panel, label=_("Number of occurrences:"),
-		)
-		self._sched_occ_spin = wx.SpinCtrl(
-			self._rec_panel, min=1, max=520, initial=4,
-		)
-		self._sched_occ_spin.SetName(_("Number of occurrences:"))
-		occ_row.Add(self._sched_occ_label, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 8)
-		occ_row.Add(self._sched_occ_spin,  0)
-		sizer.Add(occ_row, 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
-		self._sched_occ_label.Hide()
-		self._sched_occ_spin.Hide()
 
 		# --- Day-of-week selection ---
 		# nvdaControls.CustomCheckListBox exposes each item as
@@ -551,13 +534,11 @@ class RadioDialog(wx.Dialog):
 			self._rec_panel, choices=_day_labels,
 		)
 		self._sched_days_clb.SetName(_("Active days:"))
-		# Default: Mon-Fri (indices 0-4) checked
-		self._sched_days_clb.Checked = list(range(5))
+		# No day pre-checked — the user picks explicitly each time.
+		# An empty selection is treated as "every day" by the recorder.
+		self._sched_days_clb.Checked = []
 		self._sched_days_clb.Select(0)
 		sizer.Add(self._sched_days_clb, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
-		# Hidden initially because "Record once" is the default
-		self._sched_days_label.Hide()
-		self._sched_days_clb.Hide()
 
 		sizer.Add(wx.StaticText(self._rec_panel, label=_("Playback during recording:")),
 		          0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
@@ -600,8 +581,7 @@ class RadioDialog(wx.Dialog):
 		self._sched_list.Bind(wx.EVT_LISTBOX,   self._on_sched_selected)
 		self._sched_list.Bind(wx.EVT_CHAR,      self._on_list_char)
 		self._sched_station_cb.Bind(wx.EVT_SET_FOCUS, self._on_sched_station_focus)
-		# Show/hide the occurrence spin when the recurrence mode changes.
-		self._sched_rec_weekly.Bind(wx.EVT_RADIOBUTTON, self._on_sched_recurrence_changed)
+		# Show/hide the active-days list when the recurrence mode changes.
 		self._sched_rec_once.Bind(wx.EVT_RADIOBUTTON,   self._on_sched_recurrence_changed)
 		self._sched_rec_indef.Bind(wx.EVT_RADIOBUTTON,  self._on_sched_recurrence_changed)
 		# Type-ahead for the station listbox is handled in _on_char_hook.
@@ -987,15 +967,6 @@ class RadioDialog(wx.Dialog):
 			event.Skip()
 
 
-		# Populate station listbox in the Recording tab from favourites.
-		favs = self._manager.get_favorites()
-		self._sched_station_cb.Clear()
-		for s in favs:
-			self._sched_station_cb.Append(s.get("name", "?").strip())
-		if favs:
-			self._sched_station_cb.SetSelection(0)
-		self._sched_stations = favs
-
 	def _refresh_sched_stations(self):
 		"""Populate the station listbox in the Recording tab from favourites.
 
@@ -1080,15 +1051,11 @@ class RadioDialog(wx.Dialog):
 
 
 	def _on_sched_recurrence_changed(self, event):
-		"""Show/hide occurrence count and active-days list based on recurrence mode."""
-		is_once         = self._sched_rec_once.GetValue()
-		is_weekly_fixed = self._sched_rec_weekly.GetValue()
-		# Occurrence count only visible for "weekly (fixed)"
-		self._sched_occ_label.Show(is_weekly_fixed)
-		self._sched_occ_spin.Show(is_weekly_fixed)
-		# Day selection hidden when recording only once
-		self._sched_days_label.Show(not is_once)
-		self._sched_days_clb.Show(not is_once)
+		"""Show/hide the active-days list based on recurrence mode."""
+		# Day selection is always shown — in 'once' mode each checked day gets
+		# its own one-off entry; in 'indefinite' mode the days restrict recurrence.
+		self._sched_days_label.Show(True)
+		self._sched_days_clb.Show(True)
 		self._rec_panel.Layout()
 		event.Skip()
 
@@ -1136,39 +1103,10 @@ class RadioDialog(wx.Dialog):
 		active_days = list(self._sched_days_clb.Checked)
 		# If no days are checked, treat as all days active (no restriction).
 
-		now   = datetime.datetime.now()
-		start = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
-		next_day = False
-		if start <= now:
-			# Advance to the next candidate day that is in active_days (or tomorrow
-			# when active_days is empty / all days are allowed).
-			candidate = start + datetime.timedelta(days=1)
-			if active_days:
-				# Walk forward up to 7 days to find an allowed weekday.
-				for _day in range(7):
-					if candidate.weekday() in active_days:
-						break
-					candidate += datetime.timedelta(days=1)
-			start    = candidate
-			next_day = True
-		elif active_days and start.weekday() not in active_days:
-			# Today's time is still in the future but today is not an active day —
-			# advance to the next active day.
-			candidate = start + datetime.timedelta(days=1)
-			for _day in range(7):
-				if candidate.weekday() in active_days:
-					break
-				candidate += datetime.timedelta(days=1)
-			start    = candidate
-			next_day = True
-
 		# --- Recurrence mode ---
 		if self._sched_rec_indef.GetValue():
 			recurrence      = "indefinite"
 			max_occurrences = 0
-		elif self._sched_rec_weekly.GetValue():
-			recurrence      = "weekly"
-			max_occurrences = self._sched_occ_spin.GetValue()
 		else:
 			recurrence      = "once"
 			max_occurrences = 0
@@ -1187,35 +1125,95 @@ class RadioDialog(wx.Dialog):
 			"potplayer": self._player._potplayer_path,
 			"wmp":       self._player._wmp_path,
 		}
-		_rec, conflict_names = self._recorder.add_schedule(
-			station, start, dur,
-			player_paths=player_paths,
-			record_only=record_only,
-			recurrence=recurrence,
-			active_days=active_days,
-			max_occurrences=max_occurrences,
-		)
-		self._refresh_sched_list()
-		# record_only may have been forced on due to conflict — read back from rec
-		record_only = _rec.record_only
-		mode_str  = _("Record only") if record_only else _("Listen and record")
-		date_str  = start.strftime("%d.%m.%Y")
-		if next_day:
-			ui.message(_("Time has passed today. Schedule added for tomorrow: %(station)s at %(time)s (%(mode)s)") % {
-				"station": station.get("name", "?"), "time": time_str, "mode": mode_str
+
+		now = datetime.datetime.now()
+		base = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+
+		if recurrence == "once" and active_days:
+			# Create one entry per selected day, each scheduled for the next
+			# occurrence of that weekday at the given time.
+			all_conflict_names = []
+			added_dates = []
+			for weekday in sorted(active_days):
+				# Find the next date that falls on this weekday.
+				days_ahead = (weekday - now.weekday()) % 7
+				candidate = base + datetime.timedelta(days=days_ahead)
+				# If the candidate is in the past (same weekday, time already gone),
+				# move to the following week.
+				if candidate <= now:
+					candidate += datetime.timedelta(days=7)
+				_rec, conflict_names = self._recorder.add_schedule(
+					station, candidate, dur,
+					player_paths=player_paths,
+					record_only=record_only,
+					recurrence="once",
+					active_days=[],
+					max_occurrences=0,
+				)
+				added_dates.append(candidate.strftime("%d.%m.%Y"))
+				if conflict_names:
+					all_conflict_names.append(conflict_names)
+			self._refresh_sched_list()
+			record_only = _rec.record_only
+			mode_str = _("Record only") if record_only else _("Listen and record")
+			ui.message(_("Schedule added: %(station)s at %(time)s on %(dates)s (%(mode)s)") % {
+				"station": station.get("name", "?"),
+				"time":    time_str,
+				"dates":   ", ".join(added_dates),
+				"mode":    mode_str,
 			})
+			if all_conflict_names:
+				wx.CallAfter(
+					wx.MessageBox,
+					_("Time conflict with: %(names)s. Switched to record-only mode.") % {
+						"names": ", ".join(all_conflict_names)
+					},
+					_("Schedule Conflict"),
+					wx.OK | wx.ICON_WARNING,
+					self,
+				)
 		else:
+			# Recurring mode, or once with no days selected.
+			start = base
+			if start <= now:
+				candidate = start + datetime.timedelta(days=1)
+				if active_days:
+					for _day in range(7):
+						if candidate.weekday() in active_days:
+							break
+						candidate += datetime.timedelta(days=1)
+				start = candidate
+			elif active_days and start.weekday() not in active_days:
+				candidate = start + datetime.timedelta(days=1)
+				for _day in range(7):
+					if candidate.weekday() in active_days:
+						break
+					candidate += datetime.timedelta(days=1)
+				start = candidate
+
+			_rec, conflict_names = self._recorder.add_schedule(
+				station, start, dur,
+				player_paths=player_paths,
+				record_only=record_only,
+				recurrence=recurrence,
+				active_days=active_days,
+				max_occurrences=max_occurrences,
+			)
+			self._refresh_sched_list()
+			record_only = _rec.record_only
+			mode_str = _("Record only") if record_only else _("Listen and record")
+			date_str = start.strftime("%d.%m.%Y")
 			ui.message(_("Schedule added: %(station)s on %(date)s at %(time)s (%(mode)s)") % {
 				"station": station.get("name", "?"), "date": date_str, "time": time_str, "mode": mode_str
 			})
-		if conflict_names:
-			wx.CallAfter(
-				wx.MessageBox,
-				_("Time conflict with: %(names)s. Switched to record-only mode.") % {"names": conflict_names},
-				_("Schedule Conflict"),
-				wx.OK | wx.ICON_WARNING,
-				self,
-			)
+			if conflict_names:
+				wx.CallAfter(
+					wx.MessageBox,
+					_("Time conflict with: %(names)s. Switched to record-only mode.") % {"names": conflict_names},
+					_("Schedule Conflict"),
+					wx.OK | wx.ICON_WARNING,
+					self,
+				)
 
 	def _on_sched_del(self, event):
 		if not self._recorder:
@@ -2797,6 +2795,20 @@ class RadioDialog(wx.Dialog):
 
 		is_start = self._timer_rb_start.GetValue()
 
+		# Duplicate check: warn and abort if any timer already exists at the
+		# same HH:MM, regardless of kind (alarm and sleep timers conflict too).
+		existing = self._timer_manager.get_timers()
+		for _eid, dt, _action, label, _cb in existing:
+			meta = getattr(_action, "_timer_meta", None)
+			if meta and dt.hour == when.hour and dt.minute == when.minute:
+				ui.message(
+					_("A timer already exists at %(time)s (%(label)s). Remove it first.") % {
+						"time":  dt.strftime("%H:%M"),
+						"label": label,
+					}
+				)
+				return
+
 		if is_start:
 			station = self._resolve_station_from_combo(
 				self._timer_station_cb,
@@ -3113,26 +3125,18 @@ class EditScheduleDialog(wx.Dialog):
 
 		# --- Recurrence ---
 		sizer.Add(wx.StaticText(self, label=_("Recurrence:")), 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
-		self._rec_once   = wx.RadioButton(self, label=_("Record &once"),                            style=wx.RB_GROUP)
-		self._rec_weekly = wx.RadioButton(self, label=_("Repeat &weekly (fixed number of times)"))
-		self._rec_indef  = wx.RadioButton(self, label=_("Repeat &indefinitely"))
-		for rb in (self._rec_once, self._rec_weekly, self._rec_indef):
+		self._rec_once  = wx.RadioButton(self, label=_("Record &once"), style=wx.RB_GROUP)
+		# Repeats every week on the selected active days, with no end —
+		# the user removes it from the schedule list to stop it. Legacy
+		# entries saved with the old fixed-count "weekly" mode are treated
+		# the same way here; saving will convert them to indefinite.
+		self._rec_indef = wx.RadioButton(self, label=_("Repeat &weekly"))
+		for rb in (self._rec_once, self._rec_indef):
 			sizer.Add(rb, 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
-		if rec.recurrence == "weekly":
-			self._rec_weekly.SetValue(True)
-		elif rec.recurrence == "indefinite":
+		if rec.recurrence in ("weekly", "indefinite"):
 			self._rec_indef.SetValue(True)
 		else:
 			self._rec_once.SetValue(True)
-
-		# Occurrence count
-		occ_row = wx.BoxSizer(wx.HORIZONTAL)
-		self._occ_label = wx.StaticText(self, label=_("Number of occurrences:"))
-		self._occ_spin  = wx.SpinCtrl(self, min=1, max=520, initial=max(1, rec.max_occurrences))
-		self._occ_spin.SetName(_("Number of occurrences:"))
-		occ_row.Add(self._occ_label, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 8)
-		occ_row.Add(self._occ_spin,  0)
-		sizer.Add(occ_row, 0, wx.LEFT | wx.RIGHT | wx.TOP, 8)
 
 		# --- Active days ---
 		_day_labels = [
@@ -3174,7 +3178,7 @@ class EditScheduleDialog(wx.Dialog):
 		self.SetMinSize((360, -1))
 
 		# Wire up visibility toggles
-		for rb in (self._rec_once, self._rec_weekly, self._rec_indef):
+		for rb in (self._rec_once, self._rec_indef):
 			rb.Bind(wx.EVT_RADIOBUTTON, self._on_recurrence_changed)
 		ok_btn.Bind(wx.EVT_BUTTON, self._on_ok)
 
@@ -3183,12 +3187,8 @@ class EditScheduleDialog(wx.Dialog):
 
 	# ------------------------------------------------------------------
 	def _update_visibility(self):
-		is_once   = self._rec_once.GetValue()
-		is_weekly = self._rec_weekly.GetValue()
-		self._occ_label.Show(is_weekly)
-		self._occ_spin.Show(is_weekly)
-		self._days_label.Show(not is_once)
-		self._days_clb.Show(not is_once)
+		self._days_label.Show(True)
+		self._days_clb.Show(True)
 		self.Layout()
 
 	def _on_recurrence_changed(self, event):
@@ -3225,11 +3225,9 @@ class EditScheduleDialog(wx.Dialog):
 		self._result = {
 			"start_time":       new_start,
 			"duration_minutes": self._dur_spin.GetValue(),
-			"recurrence":       ("weekly" if self._rec_weekly.GetValue()
-			                     else "indefinite" if self._rec_indef.GetValue()
-			                     else "once"),
+			"recurrence":       "indefinite" if self._rec_indef.GetValue() else "once",
 			"active_days":      list(self._days_clb.Checked),
-			"max_occurrences":  self._occ_spin.GetValue() if self._rec_weekly.GetValue() else 0,
+			"max_occurrences":  0,
 			"record_only":      self._mode_rec.GetValue(),
 		}
 		self.EndModal(wx.ID_OK)

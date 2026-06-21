@@ -193,12 +193,19 @@ Recordings are saved to `Documents\FreeRadio Recordings\` by default. The filena
 
 **Song recording:** Press `Ctrl+Win+E` **twice** in quick succession while a station that broadcasts ICY metadata is playing. The recording starts immediately and is named after the current track title. When the track changes, the recording stops automatically and NVDA announces the saved filename. If you want to end the recording early before the track finishes, press `Ctrl+Win+E` twice again. If the current station does not broadcast ICY metadata, song recording is not available and NVDA will inform you.
 
-**Scheduled recording:** Open the Recording tab in the browser. Select a station from your favourites, enter the start time in HH:MM format and the duration in minutes, then choose a recording mode:
+**Scheduled recording:** Open the Recording tab in the browser. Select a station from your favourites, enter the start time in HH:MM format and the duration in minutes, select one or more active days, then choose a recurrence mode and a recording mode:
 
+**Active days:** Check one or more days of the week. In single-recording mode, a separate entry is created for each selected day, each placed on the next upcoming occurrence of that day. In recurring mode, the recording repeats only on the checked days. If no days are checked, the recording is not restricted to specific days.
+
+**Recurrence:**
+- **Record once** — records a single time on each selected day. Each entry is placed on the next upcoming occurrence of that day; if the selected time has already passed today, the entry moves to the same day next week automatically.
+- **Repeat weekly** — repeats every week on the selected active days until removed from the schedule list.
+
+**Recording mode:**
 - **Record while listening** — plays and records simultaneously. A playback backend is started using the BASS → VLC → PotPlayer → Windows Media Player priority order.
 - **Record only** — records silently in the background without any audio output; the recording engine connects directly to the stream.
 
-If the entered time has already passed, the recording is scheduled for the following day. NVDA announces when a recording starts and when it finishes.
+NVDA announces when a recording starts and when it finishes. If NVDA is restarted while a scheduled recording is active, the recording resumes automatically on startup.
 
 ## Timer
 
@@ -208,7 +215,7 @@ Open the Timer tab in the station browser (`Alt+4`). Two types of timer can be a
 
 **Sleep — stop radio:** Stops playback at the specified time. When the timer fires, volume is gradually reduced over 60 seconds before playback stops. No station selection is needed; just enter the time.
 
-For both types, if the entered time has already passed the action is scheduled for the following day. Pending timers are listed in the tab; select one and press the Remove Selected Timer button to cancel it.
+For both types, if the entered time has already passed the action is scheduled for the following day. Adding a timer is blocked if another timer — of any type — already exists at the same time; a message informs you of the conflict and prompts you to remove the existing entry first. Pending timers are listed in the tab; select one and press the Remove Selected Timer button to cancel it.
 
 ## Settings
 

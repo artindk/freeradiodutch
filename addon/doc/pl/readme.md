@@ -194,12 +194,19 @@ Nagrania są domyślnie zapisywane w `Documents\FreeRadio Recordings\`. Nazwa pl
 
 **Nagrywanie utworu:** naciśnij `Ctrl+Win+E` **dwa razy** szybko, gdy gra stacja nadająca metadane ICY. Nagrywanie rozpoczyna się natychmiast i otrzymuje nazwę bieżącego tytułu. Po zmianie utworu nagrywanie zatrzymuje się automatycznie, a NVDA ogłasza zapisaną nazwę pliku. Jeśli chcesz zakończyć wcześniej, naciśnij `Ctrl+Win+E` dwa razy ponownie. Jeśli bieżąca stacja nie nadaje metadanych ICY, nagrywanie utworu jest niedostępne i NVDA o tym poinformuje.
 
-**Nagrywanie zaplanowane:** otwórz kartę Nagrywanie w przeglądarce. Wybierz stację z ulubionych, wpisz godzinę rozpoczęcia w formacie GG:MM i czas trwania w minutach, a następnie wybierz tryb nagrywania:
+**Nagrywanie zaplanowane:** otwórz kartę Nagrywanie w przeglądarce. Wybierz stację z ulubionych, wpisz godzinę rozpoczęcia w formacie GG:MM i czas trwania w minutach, wybierz jeden lub więcej aktywnych dni, a następnie ustaw tryb powtarzania i tryb nagrywania:
 
-- **Nagrywaj podczas słuchania** - odtwarza i nagrywa jednocześnie. Backend odtwarzania uruchamiany jest w kolejności priorytetów BASS -> VLC -> PotPlayer -> Windows Media Player.
-- **Tylko nagrywaj** - nagrywa cicho w tle bez wyjścia audio; silnik nagrywania łączy się bezpośrednio ze strumieniem.
+**Aktywne dni:** Zaznacz jeden lub więcej dni tygodnia. W trybie jednorazowym dla każdego wybranego dnia tworzona jest osobna pozycja, ustawiona na najbliższe wystąpienie tego dnia. W trybie cyklicznym nagrywanie powtarza się tylko w zaznaczonych dniach. Jeśli nie zaznaczono żadnych dni, nagrywanie nie jest ograniczone do konkretnych dni.
 
-Jeśli podana godzina już minęła, nagranie zostanie zaplanowane na następny dzień. NVDA ogłasza rozpoczęcie i zakończenie nagrywania.
+**Tryb powtarzania:**
+- **Nagraj raz** — tworzy jednorazowe nagranie dla każdego wybranego dnia. Każda pozycja jest ustawiona na najbliższe wystąpienie tego dnia; jeśli dzisiejsza godzina już minęła, pozycja jest automatycznie przenoszona na następny tydzień.
+- **Powtarzaj co tydzień** — powtarza się co tydzień w wybranych aktywnych dniach, dopóki nie zostanie usunięte z listy harmonogramu.
+
+**Tryb nagrywania:**
+- **Nagrywaj podczas słuchania** — odtwarza i nagrywa jednocześnie. Backend odtwarzania uruchamiany jest w kolejności priorytetów BASS → VLC → PotPlayer → Windows Media Player.
+- **Tylko nagrywaj** — nagrywa cicho w tle bez wyjścia audio; silnik nagrywania łączy się bezpośrednio ze strumieniem.
+
+NVDA ogłasza rozpoczęcie i zakończenie nagrywania. Jeśli NVDA zostanie uruchomione ponownie podczas aktywnego zaplanowanego nagrywania, nagrywanie zostanie automatycznie wznowione po uruchomieniu.
 
 ## Timer
 
@@ -209,7 +216,7 @@ Otwórz kartę Timer w przeglądarce stacji (`Alt+4`). Można dodać dwa typy ti
 
 **Uśpienie - zatrzymaj radio:** zatrzymuje odtwarzanie o wskazanej godzinie. Po uruchomieniu timera głośność jest stopniowo zmniejszana przez 60 sekund, zanim odtwarzanie zostanie zatrzymane. Nie trzeba wybierać stacji; wystarczy wpisać czas.
 
-Dla obu typów, jeśli podana godzina już minęła, akcja zostanie zaplanowana na następny dzień. Oczekujące timery są widoczne na karcie; zaznacz jeden i naciśnij przycisk Usuń wybrany timer, aby go anulować.
+Dla obu typów, jeśli podana godzina już minęła, akcja zostanie zaplanowana na następny dzień. Jeśli o tej samej godzinie istnieje już timer (niezależnie od typu), dodanie nowego jest zablokowane; użytkownik jest informowany o konflikcie i proszony o usunięcie istniejącej pozycji. Oczekujące timery są widoczne na karcie; zaznacz jeden i naciśnij przycisk Usuń wybrany timer, aby go anulować.
 
 ## Ustawienia
 

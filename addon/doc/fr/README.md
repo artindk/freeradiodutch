@@ -193,12 +193,19 @@ Les enregistrements sont enregistrés par défaut dans `Documents\FreeRadio Reco
 
 **Enregistrement du morceau :** Appuyez sur `Ctrl+Win+E` **deux fois** de suite pendant qu'une station qui diffuse des métadonnées ICY est en cours de lecture. L'enregistrement démarre immédiatement et porte le nom du titre de la piste actuelle. Lorsque la piste change, l'enregistrement s'arrête automatiquement et NVDA annonce le nom du fichier enregistré. Si vous souhaitez terminer l'enregistrement plus tôt avant la fin de la piste, appuyez à nouveau deux fois sur `Ctrl+Win+E`. Si la station actuelle ne diffuse pas de métadonnées ICY, l'enregistrement du morceau n'est pas disponible et NVDA vous en informera.
 
-**Enregistrement planifié:** Ouvrez l'onglet Enregistrement dans le navigateur. Sélectionnez une station parmi vos favoris, entrez l'heure de début en format HH:MM et la durée en minutes, puis choisissez un mode d'enregistrement:
+**Enregistrement planifié:** Ouvrez l'onglet Enregistrement dans le navigateur. Sélectionnez une station parmi vos favoris, entrez l'heure de début en format HH:MM et la durée en minutes, sélectionnez un ou plusieurs jours actifs, puis choisissez le mode de répétition et le mode d'enregistrement:
 
+**Jours actifs:** Cochez un ou plusieurs jours de la semaine. En mode enregistrement unique, une entrée distincte est créée pour chaque jour sélectionné, placée à la prochaine occurrence de ce jour. En mode récurrent, l'enregistrement se répète uniquement les jours cochés. Si aucun jour n'est sélectionné, l'enregistrement n'est pas limité à des jours spécifiques.
+
+**Mode de répétition:**
+- **Enregistrer une fois** — crée un enregistrement unique pour chaque jour sélectionné. Chaque entrée est placée à la prochaine occurrence de ce jour; si l'heure d'aujourd'hui est déjà dépassée, l'entrée est automatiquement reportée à la semaine suivante.
+- **Répéter chaque semaine** — se répète chaque semaine les jours actifs sélectionnés jusqu'à sa suppression de la liste de planification.
+
+**Mode d'enregistrement:**
 - **Enregistrer pendant l'écoute** — joue et enregistre simultanément. Un backend de lecture est démarré en utilisant l'ordre de priorité BASS → VLC → PotPlayer → Windows Media Player.
 - **Enregistrer seulement** — enregistre silencieusement en arrière-plan sans aucune sortie audio; le moteur d'enregistrement se connecte directement au flux.
 
-Si l'heure saisie est déjà dépassée, l'enregistrement est planifié pour le lendemain. NVDA annonce quand un enregistrement commence et quand il se termine.
+NVDA annonce quand un enregistrement commence et quand il se termine. Si NVDA est redémarré pendant qu'un enregistrement planifié est actif, l'enregistrement reprend automatiquement au démarrage.
 
 ## Minuterie
 
@@ -208,7 +215,7 @@ Ouvrez l'onglet Minuterie dans le navigateur de stations (`Alt+4`). Deux types d
 
 **Mise en veille — arrêter la radio:** Arrête la lecture à l'heure spécifiée. Lorsque la minuterie se déclenche, le volume est progressivement réduit sur 60 secondes avant l'arrêt de la lecture. Aucune sélection de station n'est nécessaire ; entrez simplement l'heure.
 
-Pour les deux types, si l'heure saisie est déjà dépassée, l'action est planifiée pour le lendemain. Les minuteries en attente sont répertoriées dans l'onglet ; sélectionnez-en un et appuyez sur le bouton Supprimer la minuterie sélectionnée pour l'annuler.
+Pour les deux types, si l'heure saisie est déjà dépassée, l'action est planifiée pour le lendemain. Si une minuterie existe déjà à la même heure (quel que soit son type), l'ajout d'une nouvelle minuterie est bloqué ; l'utilisateur est informé du conflit et invité à supprimer d'abord l'entrée existante. Les minuteries en attente sont répertoriées dans l'onglet ; sélectionnez-en un et appuyez sur le bouton Supprimer la minuterie sélectionnée pour l'annuler.
 
 ## Paramètres
 
