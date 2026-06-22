@@ -1914,17 +1914,19 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				direct_install = download_url != release_url
 				if direct_install:
 					msg = _(
-						"A new version of FreeRadio is available: %s.\n"
-						"You have version %s.\n\n"
+						# Translators: Update dialog message when direct install is available. %(new)s=new version, %(current)s=current version
+						"A new version of FreeRadio is available: %(new)s.\n"
+						"You have version %(current)s.\n\n"
 						"Would you like to download and install it now?"
-					) % (latest_tag, current_version or _("unknown"))
+					) % {"new": latest_tag, "current": current_version or _("unknown")}
 					yes_label = _("&Install")
 				else:
 					msg = _(
-						"A new version of FreeRadio is available: %s.\n"
-						"You have version %s.\n\n"
+						# Translators: Update dialog message when only a download page is available. %(new)s=new version, %(current)s=current version
+						"A new version of FreeRadio is available: %(new)s.\n"
+						"You have version %(current)s.\n\n"
 						"Would you like to open the download page?"
-					) % (latest_tag, current_version or _("unknown"))
+					) % {"new": latest_tag, "current": current_version or _("unknown")}
 					yes_label = _("&Open Page")
 
 				dlg = wx.MessageDialog(

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Build customizations
 # Change this file instead of sconstruct or manifest files, whenever possible.
 
