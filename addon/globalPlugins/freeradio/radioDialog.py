@@ -1947,22 +1947,69 @@ class RadioDialog(wx.Dialog):
 		self._rename_btn.Enable(is_fav_tab and is_fav)
 
 	def _on_save_audio_profile(self, event):
-		"""Save current volume and active effects as an audio profile for the selected station."""
+		"""Save audio profile for the selected station.
+
+		Asks the user what to include before saving:
+		  - Volume only
+		  - Effects only (FX + EQ gains)
+		  - Volume and effects
+		"""
 		station, _idx = self._get_selected_station()
 		if not station or not self._manager.is_favorite(station):
 			return
 
+		# Ask the user which parts of the audio profile to save.
+		choices = [
+			# Translators: Option in audio profile save dialog: save volume level only
+			_("Volume only"),
+			# Translators: Option in audio profile save dialog: save effects (FX/EQ) only
+			_("Effects only"),
+			# Translators: Option in audio profile save dialog: save both volume and effects
+			_("Volume and effects"),
+		]
+		dlg = wx.SingleChoiceDialog(
+			self,
+			# Translators: Message shown in the audio profile save dialog
+			_("What would you like to save in the audio profile?"),
+			# Translators: Title of the audio profile save dialog
+			_("Save Audio Profile"),
+			choices,
+		)
+		# Pre-select "Volume and effects" as the default.
+		dlg.SetSelection(2)
+		result = dlg.ShowModal()
+		sel = dlg.GetSelection()
+		dlg.Destroy()
+
+		if result != wx.ID_OK:
+			return
+
+		# Read current UI values.
 		vol = self._vol_spin.GetValue()
 		checked = self._fx_choice.GetCheckedItems()
 		active = [self._fx_keys[i] for i in checked if 0 <= i < len(self._fx_keys)]
 		fx_str = ",".join(active) if active else "none"
 
-		# Also save EQ gains
 		eq_gains = {}
 		for band, _label, _default in self._eq_bands:
 			eq_gains[band] = self._eq_spins[band].GetValue()
 
-		station["station_audio"] = {"volume": vol, "fx": fx_str, "eq_gains": eq_gains}
+		# Build the profile dict based on the user's choice.
+		existing = station.get("station_audio") or {}
+		if sel == 0:
+			# Volume only: keep any existing effects, replace volume.
+			profile = dict(existing)
+			profile["volume"] = vol
+		elif sel == 1:
+			# Effects only: keep any existing volume, replace fx/eq_gains.
+			profile = dict(existing)
+			profile["fx"] = fx_str
+			profile["eq_gains"] = eq_gains
+		else:
+			# Volume and effects: replace everything.
+			profile = {"volume": vol, "fx": fx_str, "eq_gains": eq_gains}
+
+		station["station_audio"] = profile
 		self._manager._save_favorites()
 
 		name = station.get("name", "").strip()
