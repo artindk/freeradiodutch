@@ -130,6 +130,21 @@ Favourites can be played with `Ctrl+Win+→` and `Ctrl+Win+←`; these shortcuts
 
 To delete a station from the favourites list, select it and press the **Delete Station** button or the `Delete` key. After deletion, focus and selection automatically move to the next station in the list. If the deleted station was the last one, focus moves to the previous station. If the list becomes empty, focus moves to the Play button.
 
+### Exporting and Importing Favourites
+
+The Favourites tab includes two buttons for backing up and restoring your station list:
+
+**Export Favourites…** — saves your entire favourites list to a file. A save dialog lets you choose between two formats:
+- **JSON** (`.json`) — a complete backup that preserves station names, stream URLs, and all metadata. Recommended for restoring your list later or moving it to another computer.
+- **M3U playlist** (`.m3u`) — a standard playlist format compatible with most media players and radio apps. Note that M3U does not store all station metadata, so restoring from M3U may result in less detail than a JSON backup.
+
+**Import Favourites…** — loads stations from a previously exported JSON or M3U file. After selecting the file, you are asked how to add the stations:
+- **Yes (Merge)** — adds the imported stations to your existing list without removing any current favourites. Duplicate stations are not added twice.
+- **No (Replace)** — clears your current favourites list entirely and replaces it with the contents of the imported file.
+- **Cancel** — returns to the browser without making any changes.
+
+After a successful import, the favourites list, scheduled-recording station list, and timer station list are all refreshed automatically.
+
 ### Reordering Favourites
 
 With a station selected in the Favourites tab, press `comma` to enter move mode — you will hear a beep. Navigate to the target position with the arrow keys, then press `comma` again. The station is placed at the chosen position and the new order is saved immediately. Pressing `comma` again at the same position cancels the move.
@@ -274,14 +289,29 @@ On stations that broadcast ICY metadata, the track title and artist are saved di
 
 The **Liked Songs** tab in the station browser displays all tracks saved in `likedSongs.txt`. The list is automatically reloaded from the file each time the tab is opened.
 
+A **Filter** field above the list lets you narrow the displayed tracks in real time. Type any part of a song title or artist name and the list updates instantly on every keystroke. NVDA announces the number of matching results after each change. Press the `Down` arrow from the filter field to move focus directly into the list.
+
 Selecting a track from the list enables the following actions:
 
 - **Play on Spotify:** Tries to open the Spotify desktop app directly. If the app is not installed, falls back to the Spotify website and automatically starts playing the first result.
 - **Play on YouTube (`Alt+O`):** Searches YouTube for the selected track and opens the results in the default browser.
+- **Show Lyrics:** Fetches and displays the lyrics for the selected track. Lyrics are retrieved from [lrclib.net](https://lrclib.net) (free, no account required). A short "Fetching lyrics…" message is announced while the search runs in the background. If lyrics are found, they open in a read-only dialog where you can read them with NVDA and copy them to the clipboard. If no lyrics are found, NVDA announces this. The button is temporarily disabled while a fetch is in progress to prevent duplicate requests.
 - **Remove (`Alt+M`):** Deletes the selected track from `likedSongs.txt` and updates the list. The `Delete` key also triggers this button when the list is focused.
 - **Refresh (`Alt+E`):** Reloads the list from the file.
 
-The Spotify, YouTube, and Remove buttons are only enabled when a real track is selected in the list.
+The Spotify, YouTube, Show Lyrics, and Remove buttons are only enabled when a real track is selected in the list.
+
+### Lyrics Service
+
+FreeRadio uses [lrclib.net](https://lrclib.net) to fetch lyrics — a free, open database that requires no API key or account. The lookup process parses the track string stored in `likedSongs.txt` and tries progressively looser queries until lyrics are found:
+
+1. Exact match using the full artist name and cleaned title (noise suffixes such as "Remastered", "Live", or year tags are stripped before searching).
+2. Exact match using the full artist name and the original title (if cleaning changed it).
+3. Exact match using only the first artist name and the cleaned title (for multi-artist strings such as "Artist A & Artist B").
+4. Fuzzy search using the first artist name and the cleaned title.
+5. Fuzzy search using the raw track string as a last resort.
+
+When plain lyrics are available they are shown as-is. When only time-synced LRC lyrics are available, the timestamps are stripped and the plain text is shown. Instrumental tracks are reported as not found.
 
 ## Playback
 
