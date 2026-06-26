@@ -130,6 +130,21 @@ Les favoris peuvent être lus avec `Ctrl+Win+→` et `Ctrl+Win+←`; ces raccour
 
 Pour supprimer une station de la liste des favoris, sélectionnez-la et appuyez sur le bouton **Supprimer la station** ou sur la touche `Supprimer`. Après la suppression, le focus et la sélection passent automatiquement à la station suivante dans la liste. Si la station supprimée était la dernière, le focus se déplace sur la station précédente. Si la liste devient vide, le focus se déplace vers le bouton Lecture.
 
+### Exportation et Importation des Favoris
+
+L'onglet Favoris comprend deux boutons pour sauvegarder et restaurer votre liste de stations :
+
+**Exporter les favoris…** — enregistre toute votre liste de favoris dans un fichier. Une boîte de dialogue vous permet de choisir entre deux formats :
+- **JSON** (`.json`) — une sauvegarde complète préservant les noms des stations, les URL des flux et toutes les métadonnées. Recommandé pour restaurer votre liste ultérieurement ou la déplacer vers un autre ordinateur.
+- **Liste de lecture M3U** (`.m3u`) — un format de liste de lecture standard compatible avec la plupart des lecteurs multimédias et applications radio. Notez que le format M3U ne stocke pas toutes les métadonnées des stations, de sorte que la restauration depuis un fichier M3U peut contenir moins de détails qu'une sauvegarde JSON.
+
+**Importer les favoris…** — charge des stations depuis un fichier JSON ou M3U précédemment exporté. Après avoir sélectionné le fichier, vous êtes invité à choisir comment ajouter les stations :
+- **Oui (Fusionner)** — ajoute les stations importées à votre liste existante sans supprimer les favoris actuels. Les stations en double ne sont pas ajoutées deux fois.
+- **Non (Remplacer)** — efface entièrement votre liste de favoris actuelle et la remplace par le contenu du fichier importé.
+- **Annuler** — retourne au navigateur sans effectuer de modifications.
+
+Après une importation réussie, la liste de favoris, la liste des stations d'enregistrement planifié et la liste des stations du minuteur sont toutes actualisées automatiquement.
+
 ### Réorganisation des Favoris
 
 Une station étant sélectionnée dans l'onglet Favoris, appuyez sur la `virgule` pour entrer en mode déplacement — vous entendrez un bip. Accédez à la position cible avec les touches fléchées, puis appuyez à nouveau sur la `virgule`. La station est placée à l'emplacement choisi et la nouvelle organisation est immédiatement enregistrée. En appuyant à nouveau sur la `virgule` à la même position annule le déplacement.
@@ -272,16 +287,32 @@ Sur les stations qui diffusent des métadonnées ICY, le titre de la piste et l'
 
 ## Onglet Morceaux aimés
 
-L'onglet **Morceaux aimés** dans le navigateur de stations affiche toutes les pistes enregistrées dans `likedSongs.txt`. La liste est automatiquement rechargée depuis le fichier à chaque ouverture de l'onglet.
+L'onglet **Morceaux aimés** du navigateur de stations affiche toutes les pistes enregistrées dans `likedSongs.txt`. La liste est automatiquement rechargée depuis le fichier à chaque ouverture de l'onglet.
 
-La sélection d'une piste dans la liste permet les actions suivantes:
+Un champ **Filtre** au-dessus de la liste vous permet de réduire les pistes affichées en temps réel. Saisissez n'importe quelle partie d'un titre de chanson ou d'un nom d'artiste et la liste se met à jour instantanément à chaque frappe. NVDA annonce le nombre de résultats correspondants après chaque modification. Appuyez sur la flèche `Bas` depuis le champ de filtre pour déplacer le focus directement vers la liste.
 
-- **Lire sur Spotify:** Essaie d'ouvrir directement l'application de bureau Spotify. Si l'application n'est pas installée, revient au site Web Spotify et commence automatiquement à lire le premier résultat.
-- **Lire sur YouTube (`Alt+O`):** Recherche sur YouTube la piste sélectionnée et ouvre les résultats dans le navigateur par défaut.
-- **Supprimer (`Alt+M`):** Supprime la piste sélectionnée de `likedSongs.txt` et met à jour la liste. La touche `Supprimer` déclenche également ce bouton lorsque la liste est focalisé.
-- **Rafraîchir (`Alt+E`):** Recharge la liste à partir du fichier.
+La sélection d'une piste dans la liste active les actions suivantes :
 
-Les boutons Spotify, YouTube et Supprimer ne sont activés que lorsqu'une vraie piste est sélectionnée dans la liste.
+- **Écouter sur Spotify :** Tente d'ouvrir directement l'application de bureau Spotify. Si l'application n'est pas installée, bascule vers le site Spotify et lance automatiquement la lecture du premier résultat.
+- **Écouter sur YouTube (`Alt+O`) :** Recherche la piste sélectionnée sur YouTube et ouvre les résultats dans le navigateur par défaut.
+- **Afficher les paroles :** Récupère et affiche les paroles de la piste sélectionnée. Les paroles sont récupérées depuis [lrclib.net](https://lrclib.net) (gratuit, sans compte requis). Un court message « Récupération des paroles… » est annoncé pendant que la recherche s'exécute en arrière-plan. Si des paroles sont trouvées, elles s'ouvrent dans une boîte de dialogue en lecture seule où vous pouvez les lire avec NVDA et les copier dans le presse-papiers. Si aucune parole n'est trouvée, NVDA l'annonce. Le bouton est temporairement désactivé pendant une récupération en cours pour éviter les requêtes en double.
+- **Supprimer (`Alt+M`) :** Supprime la piste sélectionnée de `likedSongs.txt` et met à jour la liste. La touche `Suppr` déclenche également ce bouton lorsque la liste est focalisée.
+- **Actualiser (`Alt+E`) :** Recharge la liste depuis le fichier.
+
+Les boutons Spotify, YouTube, Afficher les paroles et Supprimer ne sont actifs que lorsqu'une vraie piste est sélectionnée dans la liste.
+
+### Service de paroles
+
+FreeRadio utilise [lrclib.net](https://lrclib.net) pour récupérer les paroles — une base de données gratuite et ouverte ne nécessitant ni clé API ni compte. Le processus de recherche analyse la chaîne de piste stockée dans `likedSongs.txt` et essaie des requêtes progressivement plus larges jusqu'à trouver des paroles :
+
+1. Correspondance exacte avec le nom d'artiste complet et le titre nettoyé (les suffixes parasites tels que « Remastered », « Live » ou les balises d'année sont supprimés avant la recherche).
+2. Correspondance exacte avec le nom d'artiste complet et le titre original (si le nettoyage l'a modifié).
+3. Correspondance exacte avec seulement le premier nom d'artiste et le titre nettoyé (pour les chaînes multi-artistes telles que « Artiste A & Artiste B »).
+4. Recherche approximative avec le premier nom d'artiste et le titre nettoyé.
+5. Recherche approximative avec la chaîne de piste brute en dernier recours.
+
+Quand des paroles en texte brut sont disponibles, elles sont affichées telles quelles. Quand seules des paroles LRC synchronisées dans le temps sont disponibles, les horodatages sont supprimés et le texte brut est affiché. Les pistes instrumentales sont signalées comme introuvables.
+
 
 ## Lecture
 

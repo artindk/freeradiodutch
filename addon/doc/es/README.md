@@ -130,6 +130,21 @@ Los favoritos se pueden jugar con `Ctrl+Win+→` y `Ctrl+Win+←`; estos atajos 
 
 Para eliminar una emisora ​​de la lista de favoritos, selecciónela y pulse el botón **Eliminar estación** o la tecla `Suprimir`. Después de la eliminación, el foco y la selección pasan automáticamente a la siguiente estación de la lista. Si la estación eliminada fue la última, el foco se mueve a la estación anterior. Si la lista queda vacía, el foco se mueve al botón Reproducir.
 
+### Exportar e Importar Favoritos
+
+La pestaña Favoritos incluye dos botones para hacer copias de seguridad y restaurar tu lista de estaciones:
+
+**Exportar Favoritos…** — guarda toda tu lista de favoritos en un archivo. Un cuadro de diálogo te permite elegir entre dos formatos:
+- **JSON** (`.json`) — una copia de seguridad completa que conserva los nombres de las estaciones, las URLs de transmisión y todos los metadatos. Recomendado para restaurar tu lista más adelante o moverla a otro equipo.
+- **Lista de reproducción M3U** (`.m3u`) — un formato de lista de reproducción estándar compatible con la mayoría de reproductores multimedia y aplicaciones de radio. Ten en cuenta que M3U no almacena todos los metadatos de la estación, por lo que restaurar desde M3U puede resultar en menos detalles que una copia de seguridad JSON.
+
+**Importar Favoritos…** — carga estaciones desde un archivo JSON o M3U exportado previamente. Después de seleccionar el archivo, se te pregunta cómo agregar las estaciones:
+- **Sí (Combinar)** — añade las estaciones importadas a tu lista existente sin eliminar ningún favorito actual. Las estaciones duplicadas no se añaden dos veces.
+- **No (Reemplazar)** — borra completamente tu lista de favoritos actual y la reemplaza con el contenido del archivo importado.
+- **Cancelar** — regresa al navegador sin realizar ningún cambio.
+
+Tras una importación exitosa, la lista de favoritos, la lista de estaciones de grabación programada y la lista de estaciones del temporizador se actualizan automáticamente.
+
 ### Reordenar Favoritos
 
 Con una estación seleccionada en la pestaña Favoritos, pulse la `coma` para entrar en modo de desplazamiento; escuchará un pitido. Navegue hasta la posición de destino con las teclas de flecha, luego pulse la `coma` nuevamente. La estación se coloca en la posición elegida y la nueva organización queda inmediatamente registrada. Al pulsar la `coma` nuevamente en la misma posición se cancela el desplazamiento.
@@ -272,16 +287,31 @@ En las estaciones que transmiten metadatos ICY, el título de la pista y el arti
 
 ## Pestaña de Canciones favoritas
 
-La pestaña **Canciones favoritas** en el navegador de estaciones se muestran todas las pistas guardadas en `likedSongs.txt`. La lista se recarga automáticamente desde el archivo cada vez que se abre la pestaña.
+La pestaña **Canciones favoritas** del navegador de estaciones muestra todas las pistas guardadas en `likedSongs.txt`. La lista se recarga automáticamente desde el archivo cada vez que se abre la pestaña.
 
-Seleccionar una pista de la lista permite las siguientes acciones:
+Un campo de **Filtro** sobre la lista permite limitar las pistas mostradas en tiempo real. Escribe cualquier parte del título de una canción o nombre del artista y la lista se actualiza instantáneamente en cada pulsación. NVDA anuncia el número de resultados coincidentes tras cada cambio. Pulsa la flecha `Abajo` desde el campo de filtro para mover el foco directamente a la lista.
 
-- **Reproducir en Spotify:** Intenta abrir la aplicación de escritorio de Spotify directamente. Si la aplicación no está instalada, vuelve al sitio web de Spotify y automáticamente comienza a reproducir el primer resultado.
-- **Reproducir en YouTube (`Alt+O`):** Busca en YouTube la pista seleccionada y abre los resultados en el navegador predeterminado.
-- **Eliminar (`Alt+M`):** Elimina la pista seleccionada de `likedSongs.txt` y  actualiza la lista. La tecla `Suprimir` también activa este botón cuando la lista está enfocada.
-- **Refrescar (`Alt+E`):** Vuelve a cargar la lista desde el archivo.
+Al seleccionar una pista de la lista se habilitan las siguientes acciones:
 
-Los botones Spotify, YouTube y Eliminar sólo se activan cuando se selecciona una pista real en la lista.
+- **Reproducir en Spotify:** Intenta abrir directamente la aplicación de escritorio de Spotify. Si la aplicación no está instalada, abre el sitio web de Spotify y reproduce automáticamente el primer resultado.
+- **Reproducir en YouTube (`Alt+O`):** Busca la pista seleccionada en YouTube y abre los resultados en el navegador predeterminado.
+- **Mostrar letra:** Obtiene y muestra la letra de la pista seleccionada. Las letras se obtienen de [lrclib.net](https://lrclib.net) (gratuito, sin cuenta requerida). Se anuncia un breve mensaje "Obteniendo letra…" mientras la búsqueda se ejecuta en segundo plano. Si se encuentran letras, se abren en un cuadro de diálogo de solo lectura donde puedes leerlas con NVDA y copiarlas al portapapeles. Si no se encuentran letras, NVDA lo anuncia. El botón se desactiva temporalmente mientras se realiza una búsqueda para evitar solicitudes duplicadas.
+- **Eliminar (`Alt+M`):** Elimina la pista seleccionada de `likedSongs.txt` y actualiza la lista. La tecla `Suprimir` también activa este botón cuando la lista está enfocada.
+- **Actualizar (`Alt+E`):** Recarga la lista desde el archivo.
+
+Los botones de Spotify, YouTube, Mostrar letra y Eliminar solo están habilitados cuando se selecciona una pista real en la lista.
+
+### Servicio de letras
+
+FreeRadio usa [lrclib.net](https://lrclib.net) para obtener letras — una base de datos gratuita y abierta que no requiere clave de API ni cuenta. El proceso de búsqueda analiza la cadena de pista almacenada en `likedSongs.txt` y prueba consultas progresivamente más amplias hasta encontrar letras:
+
+1. Coincidencia exacta con el nombre completo del artista y el título limpio (los sufijos de ruido como "Remastered", "Live" o etiquetas de año se eliminan antes de buscar).
+2. Coincidencia exacta con el nombre completo del artista y el título original (si la limpieza lo cambió).
+3. Coincidencia exacta con solo el primer nombre de artista y el título limpio (para cadenas de múltiples artistas como "Artista A & Artista B").
+4. Búsqueda difusa con el primer nombre de artista y el título limpio.
+5. Búsqueda difusa con la cadena de pista sin procesar como último recurso.
+
+Cuando hay letras en texto plano disponibles, se muestran tal cual. Cuando solo hay letras LRC sincronizadas por tiempo, se eliminan las marcas de tiempo y se muestra el texto plano. Las pistas instrumentales se reportan como no encontradas.
 
 ## Reproducción
 

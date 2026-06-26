@@ -130,6 +130,21 @@ Favoriler `Ctrl+Win+→` ve `Ctrl+Win+←` ile çalınabilir; bu kısayollar tar
 
 Favoriler listesinden bir istasyonu silmek için istasyonu seçip **İstasyonu Sil** düğmesine veya `Delete` tuşuna basın. Silme işleminin ardından odak ve seçim listedeki bir sonraki istasyona otomatik olarak taşınır. Silinen istasyon listedeki sonuncusuysa odak bir önceki istasyona geçer. Liste tamamen boşalırsa odak Çal düğmesine taşınır.
 
+### Favorileri Dışa ve İçe Aktarma
+
+Favoriler sekmesi, istasyon listenizi yedeklemenizi ve geri yüklemenizi sağlayan iki düğme içerir:
+
+**Favorileri Dışa Aktar…** — tüm favoriler listenizi bir dosyaya kaydeder. Kaydetme iletişim kutusunda iki format arasından seçim yapabilirsiniz:
+- **JSON** (`.json`) — istasyon adlarını, akış URL'lerini ve tüm meta verileri koruyan eksiksiz bir yedek. Listeyi daha sonra geri yüklemek veya başka bir bilgisayara taşımak için önerilir.
+- **M3U oynatma listesi** (`.m3u`) — çoğu medya oynatıcısı ve radyo uygulamasıyla uyumlu standart bir oynatma listesi formatı. M3U tüm istasyon meta verilerini saklamaz; bu nedenle M3U'dan geri yükleme, JSON yedeğine kıyasla daha az ayrıntıyla sonuçlanabilir.
+
+**Favorileri İçe Aktar…** — daha önce dışa aktarılmış bir JSON veya M3U dosyasından istasyonları yükler. Dosyayı seçtikten sonra istasyonların nasıl ekleneceği sorulur:
+- **Evet (Birleştir)** — içe aktarılan istasyonları mevcut listenize, var olan favorileri silmeden ekler. Zaten listede olan istasyonlar tekrar eklenmez.
+- **Hayır (Değiştir)** — mevcut favoriler listesini tamamen temizler ve dosyadaki içerikle değiştirir.
+- **İptal** — herhangi bir değişiklik yapmadan tarayıcıya döner.
+
+Başarılı bir içe aktarmanın ardından favoriler listesi, zamanlı kayıt istasyon listesi ve zamanlayıcı istasyon listesi otomatik olarak yenilenir.
+
 ### Favorileri Yeniden Sıralama
 
 Favoriler sekmesinde bir istasyon seçiliyken `virgül` tuşuna basarak taşıma moduna girin — bir bip sesi duyarsınız. Ok tuşlarıyla hedef konuma gidin, ardından `virgül` tuşuna tekrar basın. İstasyon seçilen konuma yerleştirilir ve yeni sıra anında kaydedilir. Aynı konumda tekrar `virgül` tuşuna basılması taşımayı iptal eder.
@@ -274,14 +289,29 @@ ICY metadata mevcut olan istasyonlarda parça adı ve sanatçı bilgisi, metadat
 
 İstasyon tarayıcısındaki **Beğenilen Şarkılar** sekmesi, `likedSongs.txt` dosyasına kaydedilmiş tüm parçaları listeler. Sekme her açıldığında liste dosyadan otomatik olarak yeniden yüklenir.
 
-Listeden bir parça seçildiğinde üç işlem yapılabilir:
+Listenin üzerindeki **Filtre** alanı, görüntülenen parçaları gerçek zamanlı olarak daraltmanızı sağlar. Şarkı adının veya sanatçı adının herhangi bir bölümünü yazın; liste her karakter girişinde anında güncellenir. NVDA her değişiklikten sonra eşleşen sonuç sayısını seslendirir. Filtre alanından `Aşağı` ok tuşuna basarak odağı doğrudan listeye taşıyabilirsiniz.
+
+Listeden bir parça seçildiğinde şu işlemler yapılabilir:
 
 - **Spotify'da Çal:** Önce Spotify masaüstü uygulamasını açmayı dener. Uygulama kurulu değilse Spotify web sitesinde aramayı başlatır ve ilk sonucu otomatik oynatır.
 - **YouTube'da Çal (`Alt+O`):** Seçili parçayla YouTube'da arama yapar ve sonuçları varsayılan tarayıcıda açar.
+- **Şarkı Sözlerini Göster:** Seçili parçanın şarkı sözlerini getirir ve görüntüler. Şarkı sözleri [lrclib.net](https://lrclib.net) adresinden alınır (ücretsiz, hesap gerekmez). Arama arka planda çalışırken kısa bir "Şarkı sözleri getiriliyor…" mesajı seslendirilir. Şarkı sözleri bulunursa, NVDA ile okuyabileceğiniz ve panoya kopyalayabileceğiniz salt okunur bir iletişim kutusunda açılır. Şarkı sözleri bulunamazsa NVDA bunu bildirir. Yinelenen istekleri önlemek için bir getirme işlemi devam ederken düğme geçici olarak devre dışı bırakılır.
 - **Sil (`Alt+M`):** Seçili parçayı `likedSongs.txt` dosyasından kaldırır ve listeyi günceller. Liste odaklanmışken `Delete` tuşu da aynı işlevi görür.
 - **Yenile (`Alt+E`):** Listeyi dosyadan yeniden yükler.
 
-Spotify ve YouTube düğmeleri ile Sil düğmesi, yalnızca listeden gerçek bir parça seçiliyken etkin olur.
+Spotify, YouTube, Şarkı Sözlerini Göster ve Sil düğmeleri yalnızca listeden gerçek bir parça seçiliyken etkin olur.
+
+### Şarkı Sözleri Servisi
+
+FreeRadio, şarkı sözlerini almak için [lrclib.net](https://lrclib.net) kullanır — API anahtarı veya hesap gerektirmeyen ücretsiz, açık bir veritabanı. Arama süreci, `likedSongs.txt` dosyasında saklanan parça dizesini ayrıştırır ve şarkı sözleri bulunana kadar giderek daha geniş sorgular dener:
+
+1. Tam sanatçı adı ve temizlenmiş başlıkla kesin eşleşme (arama öncesinde "Remastered", "Live" veya yıl etiketleri gibi gürültü son ekleri ayıklanır).
+2. Tam sanatçı adı ve orijinal başlıkla kesin eşleşme (temizleme başlığı değiştirdiyse).
+3. Yalnızca ilk sanatçı adı ve temizlenmiş başlıkla kesin eşleşme ("Sanatçı A & Sanatçı B" gibi çoklu sanatçı dizelerinde).
+4. İlk sanatçı adı ve temizlenmiş başlıkla bulanık arama.
+5. Son çare olarak ham parça dizesiyle bulanık arama.
+
+Düz şarkı sözleri mevcutsa olduğu gibi gösterilir. Yalnızca zaman damgalı LRC şarkı sözleri mevcutsa zaman damgaları ayıklanır ve düz metin gösterilir. Enstrümantal parçalar için şarkı sözü bulunamadığı rapor edilir.
 
 ## Oynatma
 

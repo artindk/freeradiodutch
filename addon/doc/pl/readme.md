@@ -130,6 +130,21 @@ Ulubione można odtwarzać skrótami `Ctrl+Win+->` i `Ctrl+Win+<-`; działają o
 
 Aby usunąć stację z listy ulubionych, zaznacz ją i naciśnij przycisk **Usuń stację** albo klawisz `Delete`. Po usunięciu fokus i zaznaczenie automatycznie przechodzą na następną stację na liście. Jeśli usunięto ostatnią stację, fokus przechodzi na poprzednią. Jeśli lista stanie się pusta, fokus przechodzi na przycisk Odtwórz.
 
+### Eksportowanie i importowanie ulubionych
+
+Karta Ulubione zawiera dwa przyciski do tworzenia kopii zapasowej listy stacji i jej przywracania:
+
+**Eksportuj ulubione…** — zapisuje całą listę ulubionych do pliku. Okno dialogowe zapisu umożliwia wybór jednego z dwóch formatów:
+- **JSON** (`.json`) — pełna kopia zapasowa zachowująca nazwy stacji, adresy URL strumieni i wszystkie metadane. Zalecany do późniejszego przywrócenia listy lub przeniesienia jej na inny komputer.
+- **Lista odtwarzania M3U** (`.m3u`) — standardowy format listy odtwarzania zgodny z większością odtwarzaczy multimedialnych i aplikacji radiowych. Należy pamiętać, że format M3U nie przechowuje wszystkich metadanych stacji, więc przywracanie z pliku M3U może skutkować mniejszą ilością szczegółów niż kopia zapasowa JSON.
+
+**Importuj ulubione…** — ładuje stacje z wcześniej wyeksportowanego pliku JSON lub M3U. Po wybraniu pliku pojawi się pytanie o sposób dodania stacji:
+- **Tak (Scal)** — dodaje importowane stacje do istniejącej listy bez usuwania bieżących ulubionych. Zduplikowane stacje nie są dodawane dwukrotnie.
+- **Nie (Zastąp)** — całkowicie usuwa bieżącą listę ulubionych i zastępuje ją zawartością importowanego pliku.
+- **Anuluj** — powraca do przeglądarki bez wprowadzania żadnych zmian.
+
+Po udanym imporcie lista ulubionych, lista stacji zaplanowanych nagrań i lista stacji timera są odświeżane automatycznie.
+
 ### Zmiana kolejności ulubionych
 
 Po zaznaczeniu stacji na karcie Ulubione naciśnij `przecinek`, aby wejść w tryb przenoszenia - usłyszysz sygnał. Przejdź strzałkami do pozycji docelowej, a następnie naciśnij `przecinek` ponownie. Stacja zostanie umieszczona w wybranym miejscu, a nowa kolejność zapisana natychmiast. Ponowne naciśnięcie przecinka w tej samej pozycji anuluje przenoszenie.
@@ -273,16 +288,32 @@ Na stacjach nadających metadane ICY tytuł utworu i wykonawca są zapisywane be
 
 ## Karta Polubione utwory
 
-Karta **Polubione utwory** w przeglądarce stacji pokazuje wszystkie utwory zapisane w `likedSongs.txt`. Lista jest automatycznie ponownie wczytywana z pliku przy każdym otwarciu karty.
+Karta **Polubione utwory** w przeglądarce stacji wyświetla wszystkie ścieżki zapisane w `likedSongs.txt`. Lista jest automatycznie przeładowywana z pliku za każdym razem, gdy karta jest otwierana.
 
-Wybranie utworu z listy włącza następujące akcje:
+Pole **Filtr** nad listą pozwala zawęzić wyświetlane utwory w czasie rzeczywistym. Wpisz dowolną część tytułu piosenki lub nazwy wykonawcy, a lista zaktualizuje się natychmiast po każdym naciśnięciu klawisza. NVDA ogłasza liczbę pasujących wyników po każdej zmianie. Naciśnij strzałkę `w dół` w polu filtru, aby przenieść fokus bezpośrednio do listy.
 
-- **Odtwórz w Spotify:** próbuje otworzyć bezpośrednio aplikację Spotify na komputerze. Jeśli aplikacja nie jest zainstalowana, otwiera stronę Spotify i automatycznie zaczyna odtwarzać pierwszy wynik.
-- **Odtwórz w YouTube (`Alt+O`):** wyszukuje wybrany utwór w YouTube i otwiera wyniki w domyślnej przeglądarce.
-- **Usuń (`Alt+M`):** usuwa wybrany utwór z `likedSongs.txt` i aktualizuje listę. Klawisz `Delete` również uruchamia ten przycisk, gdy fokus jest na liście.
-- **Odśwież (`Alt+E`):** ponownie wczytuje listę z pliku.
+Wybranie ścieżki z listy włącza następujące działania:
 
-Przyciski Spotify, YouTube i Usuń są aktywne tylko wtedy, gdy na liście wybrany jest rzeczywisty utwór.
+- **Odtwórz na Spotify:** Próbuje bezpośrednio otworzyć aplikację komputerową Spotify. Jeśli aplikacja nie jest zainstalowana, otwiera witrynę Spotify i automatycznie odtwarza pierwszy wynik.
+- **Odtwórz na YouTube (`Alt+O`):** Wyszukuje wybraną ścieżkę na YouTube i otwiera wyniki w domyślnej przeglądarce.
+- **Pokaż tekst:** Pobiera i wyświetla tekst wybranego utworu. Teksty są pobierane z [lrclib.net](https://lrclib.net) (bezpłatnie, bez konta). Krótki komunikat „Pobieranie tekstu…" jest ogłaszany, gdy wyszukiwanie odbywa się w tle. Jeśli tekst zostanie znaleziony, otworzy się w oknie dialogowym tylko do odczytu, gdzie możesz go przeczytać za pomocą NVDA i skopiować do schowka. Jeśli tekst nie zostanie znaleziony, NVDA to ogłosi. Przycisk jest tymczasowo wyłączony podczas trwającego pobierania, aby zapobiec powielaniu żądań.
+- **Usuń (`Alt+M`):** Usuwa wybraną ścieżkę z `likedSongs.txt` i aktualizuje listę. Klawisz `Delete` również aktywuje ten przycisk, gdy lista jest sfokusowana.
+- **Odśwież (`Alt+E`):** Przeładowuje listę z pliku.
+
+Przyciski Spotify, YouTube, Pokaż tekst i Usuń są aktywne tylko wtedy, gdy na liście wybrany jest prawdziwy utwór.
+
+### Serwis tekstów piosenek
+
+FreeRadio używa [lrclib.net](https://lrclib.net) do pobierania tekstów piosenek — bezpłatna, otwarta baza danych niewymagająca klucza API ani konta. Proces wyszukiwania analizuje ciąg ścieżki zapisany w `likedSongs.txt` i próbuje coraz luźniejszych zapytań, aż do znalezienia tekstu:
+
+1. Dokładne dopasowanie przy użyciu pełnej nazwy wykonawcy i oczyszczonego tytułu (szumowe przyrostki takie jak „Remastered", „Live" lub tagi roku są usuwane przed wyszukiwaniem).
+2. Dokładne dopasowanie przy użyciu pełnej nazwy wykonawcy i oryginalnego tytułu (jeśli czyszczenie go zmieniło).
+3. Dokładne dopasowanie przy użyciu tylko pierwszej nazwy wykonawcy i oczyszczonego tytułu (dla ciągów z wieloma wykonawcami, np. „Wykonawca A & Wykonawca B").
+4. Wyszukiwanie rozmyte przy użyciu pierwszej nazwy wykonawcy i oczyszczonego tytułu.
+5. Wyszukiwanie rozmyte przy użyciu surowego ciągu ścieżki jako ostatnia deska ratunku.
+
+Gdy dostępne są zwykłe teksty, są wyświetlane tak jak są. Gdy dostępne są tylko zsynchronizowane czasowo teksty LRC, znaczniki czasu są usuwane i wyświetlany jest zwykły tekst. Ścieżki instrumentalne są zgłaszane jako nieznalezione.
+
 
 ## Odtwarzanie
 

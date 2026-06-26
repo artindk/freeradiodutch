@@ -132,6 +132,21 @@ Os favoritos podem ser reproduzidos com `Ctrl+Win+→` e `Ctrl+Win+←`; estes a
 
 Para eliminar uma estação da lista de favoritos, selecione-a e prima o botão **Eliminar Estação** ou a tecla `Delete`. Após a eliminação, o foco e a seleção movem-se automaticamente para a estação seguinte. Se a estação eliminada era a última, o foco vai para a estação anterior. Se a lista ficar vazia, o foco vai para o botão Reproduzir.
 
+### Exportar e Importar Favoritos
+
+O separador Favoritos inclui dois botões para fazer cópias de segurança e restaurar a sua lista de estações:
+
+**Exportar Favoritos…** — guarda toda a sua lista de favoritos num ficheiro. Uma caixa de diálogo permite-lhe escolher entre dois formatos:
+- **JSON** (`.json`) — uma cópia de segurança completa que preserva nomes de estações, URLs de transmissão e todos os metadados. Recomendado para restaurar a sua lista mais tarde ou movê-la para outro computador.
+- **Lista de reprodução M3U** (`.m3u`) — um formato de lista de reprodução padrão compatível com a maioria dos leitores de multimédia e aplicações de rádio. Note que o M3U não armazena todos os metadados das estações, pelo que restaurar a partir de M3U pode resultar em menos detalhes do que uma cópia de segurança JSON.
+
+**Importar Favoritos…** — carrega estações de um ficheiro JSON ou M3U previamente exportado. Após selecionar o ficheiro, é perguntado como adicionar as estações:
+- **Sim (Intercalar)** — adiciona as estações importadas à sua lista existente sem remover os favoritos atuais. Estações duplicadas não são adicionadas duas vezes.
+- **Não (Substituir)** — limpa completamente a sua lista de favoritos atual e substitui-a pelo conteúdo do ficheiro importado.
+- **Cancelar** — regressa ao navegador sem efetuar quaisquer alterações.
+
+Após uma importação bem-sucedida, a lista de favoritos, a lista de estações de gravação agendada e a lista de estações do temporizador são todas atualizadas automaticamente.
+
 ### Reordenar Favoritos
 
 Com uma estação selecionada no separador Favoritos, prima `vírgula` para entrar no modo de mover — ouvirá um sinal sonoro. Navegue até à posição pretendida com as teclas de seta e prima `vírgula` novamente. A estação é colocada na posição escolhida e a nova ordem é guardada imediatamente. Premir `vírgula` novamente na mesma posição cancela a operação.
@@ -274,16 +289,32 @@ Nas estações que difundem metadados ICY, o título e o artista da faixa são g
 
 ## Separador Músicas Gostadas
 
-O separador **Músicas Gostadas** no navegador de estações apresenta todas as faixas guardadas em `likedSongs.txt`. A lista é recarregada automaticamente do ficheiro sempre que o separador é aberto.
+O separador **Músicas Gostadas** no navegador de estações exibe todas as faixas guardadas em `likedSongs.txt`. A lista é automaticamente recarregada a partir do ficheiro sempre que o separador é aberto.
+
+Um campo de **Filtro** acima da lista permite restringir as faixas apresentadas em tempo real. Escreva qualquer parte de um título de canção ou nome de artista e a lista atualiza-se instantaneamente a cada tecla pressionada. O NVDA anuncia o número de resultados correspondentes após cada alteração. Prima a seta `Para baixo` a partir do campo de filtro para mover o foco diretamente para a lista.
 
 Selecionar uma faixa da lista ativa as seguintes ações:
 
-- **Reproduzir no Spotify:** Tenta abrir diretamente a aplicação Spotify para computador. Se a aplicação não estiver instalada, abre o site do Spotify e inicia automaticamente a reprodução do primeiro resultado.
-- **Reproduzir no YouTube (`Alt+O`):** Pesquisa a faixa selecionada no YouTube e abre os resultados no browser predefinido.
-- **Remover (`Alt+M`):** Elimina a faixa selecionada de `likedSongs.txt` e atualiza a lista.
-- **Atualizar (`Alt+E`):** Recarrega a lista do ficheiro.
+- **Reproduzir no Spotify:** Tenta abrir diretamente a aplicação de ambiente de trabalho do Spotify. Se a aplicação não estiver instalada, recorre ao site do Spotify e reproduz automaticamente o primeiro resultado.
+- **Reproduzir no YouTube (`Alt+O`):** Procura a faixa selecionada no YouTube e abre os resultados no navegador predefinido.
+- **Mostrar letra:** Obtém e apresenta a letra da faixa selecionada. As letras são obtidas de [lrclib.net](https://lrclib.net) (gratuito, sem conta necessária). É anunciada uma breve mensagem "A obter letra…" enquanto a pesquisa decorre em segundo plano. Se forem encontradas letras, abrem-se numa caixa de diálogo só de leitura onde pode lê-las com o NVDA e copiá-las para a área de transferência. Se não forem encontradas letras, o NVDA anuncia-o. O botão é temporariamente desativado enquanto uma obtenção está em curso para evitar pedidos duplicados.
+- **Remover (`Alt+M`):** Elimina a faixa selecionada de `likedSongs.txt` e atualiza a lista. A tecla `Delete` também aciona este botão quando a lista está em foco.
+- **Atualizar (`Alt+E`):** Recarrega a lista a partir do ficheiro.
 
-Os botões Spotify, YouTube e Remover só estão ativos quando uma faixa real está selecionada na lista.
+Os botões Spotify, YouTube, Mostrar letra e Remover só estão ativos quando uma faixa real é selecionada na lista.
+
+### Serviço de letras
+
+O FreeRadio utiliza o [lrclib.net](https://lrclib.net) para obter letras — uma base de dados gratuita e aberta que não requer chave de API nem conta. O processo de pesquisa analisa a cadeia de faixas armazenada em `likedSongs.txt` e tenta consultas progressivamente mais amplas até encontrar letras:
+
+1. Correspondência exata com o nome completo do artista e o título limpo (sufixos de ruído como "Remastered", "Live" ou etiquetas de ano são removidos antes da pesquisa).
+2. Correspondência exata com o nome completo do artista e o título original (se a limpeza o alterou).
+3. Correspondência exata com apenas o primeiro nome de artista e o título limpo (para cadeias com múltiplos artistas, como "Artista A & Artista B").
+4. Pesquisa difusa com o primeiro nome de artista e o título limpo.
+5. Pesquisa difusa com a cadeia de faixa bruta como último recurso.
+
+Quando há letras em texto simples disponíveis, são apresentadas tal como estão. Quando apenas estão disponíveis letras LRC sincronizadas temporalmente, os carimbos de tempo são removidos e o texto simples é apresentado. As faixas instrumentais são reportadas como não encontradas.
+
 
 ## Reprodução
 

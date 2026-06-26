@@ -4,6 +4,8 @@
 import addonHandler
 addonHandler.initTranslation()
 _tr = globals()["_"]
+# ngettext is injected by initTranslation alongside _; capture it the same way.
+ngettext = globals().get("ngettext", lambda s, p, n: s if n == 1 else p)
 
 import config
 import datetime
@@ -368,6 +370,14 @@ class RadioDialog(wx.Dialog):
 
 		sizer.Add(btn_row, 0, wx.LEFT | wx.BOTTOM, 5)
 
+		# Second button row: export and import favourites.
+		io_row = wx.BoxSizer(wx.HORIZONTAL)
+		self._fav_export_btn = wx.Button(self._fav_panel, label=_("E&xport Favourites..."))
+		io_row.Add(self._fav_export_btn, 0, wx.RIGHT, 6)
+		self._fav_import_btn = wx.Button(self._fav_panel, label=_("&Import Favourites..."))
+		io_row.Add(self._fav_import_btn, 0)
+		sizer.Add(io_row, 0, wx.LEFT | wx.BOTTOM, 5)
+
 		self._fav_panel.SetSizer(sizer)
 
 		self._fav_list.Bind(wx.EVT_CHAR,           self._on_list_char)
@@ -378,6 +388,8 @@ class RadioDialog(wx.Dialog):
 		self._save_audio_btn.Bind(wx.EVT_BUTTON,   self._on_save_audio_profile)
 		self._clear_audio_btn.Bind(wx.EVT_BUTTON,  self._on_clear_audio_profile)
 		self._rename_btn.Bind(wx.EVT_BUTTON,       self._on_rename_station)
+		self._fav_export_btn.Bind(wx.EVT_BUTTON,   self._on_fav_export)
+		self._fav_import_btn.Bind(wx.EVT_BUTTON,   self._on_fav_import)
 		# Filter text field: rebuild the list on every keystroke.
 		self._fav_filter.Bind(wx.EVT_TEXT,     self._on_fav_filter_changed)
 		# Allow Down arrow to move focus from the filter field into the list.
@@ -475,13 +487,23 @@ class RadioDialog(wx.Dialog):
 
 		station_label = _("Station:")
 		st_lbl = wx.StaticText(self._rec_panel, label=station_label)
+		sizer.Add(st_lbl, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
+
+		# Filter field for the scheduled-recording station list.
+		sizer.Add(
+			wx.StaticText(self._rec_panel, label=_("Filter:")),
+			0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8,
+		)
+		self._sched_station_filter = wx.TextCtrl(self._rec_panel)
+		self._sched_station_filter.SetName(_("Filter stations"))
+		sizer.Add(self._sched_station_filter, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 5)
+
 		# Use a ListBox instead of an editable ComboBox so screen readers
 		# announce each item as the user navigates the list.
 		self._sched_station_cb = wx.ListBox(self._rec_panel, style=wx.LB_SINGLE)
 		self._sched_station_cb.SetMinSize((-1, 80))
-		sizer.Add(st_lbl, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
-		sizer.Add(self._sched_station_cb, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
 		self._sched_station_cb.SetName(station_label)
+		sizer.Add(self._sched_station_cb, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
 
 		time_label = _("Start time (HH:MM):")
 		sizer.Add(wx.StaticText(self._rec_panel, label=time_label),
@@ -581,6 +603,10 @@ class RadioDialog(wx.Dialog):
 		self._sched_list.Bind(wx.EVT_LISTBOX,   self._on_sched_selected)
 		self._sched_list.Bind(wx.EVT_CHAR,      self._on_list_char)
 		self._sched_station_cb.Bind(wx.EVT_SET_FOCUS, self._on_sched_station_focus)
+		# Filter field: rebuild the station list on every keystroke.
+		self._sched_station_filter.Bind(wx.EVT_TEXT,     self._on_sched_station_filter_changed)
+		# Allow Down arrow to move focus from the filter field into the list.
+		self._sched_station_filter.Bind(wx.EVT_KEY_DOWN, self._on_sched_station_filter_key)
 		# Show/hide the active-days list when the recurrence mode changes.
 		self._sched_rec_once.Bind(wx.EVT_RADIOBUTTON,   self._on_sched_recurrence_changed)
 		self._sched_rec_indef.Bind(wx.EVT_RADIOBUTTON,  self._on_sched_recurrence_changed)
@@ -616,6 +642,17 @@ class RadioDialog(wx.Dialog):
 		self._timer_station_label = wx.StaticText(
 			self._timer_panel, label=_("Station:")
 		)
+		sizer.Add(self._timer_station_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
+
+		# Filter field for the timer station list.
+		sizer.Add(
+			wx.StaticText(self._timer_panel, label=_("Filter:")),
+			0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8,
+		)
+		self._timer_station_filter = wx.TextCtrl(self._timer_panel)
+		self._timer_station_filter.SetName(_("Filter stations"))
+		sizer.Add(self._timer_station_filter, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 5)
+
 		# Use a ListBox instead of an editable ComboBox so screen readers
 		# announce each item as the user navigates the list.
 		self._timer_station_cb = wx.ListBox(
@@ -623,7 +660,6 @@ class RadioDialog(wx.Dialog):
 		)
 		self._timer_station_cb.SetMinSize((-1, 80))
 		self._timer_station_cb.SetName(_("Station:"))
-		sizer.Add(self._timer_station_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8)
 		sizer.Add(self._timer_station_cb,    0, wx.EXPAND | wx.LEFT | wx.RIGHT, 8)
 
 		self._timer_add_btn = wx.Button(self._timer_panel, label=_("&Add Timer"))
@@ -649,6 +685,10 @@ class RadioDialog(wx.Dialog):
 		self._timer_list.Bind(wx.EVT_LISTBOX,          self._on_timer_selected)
 		self._timer_list.Bind(wx.EVT_CHAR,             self._on_list_char)
 		self._timer_station_cb.Bind(wx.EVT_SET_FOCUS,  self._on_timer_station_focus)
+		# Filter field: rebuild the station list on every keystroke.
+		self._timer_station_filter.Bind(wx.EVT_TEXT,     self._on_timer_station_filter_changed)
+		# Allow Down arrow to move focus from the filter field into the list.
+		self._timer_station_filter.Bind(wx.EVT_KEY_DOWN, self._on_timer_station_filter_key)
 		# Type-ahead for the station listbox is handled in _on_char_hook.
 
 		self._timer_stations = []
@@ -949,7 +989,7 @@ class RadioDialog(wx.Dialog):
 		if count == 0:
 			ui.message(_("No favourites found"))
 		else:
-			ui.message(_("%d favourites") % count)
+			ui.message(ngettext("%d favourite", "%d favourites", count) % count)
 		event.Skip()
 
 
@@ -979,6 +1019,12 @@ class RadioDialog(wx.Dialog):
 		actually tabs into the listbox.
 		"""
 		favs = self._manager.get_favorites()
+		# Apply the filter if the filter field exists and has text.
+		query = getattr(self, "_sched_station_filter", None)
+		query = query.GetValue().strip().lower() if query else ""
+		filtered = [s for s in favs if not query or query in s.get("name", "").lower()] if query else list(favs)
+		# Cache the filtered station list so _resolve_station_from_combo uses the right subset.
+		self._sched_stations = filtered
 		# Remember which station was selected before clearing the list.
 		prev_idx = self._sched_station_cb.GetSelection()
 		prev_name = (
@@ -986,9 +1032,8 @@ class RadioDialog(wx.Dialog):
 			if prev_idx != wx.NOT_FOUND else ""
 		)
 		self._sched_station_cb.Clear()
-		for s in favs:
+		for s in filtered:
 			self._sched_station_cb.Append(s.get("name", "?").strip())
-		self._sched_stations = favs
 		# Store the name to restore; the actual SetSelection is deferred to focus time.
 		self._sched_station_pending_name = prev_name
 
@@ -1049,6 +1094,25 @@ class RadioDialog(wx.Dialog):
 			self._sched_station_cb.SetSelection(idx if idx != wx.NOT_FOUND else 0)
 		event.Skip()
 
+
+	def _on_sched_station_filter_changed(self, event):
+		"""Rebuild the scheduled-recording station list whenever the filter changes."""
+		self._refresh_sched_stations()
+		count = self._sched_station_cb.GetCount()
+		if count == 0:
+			ui.message(_("No stations found"))
+		else:
+			ui.message(ngettext("%d station", "%d stations", count) % count)
+		event.Skip()
+
+	def _on_sched_station_filter_key(self, event):
+		"""Down arrow moves focus from the filter field into the station list."""
+		if event.GetKeyCode() == wx.WXK_DOWN:
+			self._sched_station_cb.SetFocus()
+			if self._sched_station_cb.GetCount() > 0 and self._sched_station_cb.GetSelection() == wx.NOT_FOUND:
+				self._sched_station_cb.SetSelection(0)
+		else:
+			event.Skip()
 
 	def _on_sched_recurrence_changed(self, event):
 		"""Show/hide the active-days list based on recurrence mode."""
@@ -2028,6 +2092,130 @@ class RadioDialog(wx.Dialog):
 		ui.message(_("Audio profile cleared for %(station)s") % {"station": name})
 		self._update_save_audio_btn()
 
+
+	def _on_fav_export(self, event=None):
+		"""Show a file-save dialog and export favourites as JSON or M3U."""
+		wildcard = _(
+			"JSON favourites (*.json)|*.json"
+			"|M3U playlist (*.m3u)|*.m3u"
+		)
+		dlg = wx.FileDialog(
+			self,
+			message=_("Export Favourites"),
+			wildcard=wildcard,
+			style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT,
+			defaultFile="freeradio_favourites",
+		)
+		if dlg.ShowModal() != wx.ID_OK:
+			dlg.Destroy()
+			return
+		path = dlg.GetPath()
+		fmt  = dlg.GetFilterIndex()   # 0 = JSON, 1 = M3U
+		dlg.Destroy()
+
+		# Append the correct extension if the user omitted it.
+		ext = ".json" if fmt == 0 else ".m3u"
+		if not path.lower().endswith(ext):
+			path += ext
+
+		try:
+			if fmt == 0:
+				self._manager.export_favorites_json(path)
+			else:
+				self._manager.export_favorites_m3u(path)
+		except Exception as exc:
+			wx.MessageBox(
+				_("Export failed: %(error)s") % {"error": str(exc)},
+				_("Export Error"),
+				wx.OK | wx.ICON_ERROR,
+				self,
+			)
+			return
+
+		count = len(self._manager.get_favorites())
+		wx.MessageBox(
+			ngettext(
+				"Exported %(count)d station to:\n%(path)s",
+				"Exported %(count)d stations to:\n%(path)s",
+				count,
+			) % {"count": count, "path": path},
+			_("Export Complete"),
+			wx.OK | wx.ICON_INFORMATION,
+			self,
+		)
+
+	def _on_fav_import(self, event=None):
+		"""Show a file-open dialog, ask merge/replace, then import favourites."""
+		wildcard = _(
+			"Supported files (*.json;*.m3u)|*.json;*.m3u"
+			"|JSON favourites (*.json)|*.json"
+			"|M3U playlist (*.m3u)|*.m3u"
+		)
+		dlg = wx.FileDialog(
+			self,
+			message=_("Import Favourites"),
+			wildcard=wildcard,
+			style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST,
+		)
+		if dlg.ShowModal() != wx.ID_OK:
+			dlg.Destroy()
+			return
+		path = dlg.GetPath()
+		dlg.Destroy()
+
+		# Ask the user whether to merge or replace.
+		choice = wx.MessageBox(
+			_(
+				"How should the imported stations be added?\n\n"
+				"Yes  — Merge: add new stations without removing existing ones.\n"
+				"No   — Replace: clear the current list and load from file."
+			),
+			_("Import Favourites"),
+			wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION,
+			self,
+		)
+		if choice == wx.CANCEL:
+			return
+		merge = (choice == wx.YES)
+
+		try:
+			added = self._manager.import_favorites(path, merge=merge)
+		except ValueError as exc:
+			wx.MessageBox(
+				_("Import failed: %(error)s") % {"error": str(exc)},
+				_("Import Error"),
+				wx.OK | wx.ICON_ERROR,
+				self,
+			)
+			return
+		except Exception as exc:
+			wx.MessageBox(
+				_("Could not read the file: %(error)s") % {"error": str(exc)},
+				_("Import Error"),
+				wx.OK | wx.ICON_ERROR,
+				self,
+			)
+			return
+
+		self._refresh_fav_list()
+		self._refresh_sched_stations()
+		self._refresh_timer_stations()
+
+		if merge:
+			msg = ngettext(
+				"Import complete: %(count)d new station added.",
+				"Import complete: %(count)d new stations added.",
+				added,
+			) % {"count": added}
+		else:
+			total = len(self._manager.get_favorites())
+			msg = ngettext(
+				"Favourites replaced with %(count)d station from the file.",
+				"Favourites replaced with %(count)d stations from the file.",
+				total,
+			) % {"count": total}
+		wx.MessageBox(msg, _("Import Complete"), wx.OK | wx.ICON_INFORMATION, self)
+
 	def _on_rename_station(self, event=None):
 		"""Rename the selected favourite station.
 
@@ -2751,6 +2939,9 @@ class RadioDialog(wx.Dialog):
 		"""Show/hide station area and update label according to Start/Stop selection."""
 		is_start = self._timer_rb_start.GetValue()
 		self._timer_station_label.Show(is_start)
+		# Also show/hide the filter field that sits between the label and the listbox.
+		if hasattr(self, "_timer_station_filter"):
+			self._timer_station_filter.Show(is_start)
 		self._timer_station_cb.Show(is_start)
 		lbl = _("Start time (HH:MM):") if is_start else _("Stop time (HH:MM):")
 		self._timer_time_label.SetLabel(lbl)
@@ -2770,6 +2961,12 @@ class RadioDialog(wx.Dialog):
 		for the rationale.  Selection is applied lazily in _on_timer_station_focus.
 		"""
 		favs = self._manager.get_favorites()
+		# Apply the filter if the filter field exists and has text.
+		query = getattr(self, "_timer_station_filter", None)
+		query = query.GetValue().strip().lower() if query else ""
+		filtered = [s for s in favs if not query or query in s.get("name", "").lower()] if query else list(favs)
+		# Cache the filtered station list so _resolve_station_from_combo uses the right subset.
+		self._timer_stations = filtered
 		# Remember which station was selected before clearing the list.
 		prev_idx = self._timer_station_cb.GetSelection()
 		prev_name = (
@@ -2777,9 +2974,8 @@ class RadioDialog(wx.Dialog):
 			if prev_idx != wx.NOT_FOUND else ""
 		)
 		self._timer_station_cb.Clear()
-		for s in favs:
+		for s in filtered:
 			self._timer_station_cb.Append(s.get("name", "?").strip())
-		self._timer_stations = favs
 		# Store the name to restore; the actual SetSelection is deferred to focus time.
 		self._timer_station_pending_name = prev_name
 
@@ -2813,6 +3009,25 @@ class RadioDialog(wx.Dialog):
 			idx = self._timer_station_cb.FindString(pending) if pending else wx.NOT_FOUND
 			self._timer_station_cb.SetSelection(idx if idx != wx.NOT_FOUND else 0)
 		event.Skip()
+
+	def _on_timer_station_filter_changed(self, event):
+		"""Rebuild the timer station list whenever the filter changes."""
+		self._refresh_timer_stations()
+		count = self._timer_station_cb.GetCount()
+		if count == 0:
+			ui.message(_("No stations found"))
+		else:
+			ui.message(ngettext("%d station", "%d stations", count) % count)
+		event.Skip()
+
+	def _on_timer_station_filter_key(self, event):
+		"""Down arrow moves focus from the filter field into the station list."""
+		if event.GetKeyCode() == wx.WXK_DOWN:
+			self._timer_station_cb.SetFocus()
+			if self._timer_station_cb.GetCount() > 0 and self._timer_station_cb.GetSelection() == wx.NOT_FOUND:
+				self._timer_station_cb.SetSelection(0)
+		else:
+			event.Skip()
 
 	def _on_timer_add(self, event):
 		if not self._timer_manager:
@@ -2915,13 +3130,23 @@ class RadioDialog(wx.Dialog):
 		return os.path.join(recordings_dir, "likedSongs.txt")
 
 	def _build_liked_tab(self):
-		"""Liked Songs tab: list + Spotify / YouTube / Remove / Refresh buttons."""
+		"""Liked Songs tab: list + Spotify / YouTube / Lyrics / Remove / Refresh buttons."""
 		sizer = wx.BoxSizer(wx.VERTICAL)
 
 		sizer.Add(
 			wx.StaticText(self._liked_panel, label=_("Liked Songs:")),
 			0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8,
 		)
+
+		# Filter field for the liked songs list.
+		sizer.Add(
+			wx.StaticText(self._liked_panel, label=_("Filter:")),
+			0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 8,
+		)
+		self._liked_filter = wx.TextCtrl(self._liked_panel)
+		self._liked_filter.SetName(_("Filter liked songs"))
+		sizer.Add(self._liked_filter, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 5)
+
 		self._liked_list = wx.ListBox(self._liked_panel, style=wx.LB_SINGLE)
 		self._liked_list.SetName(_("Liked Songs"))
 		sizer.Add(self._liked_list, 1, wx.EXPAND | wx.ALL, 5)
@@ -2934,6 +3159,9 @@ class RadioDialog(wx.Dialog):
 		self._liked_youtube_btn = wx.Button(
 			self._liked_panel, label=_("Play on Y&ouTube")
 		)
+		self._liked_lyrics_btn = wx.Button(
+			self._liked_panel, label=_("Show &Lyrics")
+		)
 		self._liked_remove_btn = wx.Button(
 			self._liked_panel, label=_("Re&move")
 		)
@@ -2944,6 +3172,7 @@ class RadioDialog(wx.Dialog):
 		for btn in (
 			self._liked_spotify_btn,
 			self._liked_youtube_btn,
+			self._liked_lyrics_btn,
 			self._liked_remove_btn,
 			self._liked_refresh_btn,
 		):
@@ -2955,13 +3184,19 @@ class RadioDialog(wx.Dialog):
 		self._liked_list.Bind(wx.EVT_CHAR,    self._on_list_char)
 		self._liked_list.Bind(wx.EVT_LISTBOX, self._on_liked_selected)
 		self._liked_list.Bind(wx.EVT_KEY_DOWN, self._on_liked_list_key)
+		# Filter field: rebuild the liked songs list on every keystroke.
+		self._liked_filter.Bind(wx.EVT_TEXT,     self._on_liked_filter_changed)
+		# Allow Down arrow to move focus from the filter field into the list.
+		self._liked_filter.Bind(wx.EVT_KEY_DOWN, self._on_liked_filter_key)
 		self._liked_spotify_btn.Bind(wx.EVT_BUTTON, self._on_liked_spotify)
 		self._liked_youtube_btn.Bind(wx.EVT_BUTTON, self._on_liked_youtube)
+		self._liked_lyrics_btn.Bind(wx.EVT_BUTTON,  self._on_liked_lyrics)
 		self._liked_remove_btn.Bind(wx.EVT_BUTTON,  self._on_liked_remove)
 		self._liked_refresh_btn.Bind(wx.EVT_BUTTON, self._on_liked_refresh)
 
 		self._liked_spotify_btn.Enable(False)
 		self._liked_youtube_btn.Enable(False)
+		self._liked_lyrics_btn.Enable(False)
 		self._liked_remove_btn.Enable(False)
 
 		# Alt+O → YouTube, Alt+M → Remove, Alt+E → Refresh
@@ -2975,22 +3210,55 @@ class RadioDialog(wx.Dialog):
 		self._refresh_liked_list()
 
 	def _refresh_liked_list(self):
-		"""Read likedSongs.txt and populate the listbox."""
+		"""Read likedSongs.txt, apply the filter field, and populate the listbox."""
 		self._liked_list.Clear()
 		path = self._liked_songs_path()
+		query = getattr(self, "_liked_filter", None)
+		query = query.GetValue().strip().lower() if query else ""
 		if os.path.isfile(path):
 			try:
 				with open(path, encoding="utf-8") as fh:
 					lines = [l.rstrip("\n") for l in fh if l.strip()]
+				# Apply the filter: only show lines that contain the query string.
+				if query:
+					lines = [l for l in lines if query in l.lower()]
 				for line in lines:
 					self._liked_list.Append(line)
+				if not lines:
+					self._liked_list.Append(_("No results found."))
 			except Exception as e:
 				self._liked_list.Append(_("Could not read file: %s") % str(e))
 		else:
 			self._liked_list.Append(_("No liked songs yet."))
 		self._liked_spotify_btn.Enable(False)
 		self._liked_youtube_btn.Enable(False)
+		self._liked_lyrics_btn.Enable(False)
 		self._liked_remove_btn.Enable(False)
+
+	def _on_liked_filter_changed(self, event):
+		"""Rebuild the liked songs list whenever the filter field changes.
+
+		Announces the result count so screen-reader users get immediate feedback.
+		"""
+		self._refresh_liked_list()
+		count = sum(
+			1 for i in range(self._liked_list.GetCount())
+			if self._liked_list.GetString(i) not in (_("No liked songs yet."), _("No results found."))
+		)
+		if count == 0:
+			ui.message(_("No results found"))
+		else:
+			ui.message(ngettext("%d song", "%d songs", count) % count)
+		event.Skip()
+
+	def _on_liked_filter_key(self, event):
+		"""Down arrow moves focus from the filter field into the liked songs list."""
+		if event.GetKeyCode() == wx.WXK_DOWN:
+			self._liked_list.SetFocus()
+			if self._liked_list.GetCount() > 0 and self._liked_list.GetSelection() == wx.NOT_FOUND:
+				self._liked_list.SetSelection(0)
+		else:
+			event.Skip()
 
 	def _on_liked_selected(self, event):
 		has_sel = self._liked_list.GetSelection() != wx.NOT_FOUND
@@ -3001,6 +3269,7 @@ class RadioDialog(wx.Dialog):
 			)
 		self._liked_spotify_btn.Enable(real_song)
 		self._liked_youtube_btn.Enable(real_song)
+		self._liked_lyrics_btn.Enable(real_song)
 		self._liked_remove_btn.Enable(real_song)
 		event.Skip()
 
@@ -3010,7 +3279,7 @@ class RadioDialog(wx.Dialog):
 		if idx == wx.NOT_FOUND:
 			return None
 		text = self._liked_list.GetString(idx)
-		if text == _("No liked songs yet."):
+		if text in (_("No liked songs yet."), _("No results found.")):
 			return None
 		return text
 
@@ -3053,7 +3322,7 @@ class RadioDialog(wx.Dialog):
 		if idx == wx.NOT_FOUND:
 			return
 		song = self._liked_list.GetString(idx)
-		if song == _("No liked songs yet."):
+		if song in (_("No liked songs yet."), _("No results found.")):
 			return
 		# Ask for confirmation before removing the song.
 		dlg = wx.MessageDialog(
@@ -3094,7 +3363,7 @@ class RadioDialog(wx.Dialog):
 		count = self._liked_list.GetCount()
 		real_song_count = sum(
 			1 for i in range(count)
-			if self._liked_list.GetString(i) != _("No liked songs yet.")
+			if self._liked_list.GetString(i) not in (_("No liked songs yet."), _("No results found."))
 		)
 		if real_song_count > 0:
 			new_idx = min(deleted_idx, real_song_count - 1)
@@ -3108,6 +3377,74 @@ class RadioDialog(wx.Dialog):
 	def _on_liked_refresh(self, event):
 		self._refresh_liked_list()
 		ui.message(_("Liked songs list refreshed"))
+
+	def _on_liked_lyrics(self, event):
+		song = self._get_liked_selection()
+		if not song:
+			return
+		self._liked_lyrics_btn.Enable(False)
+		ui.message(_("Fetching lyrics\u2026"))
+		from . import lyricsService
+
+		def _on_result(lyrics, error):
+			wx.CallAfter(self._liked_lyrics_btn.Enable, True)
+			if lyrics:
+				wx.CallAfter(self._show_lyrics_dialog, song, lyrics)
+			else:
+				wx.CallAfter(ui.message, _("Lyrics not found for: %s") % song)
+
+		lyricsService.fetch_lyrics(song, _on_result)
+
+	def _show_lyrics_dialog(self, song, lyrics):
+		dlg = LyricsDialog(self, song, lyrics)
+		dlg.ShowModal()
+		dlg.Destroy()
+
+
+class LyricsDialog(wx.Dialog):
+	"""Read-only lyrics viewer."""
+
+	def __init__(self, parent, song, lyrics):
+		super().__init__(
+			parent,
+			title=_("Lyrics \u2014 %s") % song,
+			style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER,
+		)
+		sizer = wx.BoxSizer(wx.VERTICAL)
+
+		sizer.Add(
+			wx.StaticText(self, label=_("Lyrics for: %s") % song),
+			0, wx.EXPAND | wx.ALL, 8,
+		)
+
+		self._text = wx.TextCtrl(
+			self,
+			value=lyrics,
+			style=wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_RICH2,
+		)
+		self._text.SetName(_("Lyrics"))
+		sizer.Add(self._text, 1, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 8)
+
+		btn_sizer = wx.StdDialogButtonSizer()
+		close_btn = wx.Button(self, wx.ID_CLOSE, label=_("&Close"))
+		close_btn.SetDefault()
+		btn_sizer.AddButton(close_btn)
+		btn_sizer.Realize()
+		sizer.Add(btn_sizer, 0, wx.EXPAND | wx.ALL, 8)
+
+		close_btn.Bind(wx.EVT_BUTTON, lambda e: self.EndModal(wx.ID_CLOSE))
+		self.Bind(wx.EVT_CHAR_HOOK, self._on_key)
+
+		self.SetSizer(sizer)
+		self.SetSize((520, 540))
+		self.SetMinSize((350, 300))
+		wx.CallAfter(self._text.SetFocus)
+
+	def _on_key(self, event):
+		if event.GetKeyCode() == wx.WXK_ESCAPE:
+			self.EndModal(wx.ID_CLOSE)
+		else:
+			event.Skip()
 
 
 class AddCustomStationDialog(wx.Dialog):

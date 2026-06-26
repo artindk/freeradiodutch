@@ -90,6 +90,21 @@ Oblíbené lze přehrávat pomocí kláves `Ctrl+Win+→` a `Ctrl+Win+←`; tyto
 
 Chcete-li stanici ze seznamu oblíbených odstranit, vyberte ji a stiskněte tlačítko **Odstranit stanici** nebo klávesu `Odstranit`. Po odstranění se zaměření a výběr automaticky přesunou na další stanici v seznamu. Pokud byla odstraněná stanice poslední, přesune se fokus na předchozí stanici. Pokud se seznam vyprázdní, fokus se přesune na tlačítko Play.
 
+### Export a import oblíbených stanic
+
+Záložka Oblíbené obsahuje dvě tlačítka pro zálohu a obnovu seznamu stanic:
+
+**Exportovat oblíbené…** — uloží celý seznam oblíbených do souboru. V dialogu uložení si můžete vybrat ze dvou formátů:
+- **JSON** (`.json`) — úplná záloha zachovávající názvy stanic, adresy URL streamů a veškerá metadata. Doporučeno pro pozdější obnovu seznamu nebo jeho přenos na jiný počítač.
+- **Playlist M3U** (`.m3u`) — standardní formát playlistu kompatibilní s většinou mediálních přehrávačů a rozhlasových aplikací. Upozorňujeme, že M3U neukládá všechna metadata stanice, takže obnova z M3U může mít méně podrobností než záloha JSON.
+
+**Importovat oblíbené…** — načte stanice z dříve exportovaného souboru JSON nebo M3U. Po výběru souboru se zobrazí dotaz, jak stanice přidat:
+- **Ano (sloučit)** — přidá importované stanice do stávajícího seznamu bez odebrání aktuálních oblíbených. Duplicitní stanice se nepřidávají dvakrát.
+- **Ne (nahradit)** — zcela vymaže aktuální seznam oblíbených a nahradí ho obsahem importovaného souboru.
+- **Zrušit** — vrátí se do prohlížeče bez provedení jakýchkoli změn.
+
+Po úspěšném importu se automaticky obnoví seznam oblíbených, seznam stanic naplánovaných nahrávání a seznam stanic časovače.
+
 ### Změna pořadí oblíbených stanic
 
 Když je na kartě Oblíbené vybrána stanice, stisknutím tlačítka `čárka` přejděte do režimu přesunu - ozve se pípnutí. Pomocí šipek přejděte na cílovou pozici a znovu stiskněte `čárku`. Stanice se umístí na zvolenou pozici a nové nastavení se okamžitě uloží. Dalším stisknutím `čárky` na stejné pozici se přesun zruší.
@@ -213,16 +228,32 @@ U stanic, které vysílají metadata ICY, se název skladby a interpret uloží 
 
 ## Karta Oblíbené skladby
 
-Na kartě **Oblíbené skladby** v prohlížeči stanic se zobrazují všechny skladby uložené v souboru `likedSongs.txt`. Seznam se automaticky načte z tohoto souboru při každém otevření karty.
+Karta **Oblíbené skladby** v prohlížeči stanic zobrazuje všechny stopy uložené v `likedSongs.txt`. Seznam se automaticky znovu načte ze souboru pokaždé, když se karta otevře.
 
-Výběrem skladby ze seznamu lze provést následující akce:
+Pole **Filtr** nad seznamem umožňuje v reálném čase zúžit zobrazené stopy. Zadejte libovolnou část názvu skladby nebo jména interpreta a seznam se okamžitě aktualizuje po každém stisknutí klávesy. NVDA po každé změně oznamuje počet nalezených výsledků. Stisknutím šipky `dolů` v poli filtru přesunete fokus přímo do seznamu.
 
-- **Přehrát na Spotify:** Pokusí se otevřít přímo aplikaci Spotify na ploše. Pokud aplikace není nainstalována, spadne zpět na webovou stránku Spotify a automaticky spustí přehrávání prvního výsledku.
-- **Přehrát na YouTube (`Alt+O`):** Vyhledá vybranou skladbu na YouTube a otevře výsledky ve výchozím prohlížeči.
-- **Odebrat (`Alt+M`):** Odstraní vybranou skladbu ze souboru `LíbíseSongy.txt` a aktualizuje seznam. Klávesa `Odstranit` spustí toto tlačítko také při zaostřeném seznamu.
+Po výběru stopy ze seznamu jsou k dispozici následující akce:
+
+- **Přehrát na Spotify:** Pokusí se přímo otevřít desktopovou aplikaci Spotify. Pokud aplikace není nainstalována, přejde na web Spotify a automaticky přehraje první výsledek.
+- **Přehrát na YouTube (`Alt+O`):** Vyhledá vybranou stopu na YouTube a otevře výsledky ve výchozím prohlížeči.
+- **Zobrazit text písně:** Načte a zobrazí text vybrané skladby. Text písně je načítán z [lrclib.net](https://lrclib.net) (zdarma, bez nutnosti účtu). Během probíhajícího vyhledávání na pozadí je oznámena krátká zpráva „Načítání textu písně…". Pokud je text nalezen, otevře se v dialogu pouze pro čtení, kde jej můžete číst pomocí NVDA a zkopírovat do schránky. Pokud text není nalezen, NVDA to oznámí. Tlačítko je po dobu probíhající akce dočasně deaktivováno, aby se zabránilo duplicitním požadavkům.
+- **Odebrat (`Alt+M`):** Odstraní vybranou stopu z `likedSongs.txt` a aktualizuje seznam. Klávesa `Delete` toto tlačítko také spustí, je-li fokus na seznamu.
 - **Obnovit (`Alt+E`):** Znovu načte seznam ze souboru.
 
-Tlačítka Spotify, YouTube a Odebrat jsou aktivní pouze tehdy, když je v seznamu vybrána skutečná skladba.
+Tlačítka Spotify, YouTube, Zobrazit text písně a Odebrat jsou aktivní pouze tehdy, když je v seznamu vybrána skutečná skladba.
+
+### Služba textů písní
+
+FreeRadio používá [lrclib.net](https://lrclib.net) k načítání textů písní — bezplatná, otevřená databáze nevyžadující klíč API ani účet. Proces vyhledávání analyzuje řetězec stopy uložený v `likedSongs.txt` a postupně zkouší volnější dotazy, dokud nenajde text písně:
+
+1. Přesná shoda s celým jménem interpreta a vyčištěným názvem (rušivé přípony jako „Remastered", „Live" nebo roční tagy se před vyhledáváním odstraní).
+2. Přesná shoda s celým jménem interpreta a původním názvem (pokud čištění název změnilo).
+3. Přesná shoda pouze s prvním jménem interpreta a vyčištěným názvem (pro řetězce s více interprety, např. „Interpret A & Interpret B").
+4. Fuzzy vyhledávání s prvním jménem interpreta a vyčištěným názvem.
+5. Fuzzy vyhledávání se surým řetězcem stopy jako poslední možnost.
+
+Jsou-li dostupné textové verze textu, zobrazí se tak, jak jsou. Jsou-li dostupné pouze časově synchronizované LRC texty, odstraní se časová razítka a zobrazí se prostý text. O instrumentálních skladbách se hlásí, že text nebyl nalezen.
+
 
 ## Přehrávání
 

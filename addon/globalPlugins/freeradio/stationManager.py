@@ -481,6 +481,155 @@ class StationManager:
 			return idx + 1
 		return idx
 
+
+	def export_favorites_json(self, path):
+		"""Write all favourites to *path* as a UTF-8 JSON file.
+
+		The file is a plain JSON array of station dicts — the same format
+		used internally by freeradio_favorites.json — so it can be re-imported
+		without any conversion.
+
+		Raises OSError / IOError on write failure.
+		"""
+		with open(path, "w", encoding="utf-8") as fh:
+			json.dump(self._favorites, fh, ensure_ascii=False, indent=2)
+
+	def export_favorites_m3u(self, path):
+		"""Write all favourites to *path* as an extended M3U playlist.
+
+		Each entry uses the #EXTINF directive so media players display the
+		station name.  The URL field is used; url_resolved is ignored so the
+		playlist stays portable across network conditions.
+
+		Raises OSError / IOError on write failure.
+		"""
+		lines = ["#EXTM3U"]
+		for s in self._favorites:
+			name = s.get("name", "").strip() or "Unknown"
+			url  = s.get("url", "").strip()
+			if url:
+				lines.append(f"#EXTINF:-1,{name}")
+				lines.append(url)
+		with open(path, "w", encoding="utf-8") as fh:
+			fh.write("\n".join(lines))
+
+	def import_favorites(self, path, merge=True):
+		"""Import favourites from a JSON or M3U file.
+
+		Parameters
+		----------
+		path  : str   – path to the file to import
+		merge : bool  – True  → add imported stations that are not already
+								   present (matched by stationuuid or URL);
+						False → replace the entire favourites list.
+
+		Returns
+		-------
+		int  – number of stations actually added (0 when merge=False means
+			   all existing entries were replaced, not that none were loaded).
+
+		Raises
+		------
+		ValueError  – file format is unrecognised or contains no valid stations.
+		OSError     – file cannot be read.
+		"""
+		ext = os.path.splitext(path)[1].lower()
+		if ext == ".json":
+			stations = self._parse_import_json(path)
+		elif ext in (".m3u", ".m3u8"):
+			stations = self._parse_import_m3u(path)
+		else:
+			raise ValueError(f"Unsupported file format: {ext!r}")
+
+		if not stations:
+			raise ValueError("No valid stations found in the selected file.")
+
+		if not merge:
+			self._favorites = stations
+			self._save_favorites()
+			return len(stations)
+
+		# Merge: skip duplicates matched by stationuuid (preferred) or URL.
+		existing_uuids = {s.get("stationuuid", "") for s in self._favorites}
+		existing_urls  = {s.get("url", "").strip()  for s in self._favorites}
+		added = 0
+		for s in stations:
+			uid = s.get("stationuuid", "")
+			url = s.get("url", "").strip()
+			if (uid and uid in existing_uuids) or (url and url in existing_urls):
+				continue
+			self._favorites.append(s)
+			if uid:
+				existing_uuids.add(uid)
+			if url:
+				existing_urls.add(url)
+			added += 1
+		if added:
+			self._save_favorites()
+		return added
+
+	def _parse_import_json(self, path):
+		"""Parse a JSON favourites file and return a list of station dicts.
+
+		Missing fields are filled with safe defaults so partial exports from
+		older add-on versions still import cleanly.
+		"""
+		with open(path, "r", encoding="utf-8-sig") as fh:
+			data = json.load(fh)
+		if not isinstance(data, list):
+			raise ValueError("JSON file must contain a top-level array of stations.")
+		stations = []
+		for item in data:
+			if not isinstance(item, dict):
+				continue
+			url = item.get("url", "").strip()
+			if not url:
+				continue  # skip entries without a playback URL
+			# Ensure every required key exists so the rest of the add-on never
+			# has to guard against KeyError.
+			station = {
+				"stationuuid":   item.get("stationuuid", "custom-" + str(uuid.uuid4())),
+				"name":          item.get("name", url).strip(),
+				"url":           url,
+				"url_resolved":  item.get("url_resolved", url),
+				"countrycode":   item.get("countrycode", ""),
+				"tags":          item.get("tags", ""),
+				"votes":         item.get("votes", 0),
+			}
+			stations.append(station)
+		return stations
+
+	def _parse_import_m3u(self, path):
+		"""Parse an extended M3U playlist and return a list of station dicts.
+
+		Supports both #EXTINF name lines and bare URL-only playlists.
+		"""
+		with open(path, "r", encoding="utf-8-sig") as fh:
+			lines = [l.rstrip("\n\r") for l in fh]
+
+		stations = []
+		pending_name = None
+		for line in lines:
+			if line.startswith("#EXTINF"):
+				# #EXTINF:-1,Station Name
+				if "," in line:
+					pending_name = line.split(",", 1)[1].strip()
+			elif line.startswith("#") or not line.strip():
+				continue
+			else:
+				url  = line.strip()
+				name = pending_name or url
+				pending_name = None
+				stations.append({
+					"stationuuid":  "custom-" + str(uuid.uuid4()),
+					"name":         name,
+					"url":          url,
+					"url_resolved": url,
+					"countrycode":  "",
+					"tags":         "",
+					"votes":        0,
+				})
+		return stations
 	def add_custom_station(self, name, url):
 		station = {
 			"stationuuid": "custom-" + str(uuid.uuid4()),
