@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FreeRadio 2026.20.2\n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-04 17:32+0200\n"
+"POT-Creation-Date: 2026-07-09 23:00+0300\n"
+"PO-Revision-Date: 2026-07-09 23:00+0300\n"
 "Last-Translator: Ângelo Abrantes <ampa4374@gmail.com>\n"
 "Language-Team: cz Jiri Holzinger\n"
 "Language: cs\n"
@@ -16,138 +16,141 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
 "X-Generator: Poedit 3.9\n"
 "X-Poedit-Basepath: ../../../..\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: buildVars.py\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
-#: addon/globalPlugins/freeradio/__init__.py:267
-#: addon/globalPlugins/freeradio/__init__.py:1483
+#: addon/globalPlugins/freeradio/__init__.py:273
+#: addon/globalPlugins/freeradio/__init__.py:1568
 #: addon/globalPlugins/freeradio/radioDialog.py:1146
 #, python-format
 msgid "Recording started: %s"
 msgstr "Nahrávání zahájeno: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:270
+#: addon/globalPlugins/freeradio/__init__.py:276
 #, python-format
 msgid "Recording finished: %s"
 msgstr "Nahrávání dokončeno: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:333
+#: addon/globalPlugins/freeradio/__init__.py:339
 msgid "FreeRadio Stations"
 msgstr "Stanice FreeRadio"
 
-#: addon/globalPlugins/freeradio/__init__.py:353
+#: addon/globalPlugins/freeradio/__init__.py:359
 #, python-format
 msgid "Station no longer in favourites: %s"
 msgstr "Stanice odstraněna z oblíbených: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:362
+#: addon/globalPlugins/freeradio/__init__.py:368
 #, python-format
 msgid "%s playback shortcut ()"
 msgstr "Klávesová zkratka přehrávání %s ()"
 
-#: addon/globalPlugins/freeradio/__init__.py:392
+#: addon/globalPlugins/freeradio/__init__.py:398
 msgid "Station &Browser...\tCtrl+Win+R"
 msgstr "Prohlížeč stanic... Ctrl+Win+R"
 
-#: addon/globalPlugins/freeradio/__init__.py:401
+#: addon/globalPlugins/freeradio/__init__.py:407
 msgid "FreeRadio &Settings..."
 msgstr "Nastavení FreeRadia..."
 
-#: addon/globalPlugins/freeradio/__init__.py:410
+#: addon/globalPlugins/freeradio/__init__.py:416
 msgid "Check for &Updates..."
 msgstr "Zkontrolovat dostupnost aktualizací..."
 
-#: addon/globalPlugins/freeradio/__init__.py:423
+#: addon/globalPlugins/freeradio/__init__.py:429
 msgid "&FreeRadio"
 msgstr "&FreeRadio"
 
-#: addon/globalPlugins/freeradio/__init__.py:454
+#: addon/globalPlugins/freeradio/__init__.py:460
 #, python-format
 msgid "Recognition failed: %s"
 msgstr "Rozpoznání se nezdařilo: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:506
+#: addon/globalPlugins/freeradio/__init__.py:512
 msgid "Mirror audio to an additional output device"
 msgstr "Duplikovat zvuk na další výstupní zařízení"
 
-#: addon/globalPlugins/freeradio/__init__.py:507
-#: addon/globalPlugins/freeradio/__init__.py:573
-#: addon/globalPlugins/freeradio/__init__.py:581
-#: addon/globalPlugins/freeradio/__init__.py:678
-#: addon/globalPlugins/freeradio/__init__.py:730
-#: addon/globalPlugins/freeradio/__init__.py:766
-#: addon/globalPlugins/freeradio/__init__.py:802
-#: addon/globalPlugins/freeradio/__init__.py:819
-#: addon/globalPlugins/freeradio/__init__.py:978
-#: addon/globalPlugins/freeradio/__init__.py:995
-#: addon/globalPlugins/freeradio/__init__.py:1040
-#: addon/globalPlugins/freeradio/__init__.py:1059
-#: addon/globalPlugins/freeradio/__init__.py:1071
-#: addon/globalPlugins/freeradio/__init__.py:1384
-#: addon/globalPlugins/freeradio/__init__.py:1493
-#: addon/globalPlugins/freeradio/__init__.py:1510
-#: addon/globalPlugins/freeradio/__init__.py:1524
-#: addon/globalPlugins/freeradio/__init__.py:1546
-#: addon/globalPlugins/freeradio/__init__.py:1554
-#: addon/globalPlugins/freeradio/__init__.py:1562
+#: addon/globalPlugins/freeradio/__init__.py:513
+#: addon/globalPlugins/freeradio/__init__.py:579
+#: addon/globalPlugins/freeradio/__init__.py:587
+#: addon/globalPlugins/freeradio/__init__.py:684
+#: addon/globalPlugins/freeradio/__init__.py:736
+#: addon/globalPlugins/freeradio/__init__.py:772
+#: addon/globalPlugins/freeradio/__init__.py:808
+#: addon/globalPlugins/freeradio/__init__.py:836
+#: addon/globalPlugins/freeradio/__init__.py:860
+#: addon/globalPlugins/freeradio/__init__.py:887
+#: addon/globalPlugins/freeradio/__init__.py:904
+#: addon/globalPlugins/freeradio/__init__.py:1063
+#: addon/globalPlugins/freeradio/__init__.py:1080
+#: addon/globalPlugins/freeradio/__init__.py:1125
+#: addon/globalPlugins/freeradio/__init__.py:1144
+#: addon/globalPlugins/freeradio/__init__.py:1156
+#: addon/globalPlugins/freeradio/__init__.py:1469
+#: addon/globalPlugins/freeradio/__init__.py:1578
+#: addon/globalPlugins/freeradio/__init__.py:1595
+#: addon/globalPlugins/freeradio/__init__.py:1609
+#: addon/globalPlugins/freeradio/__init__.py:1631
 #: addon/globalPlugins/freeradio/__init__.py:1639
-#: addon/globalPlugins/freeradio/__init__.py:1676
-#: addon/globalPlugins/freeradio/__init__.py:1699
-#: addon/globalPlugins/freeradio/__init__.py:1718
-#: addon/globalPlugins/freeradio/__init__.py:2490
+#: addon/globalPlugins/freeradio/__init__.py:1647
+#: addon/globalPlugins/freeradio/__init__.py:1724
+#: addon/globalPlugins/freeradio/__init__.py:1761
+#: addon/globalPlugins/freeradio/__init__.py:1784
+#: addon/globalPlugins/freeradio/__init__.py:1803
+#: addon/globalPlugins/freeradio/__init__.py:2575
 msgid "FreeRadio"
 msgstr "FreeRadio"
 
-#: addon/globalPlugins/freeradio/__init__.py:513
+#: addon/globalPlugins/freeradio/__init__.py:519
 msgid "Audio mirror requires BASS backend. Enable it in FreeRadio settings."
 msgstr ""
 "Funkce duplikování zvuku vyžaduje backend BASS. Povolte jej v nastavení "
 "FreeRadia."
 
-#: addon/globalPlugins/freeradio/__init__.py:519
+#: addon/globalPlugins/freeradio/__init__.py:525
 msgid "Audio mirror stopped"
 msgstr "Duplikování zvuku zastaveno"
 
-#: addon/globalPlugins/freeradio/__init__.py:523
-#: addon/globalPlugins/freeradio/__init__.py:808
-#: addon/globalPlugins/freeradio/__init__.py:1413
-#: addon/globalPlugins/freeradio/__init__.py:1477
+#: addon/globalPlugins/freeradio/__init__.py:529
+#: addon/globalPlugins/freeradio/__init__.py:893
+#: addon/globalPlugins/freeradio/__init__.py:1498
+#: addon/globalPlugins/freeradio/__init__.py:1562
 #: addon/globalPlugins/freeradio/radioDialog.py:1140
 msgid "No station is playing"
 msgstr "Žádná stanice nehraje"
 
-#: addon/globalPlugins/freeradio/__init__.py:534
+#: addon/globalPlugins/freeradio/__init__.py:540
 msgid "No audio output devices found"
 msgstr "Nebyla nalezena žádná zvuková výstupní zařízení"
 
-#: addon/globalPlugins/freeradio/__init__.py:548
+#: addon/globalPlugins/freeradio/__init__.py:554
 msgid "Select additional output device for audio mirror:"
 msgstr "Vyberte další výstupní zařízení pro duplikování zvuku:"
 
-#: addon/globalPlugins/freeradio/__init__.py:549
+#: addon/globalPlugins/freeradio/__init__.py:555
 msgid "Mirror Audio"
 msgstr "Duplikovat Zvuk"
 
-#: addon/globalPlugins/freeradio/__init__.py:561
+#: addon/globalPlugins/freeradio/__init__.py:567
 #, python-format
 msgid "Mirroring to: %s"
 msgstr "Duplikování na: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:563
+#: addon/globalPlugins/freeradio/__init__.py:569
 #, python-format
 msgid "Could not mirror to: %s"
 msgstr "Nelze duplikovat na: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:572
+#: addon/globalPlugins/freeradio/__init__.py:578
 msgid "Open FreeRadio station browser"
 msgstr "Otevřít prohlížeč stanic"
 
-#: addon/globalPlugins/freeradio/__init__.py:580
+#: addon/globalPlugins/freeradio/__init__.py:586
 msgid "Pause or resume FreeRadio playback"
 msgstr "Pozastavit nebo obnovit přehrávání rádia"
 
-#: addon/globalPlugins/freeradio/__init__.py:657
+#: addon/globalPlugins/freeradio/__init__.py:663
 #: addon/globalPlugins/freeradio/radioDialog.py:2273
 #: addon/globalPlugins/freeradio/radioDialog.py:2607
 #: addon/globalPlugins/freeradio/radioDialog.py:2826
@@ -155,35 +158,35 @@ msgstr "Pozastavit nebo obnovit přehrávání rádia"
 msgid "Radio paused"
 msgstr "Pozastaveno"
 
-#: addon/globalPlugins/freeradio/__init__.py:660
+#: addon/globalPlugins/freeradio/__init__.py:666
 #: addon/globalPlugins/freeradio/radioDialog.py:2611
 msgid "Playing"
 msgstr "Spuštěno"
 
-#: addon/globalPlugins/freeradio/__init__.py:677
+#: addon/globalPlugins/freeradio/__init__.py:683
 msgid "Stop FreeRadio playback"
 msgstr "Zastavit přehrávání rádia"
 
 # ── Kayıt sekmesi (radioDialog.py)
 # ───────────────────────────────────────────
-#: addon/globalPlugins/freeradio/__init__.py:690
-#: addon/globalPlugins/freeradio/__init__.py:1287
+#: addon/globalPlugins/freeradio/__init__.py:696
+#: addon/globalPlugins/freeradio/__init__.py:1372
 #, python-format
 msgid "Instant recording: %s"
 msgstr "Okamžité nahrávání: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:692
-#: addon/globalPlugins/freeradio/__init__.py:875
-#: addon/globalPlugins/freeradio/__init__.py:890
-#: addon/globalPlugins/freeradio/__init__.py:1199
-#: addon/globalPlugins/freeradio/__init__.py:1207
-#: addon/globalPlugins/freeradio/__init__.py:1289
+#: addon/globalPlugins/freeradio/__init__.py:698
+#: addon/globalPlugins/freeradio/__init__.py:960
+#: addon/globalPlugins/freeradio/__init__.py:975
+#: addon/globalPlugins/freeradio/__init__.py:1284
+#: addon/globalPlugins/freeradio/__init__.py:1292
+#: addon/globalPlugins/freeradio/__init__.py:1374
 #, python-format
 msgid "Scheduled recording: %s"
 msgstr "Naplánované nahrávání: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:695
-#: addon/globalPlugins/freeradio/__init__.py:1292
+#: addon/globalPlugins/freeradio/__init__.py:701
+#: addon/globalPlugins/freeradio/__init__.py:1377
 #, python-format
 msgid ""
 "The following recordings are active and will be stopped:\n"
@@ -196,41 +199,158 @@ msgstr ""
 "\n"
 "Chcete zastavit rádio a ukončit všechny nahrávky?"
 
-#: addon/globalPlugins/freeradio/__init__.py:702
-#: addon/globalPlugins/freeradio/__init__.py:1299
+#: addon/globalPlugins/freeradio/__init__.py:708
+#: addon/globalPlugins/freeradio/__init__.py:1384
 msgid "Active Recordings"
 msgstr "Aktivní nahrávky"
 
-#: addon/globalPlugins/freeradio/__init__.py:715
-#: addon/globalPlugins/freeradio/__init__.py:726
-#: addon/globalPlugins/freeradio/__init__.py:1312
-#: addon/globalPlugins/freeradio/__init__.py:1324
+#: addon/globalPlugins/freeradio/__init__.py:721
+#: addon/globalPlugins/freeradio/__init__.py:732
+#: addon/globalPlugins/freeradio/__init__.py:1397
+#: addon/globalPlugins/freeradio/__init__.py:1409
 msgid "Radio stopped"
 msgstr "Zastaveno"
 
-#: addon/globalPlugins/freeradio/__init__.py:729
+#: addon/globalPlugins/freeradio/__init__.py:735
 msgid "Play next station"
 msgstr "Přehrát další stanici"
 
-#: addon/globalPlugins/freeradio/__init__.py:765
+#: addon/globalPlugins/freeradio/__init__.py:771
 msgid "Play previous station"
 msgstr "Přehrát předchozí stanici"
 
-#: addon/globalPlugins/freeradio/__init__.py:801
+#: addon/globalPlugins/freeradio/__init__.py:807
+msgid ""
+"Time-shift: rewind 15 seconds (enters time-shift mode if not already active)"
+msgstr ""
+"Časový posun: přetočit o 15 sekund zpět (aktivuje režim časového posunu, "
+"pokud není již aktivní)"
+
+#: addon/globalPlugins/freeradio/__init__.py:813
+#: addon/globalPlugins/freeradio/__init__.py:823
+#: addon/globalPlugins/freeradio/__init__.py:841
+#| msgid ""
+#| "Audio mirror requires BASS backend. Enable it in FreeRadio settings."
+msgid "Time-shift buffer is disabled. Enable it in FreeRadio settings."
+msgstr ""
+"Vyrovnávací paměť časového posunu je vypnuta. Zapněte ji v nastavení "
+"FreeRadio."
+
+#: addon/globalPlugins/freeradio/__init__.py:822
+msgid ""
+"Time-shift requires the BASS audio backend, which is currently disabled."
+msgstr "Časový posun vyžaduje BASS backend, který je momentálně vypnutý."
+
+#: addon/globalPlugins/freeradio/__init__.py:824
+msgid "Time-shift is not available for the current playback backend."
+msgstr "Časový posun není dostupný pro aktuální backend přehrávání."
+
+#: addon/globalPlugins/freeradio/__init__.py:825
+msgid "Time-shift could not read this station's stream playlist."
+msgstr "Časový posun nemohl přečíst seznam skladeb streamu této stanice."
+
+#: addon/globalPlugins/freeradio/__init__.py:826
+msgid ""
+"Not enough buffered audio to rewind yet. Wait a few seconds after the "
+"station starts playing and try again."
+msgstr ""
+"Zatím není dost uloženého zvuku pro přetočení. Počkejte několik sekund po "
+"spuštění stanice a zkuste to znovu."
+
+#: addon/globalPlugins/freeradio/__init__.py:827
+msgid "Time-shift buffer file is not ready yet."
+msgstr "Soubor vyrovnávací paměti časového posunu ještě není připraven."
+
+#: addon/globalPlugins/freeradio/__init__.py:828
+msgid "Could not switch to time-shifted playback."
+msgstr "Nepodařilo se přepnout na přehrávání s časovým posunem."
+
+# ── Kayıt sekmesi (radioDialog.py)
+# ───────────────────────────────────────────
+#: addon/globalPlugins/freeradio/__init__.py:830
+#| msgid "Could not start recording"
+msgid "Could not rewind"
+msgstr "Nelze přetočit zpět"
+
+#: addon/globalPlugins/freeradio/__init__.py:832
+#, python-format
+msgid "Rewound to %.0f seconds behind live"
+msgstr "Přetočeno na %.0f sekund před živým vysíláním"
+
+#: addon/globalPlugins/freeradio/__init__.py:835
+msgid ""
+"Time-shift: fast-forward 15 seconds, or return to live if already caught up"
+msgstr ""
+"Časový posun: rychlý posun o 15 sekund dopředu, nebo návrat na živé "
+"vysílání, pokud jste již dohnali"
+
+#: addon/globalPlugins/freeradio/__init__.py:844
+msgid "Already listening live"
+msgstr "Již posloucháte živé vysílání"
+
+#: addon/globalPlugins/freeradio/__init__.py:849
+#| msgid "Could not access clipboard"
+msgid "Could not fast-forward"
+msgstr "Nelze rychle přetočit dopředu"
+
+#: addon/globalPlugins/freeradio/__init__.py:852
+msgid "Back to live"
+msgstr "Zpět na živé vysílání"
+
+#: addon/globalPlugins/freeradio/__init__.py:855
+#, python-format
+msgid "Fast-forwarded, still %.0f seconds behind live"
+msgstr "Přetočeno dopředu, stále %.0f sekund za živým vysíláním"
+
+#: addon/globalPlugins/freeradio/__init__.py:859
+#| msgid "Enable or disable the BASS audio backend"
+msgid "Enable or disable the time-shift (rewind) buffer"
+msgstr "Zapnout nebo vypnout vyrovnávací paměť časového posunu (přetočení)"
+
+#: addon/globalPlugins/freeradio/__init__.py:883
+#, python-format
+msgid "Time-shift buffer %s"
+msgstr "Vyrovnávací paměť časového posunu %s"
+
+#: addon/globalPlugins/freeradio/__init__.py:883
+#: addon/globalPlugins/freeradio/__init__.py:1625
+#: addon/globalPlugins/freeradio/__init__.py:1719
+#: addon/globalPlugins/freeradio/__init__.py:1779
+#: addon/globalPlugins/freeradio/__init__.py:1819
+#: addon/globalPlugins/freeradio/__init__.py:3030
+#: addon/globalPlugins/freeradio/__init__.py:3041
+#: addon/globalPlugins/freeradio/radioDialog.py:887
+#: addon/globalPlugins/freeradio/radioDialog.py:901
+msgid "enabled"
+msgstr "zapnuto"
+
+#: addon/globalPlugins/freeradio/__init__.py:883
+#: addon/globalPlugins/freeradio/__init__.py:1625
+#: addon/globalPlugins/freeradio/__init__.py:1719
+#: addon/globalPlugins/freeradio/__init__.py:1779
+#: addon/globalPlugins/freeradio/__init__.py:1819
+#: addon/globalPlugins/freeradio/__init__.py:3030
+#: addon/globalPlugins/freeradio/__init__.py:3041
+#: addon/globalPlugins/freeradio/radioDialog.py:887
+#: addon/globalPlugins/freeradio/radioDialog.py:901
+msgid "disabled"
+msgstr "vypnuto"
+
+#: addon/globalPlugins/freeradio/__init__.py:886
 msgid "Add currently playing station to favourites"
 msgstr "Přidat právě přehrávanou stanici do oblíbených"
 
-#: addon/globalPlugins/freeradio/__init__.py:811
+#: addon/globalPlugins/freeradio/__init__.py:896
 #, python-format
 msgid "Already in favourites: %s"
 msgstr "Je již v oblíbených: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:814
+#: addon/globalPlugins/freeradio/__init__.py:899
 #, python-format
 msgid "Added to favourites: %s"
 msgstr "Přidáno do oblíbených: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:818
+#: addon/globalPlugins/freeradio/__init__.py:903
 msgid ""
 "Announce currently playing station. Press twice for full details, three "
 "times to copy track info, four times to force music recognition."
@@ -239,77 +359,77 @@ msgstr ""
 "informace, trojitým stisknutím zkopírujete informace o skladbě a "
 "čtyřnásobným stisknutím spustíte rozpoznávání skladby."
 
-#: addon/globalPlugins/freeradio/__init__.py:830
-#: addon/globalPlugins/freeradio/__init__.py:1147
+#: addon/globalPlugins/freeradio/__init__.py:915
+#: addon/globalPlugins/freeradio/__init__.py:1232
 msgid "Radio inactive. Active scheduled recordings:"
 msgstr "Rádio je vypnuté. Aktivní naplánované nahrávky:"
 
-#: addon/globalPlugins/freeradio/__init__.py:835
-#: addon/globalPlugins/freeradio/__init__.py:982
-#: addon/globalPlugins/freeradio/__init__.py:1000
-#: addon/globalPlugins/freeradio/__init__.py:1045
-#: addon/globalPlugins/freeradio/__init__.py:1152
-#: addon/globalPlugins/freeradio/__init__.py:1318
-#: addon/globalPlugins/freeradio/__init__.py:1332
+#: addon/globalPlugins/freeradio/__init__.py:920
+#: addon/globalPlugins/freeradio/__init__.py:1067
+#: addon/globalPlugins/freeradio/__init__.py:1085
+#: addon/globalPlugins/freeradio/__init__.py:1130
+#: addon/globalPlugins/freeradio/__init__.py:1237
+#: addon/globalPlugins/freeradio/__init__.py:1403
+#: addon/globalPlugins/freeradio/__init__.py:1417
 msgid "FreeRadio is not active"
 msgstr "FreeRadio není aktivní"
 
-#: addon/globalPlugins/freeradio/__init__.py:862
-#: addon/globalPlugins/freeradio/__init__.py:1191
-#: addon/globalPlugins/freeradio/__init__.py:1347
+#: addon/globalPlugins/freeradio/__init__.py:947
+#: addon/globalPlugins/freeradio/__init__.py:1276
+#: addon/globalPlugins/freeradio/__init__.py:1432
 #, python-format
 msgid "Playing: %(station)s — %(track)s"
 msgstr "Právě hraje: %(station)s — %(track)s"
 
-#: addon/globalPlugins/freeradio/__init__.py:866
-#: addon/globalPlugins/freeradio/__init__.py:1195
-#: addon/globalPlugins/freeradio/__init__.py:1351
+#: addon/globalPlugins/freeradio/__init__.py:951
+#: addon/globalPlugins/freeradio/__init__.py:1280
+#: addon/globalPlugins/freeradio/__init__.py:1436
 #, python-format
 msgid "Playing: %s"
 msgstr "Právě hraje: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:870
-#: addon/globalPlugins/freeradio/__init__.py:885
-#: addon/globalPlugins/freeradio/__init__.py:1197
-#: addon/globalPlugins/freeradio/__init__.py:1205
+#: addon/globalPlugins/freeradio/__init__.py:955
+#: addon/globalPlugins/freeradio/__init__.py:970
+#: addon/globalPlugins/freeradio/__init__.py:1282
+#: addon/globalPlugins/freeradio/__init__.py:1290
 #: addon/globalPlugins/freeradio/radioDialog.py:1145
 #, python-format
 msgid "Recording: %s"
 msgstr "Záznam: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:881
-#: addon/globalPlugins/freeradio/__init__.py:1203
-#: addon/globalPlugins/freeradio/__init__.py:1355
+#: addon/globalPlugins/freeradio/__init__.py:966
+#: addon/globalPlugins/freeradio/__init__.py:1288
+#: addon/globalPlugins/freeradio/__init__.py:1440
 #, python-format
 msgid "Paused: %s"
 msgstr "Pozastaveno: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:944
-#: addon/globalPlugins/freeradio/__init__.py:967
-#: addon/globalPlugins/freeradio/__init__.py:1027
+#: addon/globalPlugins/freeradio/__init__.py:1029
 #: addon/globalPlugins/freeradio/__init__.py:1052
-#: addon/globalPlugins/freeradio/__init__.py:1253
-#: addon/globalPlugins/freeradio/__init__.py:1271
+#: addon/globalPlugins/freeradio/__init__.py:1112
+#: addon/globalPlugins/freeradio/__init__.py:1137
+#: addon/globalPlugins/freeradio/__init__.py:1338
+#: addon/globalPlugins/freeradio/__init__.py:1356
 msgid "No track info available"
 msgstr "Informace o skladbě nejsou k dispozici"
 
-#: addon/globalPlugins/freeradio/__init__.py:948
-#: addon/globalPlugins/freeradio/__init__.py:1029
-#: addon/globalPlugins/freeradio/__init__.py:1255
+#: addon/globalPlugins/freeradio/__init__.py:1033
+#: addon/globalPlugins/freeradio/__init__.py:1114
+#: addon/globalPlugins/freeradio/__init__.py:1340
 msgid "No track metadata found. Starting music recognition…"
 msgstr "Nebyla nalezena žádná metadata skladby. Spouštím rozpoznávání hudby…"
 
-#: addon/globalPlugins/freeradio/__init__.py:969
 #: addon/globalPlugins/freeradio/__init__.py:1054
-#: addon/globalPlugins/freeradio/__init__.py:1273
+#: addon/globalPlugins/freeradio/__init__.py:1139
+#: addon/globalPlugins/freeradio/__init__.py:1358
 msgid "Starting music recognition…"
 msgstr "Spouštím rozpoznávání hudby…"
 
-#: addon/globalPlugins/freeradio/__init__.py:977
+#: addon/globalPlugins/freeradio/__init__.py:1062
 msgid "Show details of the currently playing station"
 msgstr "Zobrazit podrobnosti o aktuálně přehrávané stanici"
 
-#: addon/globalPlugins/freeradio/__init__.py:994
+#: addon/globalPlugins/freeradio/__init__.py:1079
 msgid ""
 "Copy current track info to clipboard, or start music recognition if "
 "unavailable"
@@ -317,16 +437,16 @@ msgstr ""
 "Zkopírovat informace o aktuální skladbě do schránky nebo spustit "
 "rozpoznávání hudby, pokud nejsou k dispozici"
 
-#: addon/globalPlugins/freeradio/__init__.py:1039
+#: addon/globalPlugins/freeradio/__init__.py:1124
 msgid "Force music recognition for the currently playing stream"
 msgstr "Vynutit rozpoznávání hudby pro aktuálně přehrávaný stream"
 
-#: addon/globalPlugins/freeradio/__init__.py:1058
+#: addon/globalPlugins/freeradio/__init__.py:1143
 msgid "Increase FreeRadio volume by 5"
 msgstr "Zvýšit hlasitost FreeRadio o 5"
 
-#: addon/globalPlugins/freeradio/__init__.py:1066
-#: addon/globalPlugins/freeradio/__init__.py:1078
+#: addon/globalPlugins/freeradio/__init__.py:1151
+#: addon/globalPlugins/freeradio/__init__.py:1163
 #: addon/globalPlugins/freeradio/radioDialog.py:2575
 #: addon/globalPlugins/freeradio/radioDialog.py:2588
 #: addon/globalPlugins/freeradio/radioDialog.py:2678
@@ -335,32 +455,32 @@ msgstr "Zvýšit hlasitost FreeRadio o 5"
 msgid "Volume %d"
 msgstr "Hlasitost %d"
 
-#: addon/globalPlugins/freeradio/__init__.py:1070
+#: addon/globalPlugins/freeradio/__init__.py:1155
 msgid "Decrease FreeRadio volume by 5"
 msgstr "Snížit hlasitost FreeRadio o 5"
 
-#: addon/globalPlugins/freeradio/__init__.py:1380
+#: addon/globalPlugins/freeradio/__init__.py:1465
 msgid "Audio device disconnected. Switched to system default."
 msgstr ""
 "Zvukové zařízení bylo odpojeno. Přepnuto na výchozí systémové zařízení."
 
 # ── Kayıt kısayolu (__init__.py)
 # ──────────────────────────────────────────────
-#: addon/globalPlugins/freeradio/__init__.py:1383
+#: addon/globalPlugins/freeradio/__init__.py:1468
 msgid "Start or stop instant recording"
 msgstr "Spustit nebo zastavit okamžité nahrávání"
 
-#: addon/globalPlugins/freeradio/__init__.py:1407
+#: addon/globalPlugins/freeradio/__init__.py:1492
 #, python-format
 msgid "Song recording stopped: %s"
 msgstr "Nahrávání skladby zastaveno: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1409
-#: addon/globalPlugins/freeradio/__init__.py:2364
+#: addon/globalPlugins/freeradio/__init__.py:1494
+#: addon/globalPlugins/freeradio/__init__.py:2449
 msgid "Song recording stopped"
 msgstr "Nahrávání skladby zastaveno"
 
-#: addon/globalPlugins/freeradio/__init__.py:1434
+#: addon/globalPlugins/freeradio/__init__.py:1519
 msgid ""
 "This station does not broadcast track metadata. Song recording is not "
 "available."
@@ -368,41 +488,41 @@ msgstr ""
 "Nahrávání skladeb není k dispozici; Tato stanice nezobrazuje metadata "
 "skladeb."
 
-#: addon/globalPlugins/freeradio/__init__.py:1446
+#: addon/globalPlugins/freeradio/__init__.py:1531
 #, python-format
 msgid "Song recording started: %s"
 msgstr "Nahrávání skladby zahájeno: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1450
+#: addon/globalPlugins/freeradio/__init__.py:1535
 msgid "Could not start song recording"
 msgstr "Nahrávání skladby se nepodařilo spustit"
 
-#: addon/globalPlugins/freeradio/__init__.py:1471
+#: addon/globalPlugins/freeradio/__init__.py:1556
 #, python-format
 msgid "Recording stopped: %s"
 msgstr "Nahrávání zastaveno: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1473
+#: addon/globalPlugins/freeradio/__init__.py:1558
 #: addon/globalPlugins/freeradio/radioDialog.py:1137
 msgid "Recording stopped"
 msgstr "Nahrávání zastaveno"
 
 # ── Kayıt sekmesi (radioDialog.py)
 # ───────────────────────────────────────────
-#: addon/globalPlugins/freeradio/__init__.py:1486
+#: addon/globalPlugins/freeradio/__init__.py:1571
 msgid "Could not start recording"
 msgstr "Nahrávání se nepodařilo spustit"
 
-#: addon/globalPlugins/freeradio/__init__.py:1492
+#: addon/globalPlugins/freeradio/__init__.py:1577
 msgid "Open FreeRadio recordings folder"
 msgstr "Otevřít složku pro ukládání nahrávek"
 
-#: addon/globalPlugins/freeradio/__init__.py:1506
+#: addon/globalPlugins/freeradio/__init__.py:1591
 #, python-format
 msgid "Could not open recordings folder: %s"
 msgstr "Nelze otevřít složku: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1509
+#: addon/globalPlugins/freeradio/__init__.py:1594
 msgid ""
 "Toggle mute notifications (station changes, playback, recording, volume "
 "level)"
@@ -410,160 +530,138 @@ msgstr ""
 "Zapnout/vypnout zvuková upozornění (změna stanice, přehrávání, nahrávání, "
 "úroveň hlasitosti)"
 
-#: addon/globalPlugins/freeradio/__init__.py:1518
+#: addon/globalPlugins/freeradio/__init__.py:1603
 msgid "Notifications muted"
 msgstr "Oznámení vypnuta"
 
-#: addon/globalPlugins/freeradio/__init__.py:1520
+#: addon/globalPlugins/freeradio/__init__.py:1605
 msgid "Notifications unmuted"
 msgstr "Oznámení zapnuta"
 
-#: addon/globalPlugins/freeradio/__init__.py:1523
+#: addon/globalPlugins/freeradio/__init__.py:1608
 msgid "Enable or disable the BASS audio backend"
 msgstr "Zapnout/vypnout BASS backend"
 
-#: addon/globalPlugins/freeradio/__init__.py:1537
-#: addon/globalPlugins/freeradio/__init__.py:2498
+#: addon/globalPlugins/freeradio/__init__.py:1622
+#: addon/globalPlugins/freeradio/__init__.py:2583
 msgid "&Disable BASS backend (use VLC/PotPlayer/WMP instead)"
 msgstr "&Vypnout BASS backend; (místo toho použít VLC/PotPlayer/WMP)"
 
-#: addon/globalPlugins/freeradio/__init__.py:1538
-#: addon/globalPlugins/freeradio/__init__.py:1632
-#: addon/globalPlugins/freeradio/__init__.py:1692
-#: addon/globalPlugins/freeradio/__init__.py:1732
-#: addon/globalPlugins/freeradio/__init__.py:2932
-#: addon/globalPlugins/freeradio/__init__.py:2943
+#: addon/globalPlugins/freeradio/__init__.py:1623
+#: addon/globalPlugins/freeradio/__init__.py:1717
+#: addon/globalPlugins/freeradio/__init__.py:1777
+#: addon/globalPlugins/freeradio/__init__.py:1817
+#: addon/globalPlugins/freeradio/__init__.py:3028
+#: addon/globalPlugins/freeradio/__init__.py:3039
 #: addon/globalPlugins/freeradio/radioDialog.py:885
 #: addon/globalPlugins/freeradio/radioDialog.py:899
 #, python-format
 msgid "%(effect)s %(state)s"
 msgstr "%(effect)s %(state)s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1540
-#: addon/globalPlugins/freeradio/__init__.py:1634
-#: addon/globalPlugins/freeradio/__init__.py:1694
-#: addon/globalPlugins/freeradio/__init__.py:1734
-#: addon/globalPlugins/freeradio/__init__.py:2934
-#: addon/globalPlugins/freeradio/__init__.py:2945
-#: addon/globalPlugins/freeradio/radioDialog.py:887
-#: addon/globalPlugins/freeradio/radioDialog.py:901
-msgid "enabled"
-msgstr "zapnuto"
-
-#: addon/globalPlugins/freeradio/__init__.py:1540
-#: addon/globalPlugins/freeradio/__init__.py:1634
-#: addon/globalPlugins/freeradio/__init__.py:1694
-#: addon/globalPlugins/freeradio/__init__.py:1734
-#: addon/globalPlugins/freeradio/__init__.py:2934
-#: addon/globalPlugins/freeradio/__init__.py:2945
-#: addon/globalPlugins/freeradio/radioDialog.py:887
-#: addon/globalPlugins/freeradio/radioDialog.py:901
-msgid "disabled"
-msgstr "vypnuto"
-
-#: addon/globalPlugins/freeradio/__init__.py:1542
+#: addon/globalPlugins/freeradio/__init__.py:1627
 msgid "Restart NVDA for this change to take effect."
 msgstr "Pro použití této změny restartujte NVDA."
 
-#: addon/globalPlugins/freeradio/__init__.py:1545
+#: addon/globalPlugins/freeradio/__init__.py:1630
 msgid "Toggle bass boost"
 msgstr "Zapnout/vypnout zesílení basů"
 
-#: addon/globalPlugins/freeradio/__init__.py:1550
-#: addon/globalPlugins/freeradio/__init__.py:2545
+#: addon/globalPlugins/freeradio/__init__.py:1635
+#: addon/globalPlugins/freeradio/__init__.py:2641
 #: addon/globalPlugins/freeradio/radioDialog.py:174
 msgid "EQ: Bass Boost"
 msgstr "EQ: Zesílení basů"
 
-#: addon/globalPlugins/freeradio/__init__.py:1553
+#: addon/globalPlugins/freeradio/__init__.py:1638
 msgid "Toggle treble boost"
 msgstr "Zapnout/vypnout zesílení výšek"
 
-#: addon/globalPlugins/freeradio/__init__.py:1558
-#: addon/globalPlugins/freeradio/__init__.py:2546
+#: addon/globalPlugins/freeradio/__init__.py:1643
+#: addon/globalPlugins/freeradio/__init__.py:2642
 #: addon/globalPlugins/freeradio/radioDialog.py:174
 msgid "EQ: Treble Boost"
 msgstr "EQ: Zesílení výšek"
 
-#: addon/globalPlugins/freeradio/__init__.py:1561
+#: addon/globalPlugins/freeradio/__init__.py:1646
 msgid "Toggle vocal boost"
 msgstr "Zapnout/vypnout zesílení vokálů"
 
-#: addon/globalPlugins/freeradio/__init__.py:1566
-#: addon/globalPlugins/freeradio/__init__.py:2547
+#: addon/globalPlugins/freeradio/__init__.py:1651
+#: addon/globalPlugins/freeradio/__init__.py:2643
 #: addon/globalPlugins/freeradio/radioDialog.py:174
 msgid "EQ: Vocal Boost"
 msgstr "EQ: Zesílení vokálů"
 
-#: addon/globalPlugins/freeradio/__init__.py:1577
-#: addon/globalPlugins/freeradio/__init__.py:2507
+#: addon/globalPlugins/freeradio/__init__.py:1662
+#: addon/globalPlugins/freeradio/__init__.py:2603
 msgid ""
 "Note: Audio device selection, effects, and mirroring require BASS backend."
 msgstr ""
-"Poznámka: Pro výběr zvukového zařízení, používání audio efektů a "
-"duplikování je nutné zapnout BASS backend."
+"Poznámka: Pro výběr zvukového zařízení, používání audio efektů a duplikování"
+" je nutné zapnout BASS backend."
 
-#: addon/globalPlugins/freeradio/__init__.py:1638
+#: addon/globalPlugins/freeradio/__init__.py:1723
 msgid "Toggle station switch transition (crossfade)"
 msgstr "Při přepínání stanic použít prolínání (crossfade)"
 
-#: addon/globalPlugins/freeradio/__init__.py:1645
-#: addon/globalPlugins/freeradio/__init__.py:2582
+#: addon/globalPlugins/freeradio/__init__.py:1730
+#: addon/globalPlugins/freeradio/__init__.py:2678
 msgid "Instant cut (no crossfade)"
 msgstr "Bez prolínání"
 
-#: addon/globalPlugins/freeradio/__init__.py:1646
-#: addon/globalPlugins/freeradio/__init__.py:2583
+#: addon/globalPlugins/freeradio/__init__.py:1731
+#: addon/globalPlugins/freeradio/__init__.py:2679
 msgid "Short crossfade (1 second)"
 msgstr "Krátké (1 sekunda)"
 
-#: addon/globalPlugins/freeradio/__init__.py:1647
-#: addon/globalPlugins/freeradio/__init__.py:2584
+#: addon/globalPlugins/freeradio/__init__.py:1732
+#: addon/globalPlugins/freeradio/__init__.py:2680
 msgid "Normal crossfade (2 seconds)"
 msgstr "Běžné (2 sekundy)"
 
-#: addon/globalPlugins/freeradio/__init__.py:1675
+#: addon/globalPlugins/freeradio/__init__.py:1760
 msgid "Enable or disable auto-announce track changes (ICY metadata)"
 msgstr "Zapnout/vypnout automatické oznamování změny skladeb (metadata ICY)"
 
-#: addon/globalPlugins/freeradio/__init__.py:1693
-#: addon/globalPlugins/freeradio/__init__.py:2604
+#: addon/globalPlugins/freeradio/__init__.py:1778
+#: addon/globalPlugins/freeradio/__init__.py:2700
 msgid "&Auto-announce track changes (ICY metadata)"
 msgstr "&Automaticky oznamovat změny skladeb (metadata ICY)"
 
-#: addon/globalPlugins/freeradio/__init__.py:1698
+#: addon/globalPlugins/freeradio/__init__.py:1783
 msgid "Switch track change announcement voice"
 msgstr "Změnit hlas pro oznamování změn skladeb"
 
-#: addon/globalPlugins/freeradio/__init__.py:1717
+#: addon/globalPlugins/freeradio/__init__.py:1802
 msgid "Turn on or off saving liked songs to a text file"
 msgstr "Zapnout/vypnout ukládání oblíbených skladeb do textového souboru"
 
-#: addon/globalPlugins/freeradio/__init__.py:1733
-#: addon/globalPlugins/freeradio/__init__.py:2681
+#: addon/globalPlugins/freeradio/__init__.py:1818
+#: addon/globalPlugins/freeradio/__init__.py:2777
 msgid "&Save liked songs to a text file"
 msgstr "&Ukládat oblíbené skladby do textového souboru"
 
-#: addon/globalPlugins/freeradio/__init__.py:1875
+#: addon/globalPlugins/freeradio/__init__.py:1960
 msgid "No releases found on GitHub yet."
 msgstr "Na GitHubu zatím nebyla nalezena žádná vydání."
 
-#: addon/globalPlugins/freeradio/__init__.py:1879
+#: addon/globalPlugins/freeradio/__init__.py:1964
 #, python-format
 msgid "Update check failed (HTTP %d)."
 msgstr "Kontrola aktualizací se nezdařila (HTTP %d)."
 
-#: addon/globalPlugins/freeradio/__init__.py:1884
+#: addon/globalPlugins/freeradio/__init__.py:1969
 msgid "Update check failed. Please check your internet connection."
 msgstr ""
 "Kontrola aktualizací se nezdařila. Zkontrolujte prosím připojení k "
 "internetu."
 
-#: addon/globalPlugins/freeradio/__init__.py:1899
+#: addon/globalPlugins/freeradio/__init__.py:1984
 msgid "Could not determine latest version."
 msgstr "Nepodařilo se zjistit nejnovější verzi."
 
-#: addon/globalPlugins/freeradio/__init__.py:1918
+#: addon/globalPlugins/freeradio/__init__.py:2003
 #, python-format
 msgid ""
 "A new version of FreeRadio is available: %(new)s.\n"
@@ -576,17 +674,17 @@ msgstr ""
 "\n"
 "Chcete ji stáhnout a nainstalovat?"
 
-#: addon/globalPlugins/freeradio/__init__.py:1921
-#: addon/globalPlugins/freeradio/__init__.py:1929
-#: addon/globalPlugins/freeradio/__init__.py:1990
+#: addon/globalPlugins/freeradio/__init__.py:2006
+#: addon/globalPlugins/freeradio/__init__.py:2014
+#: addon/globalPlugins/freeradio/__init__.py:2075
 msgid "unknown"
 msgstr "neznámý"
 
-#: addon/globalPlugins/freeradio/__init__.py:1922
+#: addon/globalPlugins/freeradio/__init__.py:2007
 msgid "&Install"
 msgstr "&Nainstalovat"
 
-#: addon/globalPlugins/freeradio/__init__.py:1926
+#: addon/globalPlugins/freeradio/__init__.py:2011
 #, python-format
 msgid ""
 "A new version of FreeRadio is available: %(new)s.\n"
@@ -599,158 +697,158 @@ msgstr ""
 "\n"
 "Chcete otevřít stránku pro stažení doplňku?"
 
-#: addon/globalPlugins/freeradio/__init__.py:1930
+#: addon/globalPlugins/freeradio/__init__.py:2015
 msgid "&Open Page"
 msgstr "&Otevřít stránku"
 
-#: addon/globalPlugins/freeradio/__init__.py:1935
+#: addon/globalPlugins/freeradio/__init__.py:2020
 msgid "FreeRadio Update Available"
 msgstr "K dispozici je aktualizace FreeRadia"
 
-#: addon/globalPlugins/freeradio/__init__.py:1938
+#: addon/globalPlugins/freeradio/__init__.py:2023
 msgid "&Cancel"
 msgstr "&Storno"
 
-#: addon/globalPlugins/freeradio/__init__.py:1953
+#: addon/globalPlugins/freeradio/__init__.py:2038
 #, python-format
 msgid "Downloading FreeRadio %s…"
 msgstr "Stahování FreeRadia %s…"
 
-#: addon/globalPlugins/freeradio/__init__.py:1971
+#: addon/globalPlugins/freeradio/__init__.py:2056
 #, python-format
 msgid "Download failed: %s"
 msgstr "Stažení se nezdařilo: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1981
+#: addon/globalPlugins/freeradio/__init__.py:2066
 #, python-format
 msgid "Could not launch installer. File saved to: %s"
 msgstr "Instalátor se nepodařilo spustit. Soubor byl uložen do: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1990
+#: addon/globalPlugins/freeradio/__init__.py:2075
 #, python-format
 msgid "FreeRadio is up to date. Installed: %s"
 msgstr "FreeRadio je aktuální. Nainstalovaná verze: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:1991
+#: addon/globalPlugins/freeradio/__init__.py:2076
 msgid "FreeRadio Update Check"
 msgstr "Kontrola aktualizací FreeRadia"
 
-#: addon/globalPlugins/freeradio/__init__.py:2101
-#: addon/globalPlugins/freeradio/__init__.py:2240
+#: addon/globalPlugins/freeradio/__init__.py:2186
+#: addon/globalPlugins/freeradio/__init__.py:2325
 #: addon/globalPlugins/freeradio/radioDialog.py:2322
 msgid "Station"
 msgstr "Stanice"
 
-#: addon/globalPlugins/freeradio/__init__.py:2105
-#: addon/globalPlugins/freeradio/__init__.py:2222
+#: addon/globalPlugins/freeradio/__init__.py:2190
+#: addon/globalPlugins/freeradio/__init__.py:2307
 msgid "Now playing"
 msgstr "Právě hraje"
 
-#: addon/globalPlugins/freeradio/__init__.py:2113
-#: addon/globalPlugins/freeradio/__init__.py:2115
+#: addon/globalPlugins/freeradio/__init__.py:2198
+#: addon/globalPlugins/freeradio/__init__.py:2200
 #: addon/globalPlugins/freeradio/radioDialog.py:2329
 #: addon/globalPlugins/freeradio/radioDialog.py:2331
 msgid "Country"
 msgstr "Země"
 
-#: addon/globalPlugins/freeradio/__init__.py:2119
+#: addon/globalPlugins/freeradio/__init__.py:2204
 #: addon/globalPlugins/freeradio/radioDialog.py:2334
 msgid "Language"
 msgstr "Jazyk"
 
-#: addon/globalPlugins/freeradio/__init__.py:2126
+#: addon/globalPlugins/freeradio/__init__.py:2211
 #: addon/globalPlugins/freeradio/radioDialog.py:2338
 msgid "Genre"
 msgstr "Žánr"
 
-#: addon/globalPlugins/freeradio/__init__.py:2135
+#: addon/globalPlugins/freeradio/__init__.py:2220
 #: addon/globalPlugins/freeradio/radioDialog.py:2346
 msgid "Format"
 msgstr "Formát"
 
-#: addon/globalPlugins/freeradio/__init__.py:2137
+#: addon/globalPlugins/freeradio/__init__.py:2222
 #: addon/globalPlugins/freeradio/radioDialog.py:2348
 msgid "Bitrate"
 msgstr "Datový tok"
 
-#: addon/globalPlugins/freeradio/__init__.py:2139
+#: addon/globalPlugins/freeradio/__init__.py:2224
 #: addon/globalPlugins/freeradio/radioDialog.py:2350
 msgid "Codec"
 msgstr "Kodek"
 
-#: addon/globalPlugins/freeradio/__init__.py:2143
+#: addon/globalPlugins/freeradio/__init__.py:2228
 #: addon/globalPlugins/freeradio/radioDialog.py:2353
 msgid "Website"
 msgstr "Webová stránka"
 
-#: addon/globalPlugins/freeradio/__init__.py:2147
+#: addon/globalPlugins/freeradio/__init__.py:2232
 #: addon/globalPlugins/freeradio/radioDialog.py:2356
 msgid "Stream URL"
 msgstr "URL streamu"
 
-#: addon/globalPlugins/freeradio/__init__.py:2155
+#: addon/globalPlugins/freeradio/__init__.py:2240
 #: addon/globalPlugins/freeradio/radioDialog.py:2363
 msgid "Votes"
 msgstr "Hlasy"
 
 # ── İstasyon detayları (__init__.py)
 # ─────────────────────────────────────────
-#: addon/globalPlugins/freeradio/__init__.py:2163
-#: addon/globalPlugins/freeradio/__init__.py:2282
+#: addon/globalPlugins/freeradio/__init__.py:2248
+#: addon/globalPlugins/freeradio/__init__.py:2367
 #: addon/globalPlugins/freeradio/radioDialog.py:2366
 msgid "No station detail available"
 msgstr "Podrobnosti o stanici nejsou k dispozici"
 
-#: addon/globalPlugins/freeradio/__init__.py:2168
+#: addon/globalPlugins/freeradio/__init__.py:2253
 #: addon/globalPlugins/freeradio/radioDialog.py:2371
 msgid "Station Details"
 msgstr "Podrobnosti o stanici"
 
-#: addon/globalPlugins/freeradio/__init__.py:2200
+#: addon/globalPlugins/freeradio/__init__.py:2285
 #: addon/globalPlugins/freeradio/radioDialog.py:2398
 msgid "&Copy all to clipboard"
 msgstr "&Zkopírovat vše do schránky"
 
-#: addon/globalPlugins/freeradio/__init__.py:2206
+#: addon/globalPlugins/freeradio/__init__.py:2291
 #: addon/globalPlugins/freeradio/radioDialog.py:2404
 msgid "Station details copied to clipboard"
 msgstr "Podrobnosti o stanici byly zkopírovány do schránky"
 
-#: addon/globalPlugins/freeradio/__init__.py:2288
+#: addon/globalPlugins/freeradio/__init__.py:2373
 #, python-format
 msgid "Copied: %s"
 msgstr "Zkopírováno: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:2290
+#: addon/globalPlugins/freeradio/__init__.py:2375
 msgid "Could not access clipboard"
 msgstr "Nelze získat přístup ke schránce"
 
-#: addon/globalPlugins/freeradio/__init__.py:2307
+#: addon/globalPlugins/freeradio/__init__.py:2392
 #, python-format
 msgid "Already in liked songs: %s"
 msgstr "Už v oblíbených skladbách: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:2335
-#: addon/globalPlugins/freeradio/__init__.py:2361
+#: addon/globalPlugins/freeradio/__init__.py:2420
+#: addon/globalPlugins/freeradio/__init__.py:2446
 #, python-format
 msgid "Song recording saved: %s"
 msgstr "Nahrávka skladby byla uložena: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:2403
+#: addon/globalPlugins/freeradio/__init__.py:2488
 msgid "Unknown station"
 msgstr "Neznámá stanice"
 
-#: addon/globalPlugins/freeradio/__init__.py:2409
+#: addon/globalPlugins/freeradio/__init__.py:2494
 msgid "No stream URL available for this station"
 msgstr "Pro tuto stanici není k dispozici adresa URL streamu"
 
-#: addon/globalPlugins/freeradio/__init__.py:2416
+#: addon/globalPlugins/freeradio/__init__.py:2501
 msgid "No internet connection. Please check your connection and try again."
 msgstr ""
 "Žádné připojení k internetu. Zkontrolujte prosím připojení a zkuste to "
 "znovu."
 
-#: addon/globalPlugins/freeradio/__init__.py:2480
+#: addon/globalPlugins/freeradio/__init__.py:2565
 msgid ""
 "Could not play station: Windows Media Player is not available on this "
 "system. Please install VLC media player."
@@ -758,233 +856,239 @@ msgstr ""
 "Stanici nelze přehrát: V tomto systému není k dispozici Windows Media "
 "Player. Nainstalujte si prosím přehrávač VLC."
 
-#: addon/globalPlugins/freeradio/__init__.py:2484
-#: addon/globalPlugins/freeradio/__init__.py:2486
+#: addon/globalPlugins/freeradio/__init__.py:2569
+#: addon/globalPlugins/freeradio/__init__.py:2571
 #, python-format
 msgid "Could not play station: %s"
 msgstr "Nelze přehrát stanici: %s"
 
-#: addon/globalPlugins/freeradio/__init__.py:2514
-#: addon/globalPlugins/freeradio/__init__.py:2861
+#: addon/globalPlugins/freeradio/__init__.py:2595
+msgid "&Enable time-shift buffer (rewind live radio, ~10 minutes)"
+msgstr ""
+"&Zapnout vyrovnávací paměť časového posunu (přetočení živého rádia, ~10 "
+"minut)"
+
+#: addon/globalPlugins/freeradio/__init__.py:2610
+#: addon/globalPlugins/freeradio/__init__.py:2957
 msgid "Audio output device (BASS backend):"
 msgstr "Zvukové výstupní zařízení (BASS backend):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2518
-#: addon/globalPlugins/freeradio/__init__.py:2889
+#: addon/globalPlugins/freeradio/__init__.py:2614
+#: addon/globalPlugins/freeradio/__init__.py:2985
 msgid "Loading devices..."
 msgstr "Načítání zařízení..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2523
+#: addon/globalPlugins/freeradio/__init__.py:2619
 msgid "Volume (0-100):"
 msgstr "Hlasitost (0–100):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2531
+#: addon/globalPlugins/freeradio/__init__.py:2627
 msgid "Audio Effects (BASS backend only):"
 msgstr "Zvukové efekty (pouze BASS backend):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2538
+#: addon/globalPlugins/freeradio/__init__.py:2634
 #: addon/globalPlugins/freeradio/radioDialog.py:172
 msgid "Chorus"
 msgstr "Chorus"
 
-#: addon/globalPlugins/freeradio/__init__.py:2539
+#: addon/globalPlugins/freeradio/__init__.py:2635
 #: addon/globalPlugins/freeradio/radioDialog.py:172
 msgid "Compressor"
 msgstr "Kompresor"
 
-#: addon/globalPlugins/freeradio/__init__.py:2540
+#: addon/globalPlugins/freeradio/__init__.py:2636
 #: addon/globalPlugins/freeradio/radioDialog.py:172
 msgid "Distortion"
 msgstr "Zkreslení"
 
-#: addon/globalPlugins/freeradio/__init__.py:2541
+#: addon/globalPlugins/freeradio/__init__.py:2637
 #: addon/globalPlugins/freeradio/radioDialog.py:173
 msgid "Echo"
 msgstr "Echo"
 
-#: addon/globalPlugins/freeradio/__init__.py:2542
+#: addon/globalPlugins/freeradio/__init__.py:2638
 #: addon/globalPlugins/freeradio/radioDialog.py:173
 msgid "Flanger"
 msgstr "Flanger"
 
-#: addon/globalPlugins/freeradio/__init__.py:2543
+#: addon/globalPlugins/freeradio/__init__.py:2639
 #: addon/globalPlugins/freeradio/radioDialog.py:173
 msgid "Gargle"
 msgstr "Kloktání"
 
-#: addon/globalPlugins/freeradio/__init__.py:2544
+#: addon/globalPlugins/freeradio/__init__.py:2640
 #: addon/globalPlugins/freeradio/radioDialog.py:173
 msgid "Reverb"
 msgstr "Dozvuk"
 
-#: addon/globalPlugins/freeradio/__init__.py:2551
-#: addon/globalPlugins/freeradio/__init__.py:2870
+#: addon/globalPlugins/freeradio/__init__.py:2647
+#: addon/globalPlugins/freeradio/__init__.py:2966
 msgid "Audio &effects:"
 msgstr "Zvukové efekty:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2564
+#: addon/globalPlugins/freeradio/__init__.py:2660
 msgid "&Bass gain (dB):"
 msgstr "&Zesílení basů (dB):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2565
+#: addon/globalPlugins/freeradio/__init__.py:2661
 msgid "&Treble gain (dB):"
 msgstr "&Zesílení výšek (dB):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2566
+#: addon/globalPlugins/freeradio/__init__.py:2662
 msgid "&Vocal gain (dB):"
 msgstr "&Zesílení vokálu (dB):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2580
+#: addon/globalPlugins/freeradio/__init__.py:2676
 msgid "Station &switch transition (BASS backend only):"
 msgstr "Přepínání mezi stanicemi (pouze BASS backend):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2598
+#: addon/globalPlugins/freeradio/__init__.py:2694
 msgid "&Resume last station on NVDA startup"
 msgstr "&Při spuštění NVDA obnovit naposledy přehrávanou stanici"
 
-#: addon/globalPlugins/freeradio/__init__.py:2611
+#: addon/globalPlugins/freeradio/__init__.py:2707
 msgid "Track change &voice:"
 msgstr "Zdroj hlasu:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2615
+#: addon/globalPlugins/freeradio/__init__.py:2711
 msgid "NVDA"
 msgstr "NVDA"
 
-#: addon/globalPlugins/freeradio/__init__.py:2615
+#: addon/globalPlugins/freeradio/__init__.py:2711
 msgid "SAPI5"
 msgstr "SAPI5"
 
-#: addon/globalPlugins/freeradio/__init__.py:2626
+#: addon/globalPlugins/freeradio/__init__.py:2722
 msgid "SAPI5 &voice:"
 msgstr "SAPI5 hlas:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2628
-#: addon/globalPlugins/freeradio/__init__.py:2644
+#: addon/globalPlugins/freeradio/__init__.py:2724
+#: addon/globalPlugins/freeradio/__init__.py:2740
 msgid "Default (system)"
 msgstr "Výchozí"
 
-#: addon/globalPlugins/freeradio/__init__.py:2672
+#: addon/globalPlugins/freeradio/__init__.py:2768
 msgid "&Mute notifications (station changes, playback, recording)"
 msgstr "&Vypnout oznámení (změna stanice, přehrávání, nahrávání)"
 
-#: addon/globalPlugins/freeradio/__init__.py:2688
+#: addon/globalPlugins/freeradio/__init__.py:2784
 msgid "When Ctrl+Win+P is pressed with no active playback:"
 msgstr "Při stisknutí Ctrl+Win+P, když se nic nepřehrává:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2690
+#: addon/globalPlugins/freeradio/__init__.py:2786
 msgid "Resume last station"
 msgstr "Obnovit naposledy přehrávanou stanici"
 
-#: addon/globalPlugins/freeradio/__init__.py:2691
-#: addon/globalPlugins/freeradio/__init__.py:2704
-#: addon/globalPlugins/freeradio/__init__.py:2727
+#: addon/globalPlugins/freeradio/__init__.py:2787
+#: addon/globalPlugins/freeradio/__init__.py:2800
+#: addon/globalPlugins/freeradio/__init__.py:2823
 msgid "Open favourites list"
 msgstr "Otevřít seznam oblíbených položek"
 
-#: addon/globalPlugins/freeradio/__init__.py:2701
+#: addon/globalPlugins/freeradio/__init__.py:2797
 msgid "When Ctrl+Win+P is pressed twice:"
 msgstr "Při dvojtém stisknutí Ctrl+Win+P:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2703
-#: addon/globalPlugins/freeradio/__init__.py:2726
+#: addon/globalPlugins/freeradio/__init__.py:2799
+#: addon/globalPlugins/freeradio/__init__.py:2822
 msgid "Do nothing"
 msgstr "Nedělat nic"
 
-#: addon/globalPlugins/freeradio/__init__.py:2705
-#: addon/globalPlugins/freeradio/__init__.py:2728
+#: addon/globalPlugins/freeradio/__init__.py:2801
+#: addon/globalPlugins/freeradio/__init__.py:2824
 msgid "Open station search"
 msgstr "Otevřít vyhledávání stanic"
 
-#: addon/globalPlugins/freeradio/__init__.py:2706
-#: addon/globalPlugins/freeradio/__init__.py:2729
+#: addon/globalPlugins/freeradio/__init__.py:2802
+#: addon/globalPlugins/freeradio/__init__.py:2825
 msgid "Open recording tab"
 msgstr "Otevřít kartu Nahrávání"
 
-#: addon/globalPlugins/freeradio/__init__.py:2707
-#: addon/globalPlugins/freeradio/__init__.py:2730
+#: addon/globalPlugins/freeradio/__init__.py:2803
+#: addon/globalPlugins/freeradio/__init__.py:2826
 msgid "Open timer tab"
 msgstr "Otevřít kartu Časovače"
 
-#: addon/globalPlugins/freeradio/__init__.py:2708
-#: addon/globalPlugins/freeradio/__init__.py:2731
+#: addon/globalPlugins/freeradio/__init__.py:2804
+#: addon/globalPlugins/freeradio/__init__.py:2827
 msgid "Open liked songs tab"
 msgstr "Otevřít kartu Oblíbených skladeb"
 
-#: addon/globalPlugins/freeradio/__init__.py:2709
-#: addon/globalPlugins/freeradio/__init__.py:2732
+#: addon/globalPlugins/freeradio/__init__.py:2805
+#: addon/globalPlugins/freeradio/__init__.py:2828
 msgid "Open addon settings"
 msgstr "Otevřít nastavení doplňku"
 
-#: addon/globalPlugins/freeradio/__init__.py:2710
-#: addon/globalPlugins/freeradio/__init__.py:2733
+#: addon/globalPlugins/freeradio/__init__.py:2806
+#: addon/globalPlugins/freeradio/__init__.py:2829
 msgid "Announce currently playing station"
 msgstr "Oznámit aktuálně přehrávanou stanici"
 
-#: addon/globalPlugins/freeradio/__init__.py:2711
-#: addon/globalPlugins/freeradio/__init__.py:2734
+#: addon/globalPlugins/freeradio/__init__.py:2807
+#: addon/globalPlugins/freeradio/__init__.py:2830
 msgid "Stop radio"
 msgstr "Vypnout rádio"
 
-#: addon/globalPlugins/freeradio/__init__.py:2724
+#: addon/globalPlugins/freeradio/__init__.py:2820
 msgid "When Ctrl+Win+P is pressed three times:"
 msgstr "Při trojtém stisknutí Ctrl+Win+P:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2748
+#: addon/globalPlugins/freeradio/__init__.py:2844
 msgid "Music Recognition via Shazam (Ctrl+Win+I × 3):"
 msgstr "Rozpoznávání hudby pomocí  Shazamu (třikrát Ctrl+Win+I ):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2749
+#: addon/globalPlugins/freeradio/__init__.py:2845
 msgid "ffmpeg.exe path (optional; auto-used from addon folder if empty):"
 msgstr ""
 "Cesta k souboru ffmpeg.exe (volitelné; pokud je pole prázdné, použije se "
 "automaticky cesta ze složky doplňku):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2757
+#: addon/globalPlugins/freeradio/__init__.py:2853
 msgid "Brows&e..."
 msgstr "Procházet..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2763
+#: addon/globalPlugins/freeradio/__init__.py:2859
 msgid "VLC path (optional, auto-detected if empty):"
 msgstr ""
 "Cesta k VLC (volitelné, pokud je pole prázdné, detekuje se automaticky):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2768
+#: addon/globalPlugins/freeradio/__init__.py:2864
 msgid "&Browse..."
 msgstr "&Procházet..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2774
+#: addon/globalPlugins/freeradio/__init__.py:2870
 msgid "wmplayer.exe path (optional, used if VLC not found):"
 msgstr ""
-"Cesta k souboru wmplayer.exe (volitelné, použije se pouze pokud není "
-"nalezen VLC):"
+"Cesta k souboru wmplayer.exe (volitelné, použije se pouze pokud není nalezen"
+" VLC):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2779
+#: addon/globalPlugins/freeradio/__init__.py:2875
 msgid "B&rowse..."
 msgstr "Procházet..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2785
+#: addon/globalPlugins/freeradio/__init__.py:2881
 msgid "PotPlayer path (optional, auto-detected if empty):"
 msgstr ""
 "Cesta k programu PotPlayer (volitelné, pokud je pole prázdné, detekuje se "
 "automaticky):"
 
-#: addon/globalPlugins/freeradio/__init__.py:2790
+#: addon/globalPlugins/freeradio/__init__.py:2886
 msgid "Bro&wse..."
 msgstr "Procházet..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2797
+#: addon/globalPlugins/freeradio/__init__.py:2893
 msgid "Recordings folder:"
 msgstr "Složka pro ukládání nahrávek:"
 
-#: addon/globalPlugins/freeradio/__init__.py:2807
+#: addon/globalPlugins/freeradio/__init__.py:2903
 msgid "(empty = default: Documents\\FreeRadio Recordings)"
 msgstr "(prázdné = výchozí umístění: Dokumenty\\FreeRadio recordings)"
 
-#: addon/globalPlugins/freeradio/__init__.py:2810
+#: addon/globalPlugins/freeradio/__init__.py:2906
 msgid "Brow&se folder..."
 msgstr "Vybrat složku..."
 
-#: addon/globalPlugins/freeradio/__init__.py:2820
+#: addon/globalPlugins/freeradio/__init__.py:2916
 msgid ""
 "&Disable internet connectivity check before playing (recommended if DNS is "
 "blocked)"
@@ -992,55 +1096,55 @@ msgstr ""
 "&Před spuštěním přehrávání deaktivovat kontrolu připojení k internetu "
 "(doporučeno v případě blokování DNS)"
 
-#: addon/globalPlugins/freeradio/__init__.py:2830
+#: addon/globalPlugins/freeradio/__init__.py:2926
 msgid "&Automatically check for updates on startup"
 msgstr "&Při spuštění automaticky zkontrolovat dostupnost aktualizací"
 
-#: addon/globalPlugins/freeradio/__init__.py:2837
-#: addon/globalPlugins/freeradio/__init__.py:3041
+#: addon/globalPlugins/freeradio/__init__.py:2933
+#: addon/globalPlugins/freeradio/__init__.py:3137
 msgid "Check for Updates &Now"
 msgstr "Zkontrolovat dostupnost aktualizací"
 
-#: addon/globalPlugins/freeradio/__init__.py:2913
+#: addon/globalPlugins/freeradio/__init__.py:3009
 #: addon/globalPlugins/freeradio/radioDialog.py:833
 msgid "System default"
 msgstr "Výchozí"
 
-#: addon/globalPlugins/freeradio/__init__.py:2988
+#: addon/globalPlugins/freeradio/__init__.py:3084
 msgid "Select VLC executable"
 msgstr "Vyberte spustitelný soubor VLC"
 
-#: addon/globalPlugins/freeradio/__init__.py:2998
+#: addon/globalPlugins/freeradio/__init__.py:3094
 msgid "Select wmplayer.exe"
 msgstr "Vyberte spustitelný soubor wmplayeru"
 
-#: addon/globalPlugins/freeradio/__init__.py:3008
+#: addon/globalPlugins/freeradio/__init__.py:3104
 msgid "Select PotPlayer executable"
 msgstr "Vyberte spustitelný soubor PotPlayeru"
 
-#: addon/globalPlugins/freeradio/__init__.py:3018
+#: addon/globalPlugins/freeradio/__init__.py:3114
 msgid "Select ffmpeg.exe"
 msgstr "Vyberte soubor ffmpeg.exe"
 
-#: addon/globalPlugins/freeradio/__init__.py:3028
+#: addon/globalPlugins/freeradio/__init__.py:3124
 msgid "Checking..."
 msgstr "Kontroluji..."
 
-#: addon/globalPlugins/freeradio/__init__.py:3050
+#: addon/globalPlugins/freeradio/__init__.py:3146
 msgid "Select recordings folder"
 msgstr "Vyberte složku pro ukládání nahrávek"
 
-#: addon/globalPlugins/freeradio/__init__.py:3223
+#: addon/globalPlugins/freeradio/__init__.py:3325
 #: addon/globalPlugins/freeradio/radioDialog.py:2989
 msgid "Sleep timer"
 msgstr "Časovač spánku"
 
-#: addon/globalPlugins/freeradio/__init__.py:3347
-#: addon/globalPlugins/freeradio/__init__.py:3373
+#: addon/globalPlugins/freeradio/__init__.py:3449
+#: addon/globalPlugins/freeradio/__init__.py:3475
 msgid "Sleep timer: radio stopped"
 msgstr "Časovač spánku: rádio vypnuto"
 
-#: addon/globalPlugins/freeradio/__init__.py:3358
+#: addon/globalPlugins/freeradio/__init__.py:3460
 msgid "Sleep timer: fading out…"
 msgstr "Časovač spánku: Rádio se zeslabuje…"
 
@@ -1058,9 +1162,9 @@ msgid ""
 "and place ffmpeg.exe in the FreeRadio addon folder, or set the path in "
 "settings."
 msgstr ""
-"Soubor ffmpeg.exe nebyl nalezen. Stáhněte si ffmpeg z adresy https://"
-"ffmpeg.org/download.html a umístěte jej do složky doplňku FreeRadio, "
-"případně zvolte cestu k souboru v nastavení."
+"Soubor ffmpeg.exe nebyl nalezen. Stáhněte si ffmpeg z adresy "
+"https://ffmpeg.org/download.html a umístěte jej do složky doplňku FreeRadio,"
+" případně zvolte cestu k souboru v nastavení."
 
 #: addon/globalPlugins/freeradio/radioDialog.py:85
 msgid "FreeRadio - Station Browser"
@@ -1411,14 +1515,14 @@ msgstr[2] "%d oblíbených"
 #: addon/globalPlugins/freeradio/radioDialog.py:1063
 #: addon/globalPlugins/freeradio/radioDialog.py:1222
 #: addon/globalPlugins/freeradio/radioDialog.py:1268
-#: addon/globalPlugins/freeradio/recorder.py:658
+#: addon/globalPlugins/freeradio/recorder.py:679
 msgid "Record only"
 msgstr "Pouze nahrávat"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1063
 #: addon/globalPlugins/freeradio/radioDialog.py:1222
 #: addon/globalPlugins/freeradio/radioDialog.py:1268
-#: addon/globalPlugins/freeradio/recorder.py:658
+#: addon/globalPlugins/freeradio/recorder.py:679
 msgid "Listen and record"
 msgstr "Poslouchat a nahrávat současně"
 
@@ -1611,11 +1715,11 @@ msgstr "Export dokončen"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2150
 msgid ""
-"Supported files (*.json;*.m3u)|*.json;*.m3u|JSON favourites (*.json)|*.json|"
-"M3U playlist (*.m3u)|*.m3u"
+"Supported files (*.json;*.m3u)|*.json;*.m3u|JSON favourites "
+"(*.json)|*.json|M3U playlist (*.m3u)|*.m3u"
 msgstr ""
-"Podporované soubory (*.json;*.m3u)|*.json;*.m3u|Oblíbené JSON (*.json)|"
-"*.json|Playlist M3U (*.m3u)|*.m3u"
+"Podporované soubory (*.json;*.m3u)|*.json;*.m3u|Oblíbené JSON "
+"(*.json)|*.json|Playlist M3U (*.m3u)|*.m3u"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2156
 #: addon/globalPlugins/freeradio/radioDialog.py:2173
@@ -1914,75 +2018,77 @@ msgstr "freeRadio"
 
 #: buildVars.py:19
 msgid ""
-"FreeRadio is an internet radio add-on for NVDA that provides seamless "
-"access to thousands of stations via the Radio Browser open directory. It "
-"features a fully accessible station browser with search, country filter, "
-"favourites management, and per-station audio profiles. Playback is handled "
-"by a prioritised backend chain (BASS, VLC, PotPlayer, Windows Media Player) "
-"with support for volume control, audio effects, output device selection, "
-"and simultaneous audio mirroring to a second device. Additional features "
-"include instant and scheduled recording, sleep and alarm timers, automatic "
-"ICY metadata announcements, Shazam-based music recognition, and a liked-"
-"songs log. All controls and shortcuts are designed for NVDA accessibility."
+"FreeRadio is an internet radio add-on for NVDA that provides seamless access"
+" to thousands of stations via the Radio Browser open directory. It features "
+"a fully accessible station browser with search, country filter, favourites "
+"management, and per-station audio profiles. Playback is handled by a "
+"prioritised backend chain (BASS, VLC, PotPlayer, Windows Media Player) with "
+"support for volume control, audio effects, output device selection, and "
+"simultaneous audio mirroring to a second device. Additional features include"
+" instant and scheduled recording, sleep and alarm timers, automatic ICY "
+"metadata announcements, Shazam-based music recognition, and a liked-songs "
+"log. All controls and shortcuts are designed for NVDA accessibility."
 msgstr ""
 "FreeRadio je doplněk pro NVDA, který umožňuje poslech internetových rádií "
 "prostřednictvím otevřené databáze stanic Radio Browser. Nabízí plně "
-"přístupný prohlížeč stanic s funkcí vyhledávání, filtrem podle země, "
-"správou oblíbených položek a zvukovými profily pro jednotlivé stanice. "
-"Přehrávání je zajištěno podle následujícího prioritního řetězce: Backend "
-"(BASS, VLC, PotPlayer, Windows Media Player.) podporuje také ovládání "
-"hlasitosti, výběr zvukových efektů, výstupních zařízení a funkci "
-"simultánního zrcadlení zvuku na druhé zařízení. Mezi další funkce patří "
-"okamžité a plánované nahrávání, časovače spánku a budíku, automatické "
-"hlášení metadat ICY, rozpoznávání hudby pomocí Shazamu a protokol "
-"oblíbených skladeb. Všechny ovládací prvky a klávesové zkratky jsou "
-"navrženy s ohledem na přístupnost."
+"přístupný prohlížeč stanic s funkcí vyhledávání, filtrem podle země, správou"
+" oblíbených položek a zvukovými profily pro jednotlivé stanice. Přehrávání "
+"je zajištěno podle následujícího prioritního řetězce: Backend (BASS, VLC, "
+"PotPlayer, Windows Media Player.) podporuje také ovládání hlasitosti, výběr "
+"zvukových efektů, výstupních zařízení a funkci simultánního zrcadlení zvuku "
+"na druhé zařízení. Mezi další funkce patří okamžité a plánované nahrávání, "
+"časovače spánku a budíku, automatické hlášení metadat ICY, rozpoznávání "
+"hudby pomocí Shazamu a protokol oblíbených skladeb. Všechny ovládací prvky a"
+" klávesové zkratky jsou navrženy s ohledem na přístupnost."
 
 #: buildVars.py:26
 msgid ""
 "\n"
-"**New features**\n"
-"- Favourites can now be exported to JSON or M3U format and imported back "
-"from either format. Export and Import buttons appear at the bottom of the "
-"Favourites tab. When importing, you can choose to merge the file's stations "
-"into your existing list or replace the list entirely. Duplicate stations "
-"(matched by ID or stream URL) are skipped automatically during merge.\n"
-"- The Recordings and Timer tabs now have a Filter field above their "
-"favourite station lists, matching the one already present in the Favourites "
-"tab. The Liked Songs tab also has a Filter field above the song list. In "
-"all cases, pressing the Down arrow from the filter field moves focus "
-"directly into the list, and the number of matching results is announced "
-"after each keystroke.\n"
-"**Added a Lyrics Service**\n"
-"Asynchronous lyrics fetcher for the Liked Songs tab using the lrclib.net "
-"API (free, no API key required).\n"
-"- Fetches lyrics in the background via a daemon thread; the UI remains "
-"responsive during lookup.\n"
-"- Prefers `plainLyrics`; falls back to `syncedLyrics` with LRC timestamps "
-"stripped when plain text is unavailable. Tracks marked as instrumental are "
-"silently skipped.\n"
+"### New Features\n"
+"\n"
+"- **Time-shift buffer**: Rewind and fast-forward live radio like a DVR, using a rolling ~10-minute buffer. Enable it from Settings or toggle it instantly with `Ctrl+Win+T`. Rewind 15 seconds with `Ctrl+Win+J`; fast-forward 15 seconds with `Ctrl+Win+K` — reaching the live edge automatically returns you to normal live playback.\n"
+"- Time-shift now supports **HLS (`.m3u8`) stations** in addition to plain HTTP/HTTPS and Shoutcast/Icecast (ICY) streams — segments are downloaded and reassembled into the same rewindable buffer.\n"
+"\n"
+"### Fixes\n"
+"\n"
+"- Fixed time-shift capture (and recording) failing with an SSL certificate error on stations whose server presents an expired or otherwise invalid TLS certificate.\n"
+"\n"
+"### Documentation\n"
+"\n"
+"- Added a full \"Time-Shift (Rewind Live Radio)\" section to the README, plus new shortcut and settings table entries.\n"
 msgstr ""
 "\n"
-"**Nové funkce**\n"
-"- Oblíbené položky lze nyní exportovat ve formátu JSON nebo M3U a zpětně "
-"importovat z kteréhokoli z těchto formátů. Tlačítka Export a Import se "
-"zobrazují v dolní části karty Oblíbené. Při importu si můžete vybrat, zda "
-"chcete stanice ze souboru sloučit s aktuálním seznamem, nebo celý seznam "
-"nahradit. Duplicitní stanice (porovnávané podle ID nebo URL streamu) jsou "
-"při slučování automaticky přeskočeny.\n"
-"- Karty Nahrávky a Časovač nyní obsahují pole Filtr nad svými seznamy "
-"oblíbených stanic, stejně jako karta Oblíbené. Karta Oblíbené písně má také "
-"pole Filtr nad seznamem písní. Ve všech případech přesouvá stisknutí šipky "
-"dolů z pole Filtr fokus přímo do seznamu a počet shodných výsledků je "
-"oznamován po každém stisku klávesy.\n"
-"**Přidána služba textů písní**\n"
-"Asynchronní načítač textů písní pro kartu Oblíbené písně využívající API "
-"lrclib.net (zdarma, bez nutnosti klíče API).\n"
-"- Načítá texty na pozadí prostřednictvím daemon vlákna; uživatelské "
-"rozhraní zůstává během vyhledávání plné funkční.\n"
-"- Upřednostňuje `plainLyrics`; při nedostupnosti prostého textu přepíná na "
-"`syncedLyrics` s odstraněnými časovými razítky LRC. Skladby označené jako "
-"instrumentální jsou přeskočeny.\n"
+"### Nové funkce\n"
+"\n"
+"- **Vyrovnávací paměť časového posunu**: Přetáčejte a přeskakujte živé rádio jako na DVR pomocí průběžné vyrovnávací paměti ~10 minut. Zapněte ji v Nastavení nebo ji okamžitě přepněte pomocí `Ctrl+Win+T`. Přetočte o 15 sekund zpět pomocí `Ctrl+Win+J`; přeskočte o 15 sekund dopředu pomocí `Ctrl+Win+K` — dosažení živého vysílání vás automaticky vrátí do normálního přehrávání.\n"
+"- Časový posun nyní podporuje **stanice HLS (`.m3u8`)** kromě běžných streamů HTTP/HTTPS a Shoutcast/Icecast (ICY) — segmenty jsou stahovány a znovu sestavovány do stejné přetočitelné vyrovnávací paměti.\n"
+"\n"
+"### Opravy\n"
+"\n"
+"- Opraveno selhání záznamu časového posunu (a nahrávání) s chybou certifikátu SSL u stanic, jejichž server předkládá expirovaný nebo jinak neplatný certifikát TLS.\n"
+"\n"
+"### Dokumentace\n"
+"\n"
+"- Přidána úplná sekce „Časový posun (přetočení živého rádia)\" do README, plus nové záznamy v tabulkách klávesových zkratek a nastavení.\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "**New features**\n"
+#~ "- Favourites can now be exported to JSON or M3U format and imported back from either format. Export and Import buttons appear at the bottom of the Favourites tab. When importing, you can choose to merge the file's stations into your existing list or replace the list entirely. Duplicate stations (matched by ID or stream URL) are skipped automatically during merge.\n"
+#~ "- The Recordings and Timer tabs now have a Filter field above their favourite station lists, matching the one already present in the Favourites tab. The Liked Songs tab also has a Filter field above the song list. In all cases, pressing the Down arrow from the filter field moves focus directly into the list, and the number of matching results is announced after each keystroke.\n"
+#~ "**Added a Lyrics Service**\n"
+#~ "Asynchronous lyrics fetcher for the Liked Songs tab using the lrclib.net API (free, no API key required).\n"
+#~ "- Fetches lyrics in the background via a daemon thread; the UI remains responsive during lookup.\n"
+#~ "- Prefers `plainLyrics`; falls back to `syncedLyrics` with LRC timestamps stripped when plain text is unavailable. Tracks marked as instrumental are silently skipped.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "**Nové funkce**\n"
+#~ "- Oblíbené položky lze nyní exportovat ve formátu JSON nebo M3U a zpětně importovat z kteréhokoli z těchto formátů. Tlačítka Export a Import se zobrazují v dolní části karty Oblíbené. Při importu si můžete vybrat, zda chcete stanice ze souboru sloučit s aktuálním seznamem, nebo celý seznam nahradit. Duplicitní stanice (porovnávané podle ID nebo URL streamu) jsou při slučování automaticky přeskočeny.\n"
+#~ "- Karty Nahrávky a Časovač nyní obsahují pole Filtr nad svými seznamy oblíbených stanic, stejně jako karta Oblíbené. Karta Oblíbené písně má také pole Filtr nad seznamem písní. Ve všech případech přesouvá stisknutí šipky dolů z pole Filtr fokus přímo do seznamu a počet shodných výsledků je oznamován po každém stisku klávesy.\n"
+#~ "**Přidána služba textů písní**\n"
+#~ "Asynchronní načítač textů písní pro kartu Oblíbené písně využívající API lrclib.net (zdarma, bez nutnosti klíče API).\n"
+#~ "- Načítá texty na pozadí prostřednictvím daemon vlákna; uživatelské rozhraní zůstává během vyhledávání plné funkční.\n"
+#~ "- Upřednostňuje `plainLyrics`; při nedostupnosti prostého textu přepíná na `syncedLyrics` s odstraněnými časovými razítky LRC. Skladby označené jako instrumentální jsou přeskočeny.\n"
 
 #, python-format
 #~ msgid "%d favourites"
@@ -1991,58 +2097,29 @@ msgstr ""
 #~ msgid ""
 #~ "\n"
 #~ "**Save Audio Profile dialog now offers three save options**\n"
-#~ "When saving an audio profile for a station, a dialog now appears asking "
-#~ "what to save: volume only, effects only, or both. Cancelling the dialog "
-#~ "leaves the existing profile unchanged. If only one option is selected, "
-#~ "the other part of the profile is kept as-is.\n"
+#~ "When saving an audio profile for a station, a dialog now appears asking what to save: volume only, effects only, or both. Cancelling the dialog leaves the existing profile unchanged. If only one option is selected, the other part of the profile is kept as-is.\n"
 #~ msgstr ""
 #~ "\n"
 #~ "**Dialog Uložit zvukový profil nyní nabízí tři možnosti uložení**\n"
-#~ "Při ukládání zvukového profilu pro stanici se nyní zobrazí dialog s "
-#~ "dotazem, co chcete uložit: pouze hlasitost, pouze efekty, nebo obojí. "
-#~ "Zrušení dialogu ponechá stávající profil beze změny. Pokud je vybrána "
-#~ "pouze jedna možnost, druhá část profilu zůstane zachována tak, jak je.\n"
+#~ "Při ukládání zvukového profilu pro stanici se nyní zobrazí dialog s dotazem, co chcete uložit: pouze hlasitost, pouze efekty, nebo obojí. Zrušení dialogu ponechá stávající profil beze změny. Pokud je vybrána pouze jedna možnost, druhá část profilu zůstane zachována tak, jak je.\n"
 
 #~ msgid ""
 #~ "\n"
 #~ "**Scheduler and Timer Fixes**\n"
 #~ "**Scheduled Recordings**\n"
-#~ "- Day selection is now available in single-recording mode as well as "
-#~ "recurring mode. Selecting multiple days creates a separate scheduled "
-#~ "entry for each day, with each entry automatically placed on the next "
-#~ "upcoming occurrence of that day.\n"
-#~ "- Removed the \"time has passed today\" warning; entries are now "
-#~ "silently moved to the correct future date when the selected time has "
-#~ "already passed.\n"
-#~ "- Fixed a bug where restarting NVDA during an active weekly recording "
-#~ "would create an additional duplicate entry in both the schedule list and "
-#~ "the JSON file on every restart. The next recurrence is now only queued "
-#~ "after the current recording has fully completed.\n"
-#~ "- Removed misplaced code that was incorrectly rebuilding the station "
-#~ "list on every keystroke in the favourites filter field.\n"
+#~ "- Day selection is now available in single-recording mode as well as recurring mode. Selecting multiple days creates a separate scheduled entry for each day, with each entry automatically placed on the next upcoming occurrence of that day.\n"
+#~ "- Removed the \"time has passed today\" warning; entries are now silently moved to the correct future date when the selected time has already passed.\n"
+#~ "- Fixed a bug where restarting NVDA during an active weekly recording would create an additional duplicate entry in both the schedule list and the JSON file on every restart. The next recurrence is now only queued after the current recording has fully completed.\n"
+#~ "- Removed misplaced code that was incorrectly rebuilding the station list on every keystroke in the favourites filter field.\n"
 #~ "**Timers**\n"
-#~ "- Adding a new timer is now blocked if another timer already exists at "
-#~ "the same time, regardless of whether it is a start alarm or a sleep "
-#~ "timer. The user is informed of the conflict and prompted to remove the "
-#~ "existing entry first.\n"
+#~ "- Adding a new timer is now blocked if another timer already exists at the same time, regardless of whether it is a start alarm or a sleep timer. The user is informed of the conflict and prompted to remove the existing entry first.\n"
 #~ msgstr ""
 #~ "\n"
 #~ "**Opravy plánovače a časovačů**\n"
 #~ "**Naplánovaná nahrávání**\n"
-#~ "- Výběr dnů je nyní k dispozici jak v režimu jednorázového nahrávání, "
-#~ "tak v opakovaném režimu. Výběrem více dnů se vytvoří samostatný "
-#~ "naplánovaný záznam pro každý den, přičemž každý záznam je automaticky "
-#~ "umístěn na nejbližší nadcházející výskyt daného dne.\n"
-#~ "- Bylo odstraněno upozornění „čas dnes již uplynul“; záznamy se nyní "
-#~ "tiše přesunou na správné budoucí datum, pokud již vybraný čas uplynul.\n"
-#~ "- Opravena chyba, kdy restart NVDA během aktivního týdenního nahrávání "
-#~ "při každém restartu vytvořil další duplicitní záznam v seznamu plánu i v "
-#~ "souboru JSON. Další opakování se nyní zařadí do fronty až po úplném "
-#~ "dokončení aktuálního nahrávání.\n"
-#~ "- Odstraněn nesprávně umístěný kód, který nesprávně přestavoval seznam "
-#~ "stanic při každém stisku klávesy v poli filtru oblíbených.\n"
+#~ "- Výběr dnů je nyní k dispozici jak v režimu jednorázového nahrávání, tak v opakovaném režimu. Výběrem více dnů se vytvoří samostatný naplánovaný záznam pro každý den, přičemž každý záznam je automaticky umístěn na nejbližší nadcházející výskyt daného dne.\n"
+#~ "- Bylo odstraněno upozornění „čas dnes již uplynul“; záznamy se nyní tiše přesunou na správné budoucí datum, pokud již vybraný čas uplynul.\n"
+#~ "- Opravena chyba, kdy restart NVDA během aktivního týdenního nahrávání při každém restartu vytvořil další duplicitní záznam v seznamu plánu i v souboru JSON. Další opakování se nyní zařadí do fronty až po úplném dokončení aktuálního nahrávání.\n"
+#~ "- Odstraněn nesprávně umístěný kód, který nesprávně přestavoval seznam stanic při každém stisku klávesy v poli filtru oblíbených.\n"
 #~ "**Časovače**\n"
-#~ "- Přidání nového časovače je nyní zablokováno, pokud již existuje jiný "
-#~ "časovač ve stejném čase, bez ohledu na to, zda se jedná o budík spuštění "
-#~ "nebo časovač spánku. Uživatel je informován o konfliktu a vyzván, aby "
-#~ "nejprve odstranil existující záznam.\n"
+#~ "- Přidání nového časovače je nyní zablokováno, pokud již existuje jiný časovač ve stejném čase, bez ohledu na to, zda se jedná o budík spuštění nebo časovač spánku. Uživatel je informován o konfliktu a vyzván, aby nejprve odstranil existující záznam.\n"

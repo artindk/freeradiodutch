@@ -16,6 +16,8 @@ import urllib.request
 import socket
 import atexit
 
+from . import timeshift as _timeshift_mod
+
 log = logging.getLogger()
 
 _WATCHDOG_INTERVAL = 5
@@ -516,6 +518,74 @@ class _BassSubprocessEngine:
         # 2.0 upper limit matches bass_host.py; negative values are not allowed.
         self._send({"cmd": "volume", "value": max(0.0, min(2.0, volume_0_1))})
 
+    # -- Time-shift (local buffer file) playback -------------------------
+
+    def play_timeshift_file(self, path, volume_0_1=1.0, start_seconds=0.0, timeout=5.0):
+        """Open a local time-shift buffer file for seekable playback.
+        Blocks until the host confirms success/failure. Returns True/False.
+        """
+        if not self.ready():
+            return False
+        evt    = threading.Event()
+        result = [False]
+
+        old_on_reply = getattr(self, "_on_generic_reply", None)
+
+        def _on_reply(ok):
+            result[0] = ok
+            evt.set()
+
+        self._on_generic_reply = _on_reply
+        self._send({
+            "cmd": "timeshift_play",
+            "path": path,
+            "volume": volume_0_1,
+            "start_seconds": start_seconds,
+        })
+        evt.wait(timeout=timeout)
+        self._on_generic_reply = old_on_reply
+        return result[0]
+
+    def timeshift_seek(self, delta_seconds, timeout=3.0):
+        """Seek relative to the current position in the open time-shift
+        file stream. Returns (ok, position_seconds, length_seconds)."""
+        if not self.ready():
+            return False, 0.0, 0.0
+        evt    = threading.Event()
+        result = [(False, 0.0, 0.0)]
+
+        old_on_reply = getattr(self, "_on_timeshift_reply", None)
+
+        def _on_reply(ok, position_seconds, length_seconds):
+            result[0] = (ok, position_seconds, length_seconds)
+            evt.set()
+
+        self._on_timeshift_reply = _on_reply
+        self._send({"cmd": "timeshift_seek", "delta_seconds": delta_seconds})
+        evt.wait(timeout=timeout)
+        self._on_timeshift_reply = old_on_reply
+        return result[0]
+
+    def timeshift_status(self, timeout=3.0):
+        """Return (position_seconds, length_seconds) for the currently open
+        time-shift file stream, or (0.0, 0.0) on timeout/failure."""
+        if not self.ready():
+            return 0.0, 0.0
+        evt    = threading.Event()
+        result = [(0.0, 0.0)]
+
+        old_on_reply = getattr(self, "_on_timeshift_status_reply", None)
+
+        def _on_reply(position_seconds, length_seconds):
+            result[0] = (position_seconds, length_seconds)
+            evt.set()
+
+        self._on_timeshift_status_reply = _on_reply
+        self._send({"cmd": "timeshift_status"})
+        evt.wait(timeout=timeout)
+        self._on_timeshift_status_reply = old_on_reply
+        return result[0]
+
     def set_bass_boost(self, boost_0_1):
         """Adjust the bass boost level (0.0 = off, 1.0 = max +12 dB)."""
         self._send({"cmd": "bass_boost", "value": max(0.0, min(1.0, float(boost_0_1)))})
@@ -587,6 +657,36 @@ class _BassSubprocessEngine:
                     if cb:
                         try:
                             cb(msg["devices"])
+                        except Exception:
+                            pass
+                    continue
+
+                # Time-shift replies — routed unambiguously via the "cmd" echo
+                # field the host attaches to these specific responses.
+                reply_cmd = msg.get("cmd")
+                if reply_cmd == "timeshift_play":
+                    cb = getattr(self, "_on_generic_reply", None)
+                    if cb:
+                        try:
+                            cb(bool(msg.get("ok")))
+                        except Exception:
+                            pass
+                    continue
+                if reply_cmd == "timeshift_seek":
+                    cb = getattr(self, "_on_timeshift_reply", None)
+                    if cb:
+                        try:
+                            cb(msg.get("seeked", False),
+                               msg.get("position_seconds", 0.0),
+                               msg.get("length_seconds", 0.0))
+                        except Exception:
+                            pass
+                    continue
+                if reply_cmd == "timeshift_status":
+                    cb = getattr(self, "_on_timeshift_status_reply", None)
+                    if cb:
+                        try:
+                            cb(msg.get("position_seconds", 0.0), msg.get("length_seconds", 0.0))
                         except Exception:
                             pass
                     continue
@@ -691,6 +791,14 @@ class RadioPlayer:
         self._watchdog_stop = threading.Event()
         self._watchdog_thread = threading.Thread(target=self._watchdog_loop, daemon=True)
         self._watchdog_thread.start()
+
+        # Time-shift buffer (rewind/fast-forward for live radio). Disabled by
+        # default — the caller enables it via set_timeshift_enabled(True)
+        # once the user opts in from the settings panel. Only supported on
+        # the BASS backend.
+        self._timeshift_enabled = False
+        self._timeshift_active  = False   # True while time-shifted (buffered) playback is active
+        self._timeshift_buffer  = _timeshift_mod.TimeShiftBuffer()
 
         if not disable_bass:
             self._device_monitor_thread = threading.Thread(target=self._device_monitor_loop, daemon=True)
@@ -1231,6 +1339,19 @@ class RadioPlayer:
                         pass
                 return
 
+            # A fresh launch (new station, reconnect, or crossfade) always
+            # starts in live mode. Reset any stale time-shift state from a
+            # previous station now, before anything else - otherwise a
+            # leftover "active" flag would cause the next rewind/forward
+            # press to try to seek within the (unseekable) live URL stream
+            # instead of correctly starting a new time-shift session.
+            if self._timeshift_active:
+                self._timeshift_active = False
+                try:
+                    self._timeshift_buffer.exit_playback()
+                except Exception:
+                    pass
+
             # If crossfade mode: load the brand-new engine now (blocking).
             if xfade is not None:
                 loaded = self._bass_engine.load()
@@ -1320,7 +1441,40 @@ class RadioPlayer:
 
             if self._backend != self.BACKEND_BASS:
                 self._start_icy_thread(stream_url)
-            # Mirror aktifse aynı URL'yi yeni istasyonla güncelle
+
+            # Time-shift buffer: restart capture for the new station, if the
+            # feature is enabled. Only supported on the BASS backend.
+            #
+            # IMPORTANT: the previous station's capture session is always
+            # torn down first, unconditionally - even if resolving/starting
+            # the new one fails or the new stream is unsupported (HLS).
+            # Otherwise a stale buffer from the *previous* station would
+            # keep capturing in the background and could get played back
+            # by rewind, even though a different station is now selected.
+            if self._timeshift_enabled and self._backend == self.BACKEND_BASS:
+                try:
+                    self._timeshift_buffer.stop()
+                except Exception:
+                    pass
+                try:
+                    if stream_url.lower().split("?")[0].endswith(".m3u8"):
+                        # HLS master playlists are not simple "one line = one
+                        # audio URL" playlists - resolving them the way
+                        # _resolve_playlist_url() resolves .pls/.m3u files
+                        # could pick the wrong sub-stream. TimeShiftBuffer
+                        # does its own HLS master/media playlist resolution
+                        # internally (see timeshift.py's _run_hls), so the
+                        # raw .m3u8 URL is passed through unresolved here.
+                        self._timeshift_buffer.start(stream_url)
+                    else:
+                        resolved_for_capture = _resolve_playlist_url(stream_url)
+                        log.info("FreeRadio TimeShift: starting capture for %s (resolved from %s)",
+                                  resolved_for_capture, stream_url)
+                        self._timeshift_buffer.start(resolved_for_capture)
+                except Exception as e:
+                    log.warning("FreeRadio TimeShift: could not start capture: %s", e, exc_info=True)
+
+            # If mirror output is active, update it to the new station's URL
             if not self._disable_bass:
                 mirror = getattr(self, "_mirror_engine", None)
                 mirror_dev = getattr(self, "_mirror_device_index", None)
@@ -1432,6 +1586,14 @@ class RadioPlayer:
         # Also stop Mirror (except lock - no risk of deadlock)
         self.stop_mirror()
 
+        # Stop time-shift capture (outside lock — no risk of deadlock)
+        if self._timeshift_enabled:
+            try:
+                self._timeshift_buffer.stop()
+            except Exception:
+                pass
+        self._timeshift_active = False
+
     def set_volume(self, volume):
         with self._play_lock:
             # Allow amplification beyond 100 % up to 200 % (maps to 0.0–2.0 in BASS).
@@ -1538,6 +1700,138 @@ class RadioPlayer:
 
     def get_backend(self):
         return self._backend
+
+    # -- Time-shift (rewind / fast-forward live radio) -------------------
+    #
+    # Only supported on the BASS backend. The capture buffer (timeshift.py)
+    # runs continuously in the background whenever the feature is enabled
+    # and something is playing; entering/exiting time-shift mode only
+    # switches which BASS stream (live URL vs. local buffer file) is
+    # actually feeding the audio output - the capture itself is untouched,
+    # so returning to live never loses buffered audio.
+
+    def set_timeshift_enabled(self, enabled):
+        """Enable or disable the time-shift buffer feature.
+
+        Disabling immediately returns to live playback (if time-shifted)
+        and stops capturing. Enabling while already playing starts
+        capturing right away, without interrupting playback.
+        """
+        self._timeshift_enabled = bool(enabled)
+        if not self._timeshift_enabled:
+            if self._timeshift_active:
+                self.exit_timeshift_to_live()
+            try:
+                self._timeshift_buffer.stop()
+            except Exception:
+                pass
+        elif self._is_playing and self._backend == self.BACKEND_BASS:
+            stream_url = self._current_url_resolved or self._current_url
+            if stream_url:
+                def _bg_start_capture(url=stream_url):
+                    try:
+                        resolved_for_capture = _resolve_playlist_url(url)
+                        log.info("FreeRadio TimeShift: starting capture for %s (resolved from %s)",
+                                  resolved_for_capture, url)
+                        self._timeshift_buffer.start(resolved_for_capture)
+                    except Exception as e:
+                        log.warning("FreeRadio TimeShift: could not start capture: %s", e, exc_info=True)
+                threading.Thread(
+                    target=_bg_start_capture, daemon=True,
+                    name="FreeRadio-TimeShiftResolve",
+                ).start()
+
+    def is_timeshift_enabled(self):
+        return self._timeshift_enabled
+
+    def get_timeshift_buffered_seconds(self):
+        """How many seconds of audio are currently available to rewind."""
+        try:
+            return self._timeshift_buffer.buffered_seconds()
+        except Exception:
+            return 0.0
+
+    def is_timeshifted(self):
+        """True while time-shifted (buffered, seekable) playback is active,
+        as opposed to normal live playback."""
+        return self._timeshift_active
+
+    def rewind_timeshift(self, seconds=15):
+        """Rewind by *seconds*.
+
+        If not already time-shifted, this enters time-shift mode starting
+        *seconds* before the live edge. Returns
+        (ok, position_seconds, buffered_seconds, reason) where reason is a
+        short code identifying why it failed ("ok" on success):
+        "bass_disabled", "feature_disabled", "wrong_backend",
+        "hls_unsupported", "no_buffer_yet", "no_buffer_file", "engine_error".
+        """
+        if self._disable_bass:
+            return False, 0.0, 0.0, "bass_disabled"
+        if not self._timeshift_enabled:
+            return False, 0.0, 0.0, "feature_disabled"
+        if self._backend != self.BACKEND_BASS or not self._bass_engine:
+            return False, 0.0, 0.0, "wrong_backend"
+        if self._timeshift_buffer.is_hls_skipped():
+            return False, 0.0, 0.0, "hls_unsupported"
+
+        buffered = self._timeshift_buffer.buffered_seconds()
+        if buffered <= 0:
+            return False, 0.0, 0.0, "no_buffer_yet"
+
+        if not self._timeshift_active:
+            path = self._timeshift_buffer.get_file_path()
+            if not path:
+                return False, 0.0, buffered, "no_buffer_file"
+            start_pos = max(0.0, buffered - abs(seconds))
+            vol = self._volume / 100.0
+            self._timeshift_buffer.enter_playback()
+            ok = self._bass_engine.play_timeshift_file(path, vol, start_pos)
+            if not ok:
+                self._timeshift_buffer.exit_playback()
+                return False, 0.0, buffered, "engine_error"
+            self._timeshift_active = True
+            return True, start_pos, buffered, "ok"
+
+        ok, position, _length = self._bass_engine.timeshift_seek(-abs(seconds))
+        return ok, position, buffered, ("ok" if ok else "engine_error")
+
+    def forward_timeshift(self, seconds=15):
+        """Fast-forward by *seconds* while time-shifted.
+
+        If this reaches the live edge, playback automatically returns to
+        the live stream. Returns (ok, position_seconds_or_none, at_live_edge).
+        """
+        if not self._timeshift_active or not self._bass_engine:
+            return False, 0.0, False
+
+        ok, position, length = self._bass_engine.timeshift_seek(abs(seconds))
+        if not ok:
+            return False, 0.0, False
+
+        _EDGE_MARGIN_SECONDS = 2.0
+        if length - position <= _EDGE_MARGIN_SECONDS:
+            self.exit_timeshift_to_live()
+            return True, None, True
+
+        return True, position, False
+
+    def exit_timeshift_to_live(self):
+        """Return from time-shifted playback to the live stream immediately.
+        Capture continues uninterrupted - only the playback source switches.
+        """
+        if not self._timeshift_active:
+            return
+        self._timeshift_active = False
+        self._timeshift_buffer.exit_playback()
+        if self._backend == self.BACKEND_BASS and self._bass_engine:
+            stream_url = self._current_url_resolved or self._current_url
+            if stream_url:
+                vol = self._volume / 100.0
+                try:
+                    self._bass_engine.play(stream_url, vol)
+                except Exception:
+                    pass
 
     def get_audio_devices(self):
         """Return list of (index, name) for all available BASS output devices.

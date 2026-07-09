@@ -9,6 +9,7 @@
 import datetime
 import logging
 import os
+import ssl
 import threading
 import urllib.request
 
@@ -16,6 +17,26 @@ log = logging.getLogger(__name__)
 
 _USER_AGENT = "FreeRadio-NVDA/1.0"
 _CHUNK      = 65536   # 64 KB read chunk
+
+# Some stream servers present expired or otherwise invalid TLS certificates
+# yet still serve audio perfectly fine over HTTPS - BASS's own HTTP engine
+# does not validate certificates as strictly as Python's default-verifying
+# urlopen does, which is why live playback works on these stations while a
+# plain urlopen() call raises SSL: CERTIFICATE_VERIFY_FAILED. Since this is
+# just audio content (not sensitive data), certificate verification is
+# relaxed for every stream/playlist/segment fetch below - in recorder.py and
+# in timeshift.py, which reuses this helper. This context only takes effect
+# for https:// requests; it has no effect on plain http:// connections.
+_INSECURE_SSL_CONTEXT = ssl.create_default_context()
+_INSECURE_SSL_CONTEXT.check_hostname = False
+_INSECURE_SSL_CONTEXT.verify_mode = ssl.CERT_NONE
+
+
+def _urlopen(req, timeout):
+	"""urllib.request.urlopen() with relaxed TLS certificate verification.
+	Use this instead of calling urllib.request.urlopen() directly anywhere
+	a stream, playlist, or segment is fetched."""
+	return urllib.request.urlopen(req, timeout=timeout, context=_INSECURE_SSL_CONTEXT)
 
 
 class _IcyProtocolError(Exception):
@@ -170,7 +191,7 @@ def _resolve_hls(url):
 	import re
 	try:
 		req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
-		with urllib.request.urlopen(req, timeout=10) as resp:
+		with _urlopen(req, 10) as resp:
 			text = resp.read(8192).decode("utf-8", errors="ignore")
 		lines = text.splitlines()
 		best_url = None
@@ -310,7 +331,7 @@ class _StreamWriter:
 			headers={"User-Agent": _USER_AGENT, "Icy-MetaData": "0"},
 		)
 		try:
-			resp_cm = urllib.request.urlopen(req, timeout=20)
+			resp_cm = _urlopen(req, 20)
 		except Exception as e:
 			# urllib raises a ValueError/http.client.BadStatusLine for ICY responses.
 			# The message reliably contains "ICY" in that case.
@@ -381,7 +402,7 @@ class _StreamWriter:
 			try:
 				base_url = manifest_url.rsplit("/", 1)[0] + "/"
 				req = urllib.request.Request(manifest_url, headers={"User-Agent": _USER_AGENT})
-				with urllib.request.urlopen(req, timeout=10) as resp:
+				with _urlopen(req, 10) as resp:
 					text = resp.read(32768).decode("utf-8", errors="ignore")
 				lines = text.splitlines()
 				manifest_errors = 0
@@ -453,7 +474,7 @@ class _StreamWriter:
 							return
 						try:
 							seg_req = urllib.request.Request(seg_url, headers={"User-Agent": _USER_AGENT})
-							with urllib.request.urlopen(seg_req, timeout=15) as seg_resp:
+							with _urlopen(seg_req, 15) as seg_resp:
 								data = seg_resp.read()
 							
 							# First segment: detect container, write init segment if needed, open file
@@ -470,7 +491,7 @@ class _StreamWriter:
 										map_req = urllib.request.Request(
 											current_map_url, headers={"User-Agent": _USER_AGENT}
 										)
-										with urllib.request.urlopen(map_req, timeout=15) as map_resp:
+										with _urlopen(map_req, 15) as map_resp:
 											init_data = map_resp.read()
 										output_file.write(init_data)
 										output_file.flush()
@@ -485,7 +506,7 @@ class _StreamWriter:
 										map_req = urllib.request.Request(
 											current_map_url, headers={"User-Agent": _USER_AGENT}
 										)
-										with urllib.request.urlopen(map_req, timeout=15) as map_resp:
+										with _urlopen(map_req, 15) as map_resp:
 											init_data = map_resp.read()
 										output_file.write(init_data)
 										output_file.flush()
@@ -559,7 +580,7 @@ def _resolve_playlist(url):
 	"""Resolve .m3u or .pls playlist to first stream URL."""
 	try:
 		req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
-		with urllib.request.urlopen(req, timeout=10) as resp:
+		with _urlopen(req, 10) as resp:
 			text = resp.read(4096).decode("utf-8", errors="ignore")
 		for line in text.splitlines():
 			line = line.strip()

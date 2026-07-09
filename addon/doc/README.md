@@ -49,6 +49,9 @@ All shortcuts can be reassigned from NVDA Menu → Preferences → Input Gesture
 | `Ctrl+Win+M` | Audio mirror | Mirrors the current stream to an additional audio output device simultaneously. Press again to stop mirroring. |
 | `Ctrl+Win+E` | Instant recording | Press once to start recording the current station; press again to stop. Press **twice** to start a **song recording** — the file is named after the current track and the recording stops automatically when the track changes. Press twice again while a song recording is active to stop it early. Playback continues uninterrupted in all recording modes. Only available for stations that broadcast ICY metadata. |
 | `Ctrl+Win+W` | Open recordings folder | Opens the folder containing recorded files in File Explorer. |
+| `Ctrl+Win+J` | Time-shift rewind | Rewinds live radio by 15 seconds. The first press enters time-shift mode; each further press moves 15 seconds further back, up to the buffer limit (~10 minutes). Requires the time-shift buffer to be enabled in Settings. |
+| `Ctrl+Win+K` | Time-shift fast-forward | Moves forward 15 seconds while time-shifted. Once the live edge is reached, playback automatically returns to live and this becomes a no-op until you rewind again. |
+| `Ctrl+Win+T` | Toggle time-shift buffer | Enables or disables the time-shift buffer on the fly, mirroring the Settings checkbox. Disabling immediately returns to live playback if time-shifted and stops the background capture. |
 | *(unassigned)* | Toggle mute notifications | Toggles the Mute Notifications setting on the fly. Assign a key combination via NVDA Menu → Preferences → Input Gestures → FreeRadio. |
 | *(unassigned)* | Play favourite station directly | Each station in your favourites list appears as a separate entry in NVDA Menu → Preferences → Input Gestures → **FreeRadio Stations**. Assign any keyboard shortcut to a station to start playing it instantly from anywhere, without opening the browser. |
 
@@ -222,6 +225,44 @@ Recordings are saved to `Documents\FreeRadio Recordings\` by default. The filena
 
 NVDA announces when a recording starts and when it finishes. If NVDA is restarted while a scheduled recording is active, the recording resumes automatically on startup.
 
+## Time-Shift (Rewind Live Radio)
+
+Time-shift lets you rewind the station you're currently listening to, like a DVR or a cassette tape — pause the moment, go back a few minutes, and catch up to live again whenever you want. Playback never has to stop for this: rewinding and fast-forwarding both happen instantly on the same audio stream.
+
+This feature is **disabled by default**. Enable it from NVDA Menu → Preferences → Settings → FreeRadio → **Enable time-shift buffer (rewind live radio, ~10 minutes)**, or toggle it instantly at any time with `Ctrl+Win+T`.
+
+### How It Works
+
+Once enabled, FreeRadio continuously captures the currently playing station into a rolling local buffer in the background, independently of normal playback. The buffer holds roughly the **last 10 minutes** of audio; older audio is automatically discarded from the front as new audio arrives, so the buffer always represents "the recent past" relative to the live edge.
+
+- **`Ctrl+Win+J`** — Rewind 15 seconds. The first press switches you from live playback into time-shifted playback, starting 15 seconds behind the live edge. Each further press moves another 15 seconds further back, up to the buffer limit.
+- **`Ctrl+Win+K`** — Fast-forward 15 seconds while time-shifted. Once you reach the live edge, playback automatically switches back to the live stream and NVDA announces "Back to live" — you don't need to do anything extra to resume normal listening.
+- **`Ctrl+Win+T`** — Turns the whole feature on or off. Turning it off while time-shifted immediately returns you to live playback and stops the background capture for the current station.
+
+Background capture keeps running the entire time you're time-shifted, so the live edge keeps moving forward even while you're listening to something a few minutes old — exactly like a real DVR.
+
+### Enabling and Buffer Warm-Up
+
+The buffer starts filling as soon as a station starts playing (once the feature is enabled) or the moment you enable the feature while already listening to a station. Because of this, rewinding is only possible once a few seconds of audio have actually been captured — if you press `Ctrl+Win+J` immediately after switching stations, NVDA will let you know there isn't enough buffered audio yet. Simply wait a few seconds and try again.
+
+Switching to a different station always restarts the buffer for the new station; the previous station's buffered audio is discarded.
+
+### Supported Streams
+
+Time-shift works with the same range of streams FreeRadio already supports:
+
+- Plain HTTP/HTTPS streams (MP3, AAC, OGG, etc.), including Shoutcast/Icecast-style servers.
+- **HLS (`.m3u8`) streams** — FreeRadio resolves the station's master playlist, follows the media playlist, and downloads segments in the background to keep the buffer filled, the same way it works for plain streams.
+
+In the rare case that a station's playlist cannot be read at all (for example, a broken or unreachable `.m3u8` manifest), NVDA will tell you rewinding isn't available for that particular station.
+
+### Requirements and Limitations
+
+- **Requires the BASS backend.** Time-shift is not available when BASS is disabled and playback falls back to VLC, PotPlayer, or Windows Media Player.
+- The buffer is approximately 10 minutes; you cannot rewind further back than that.
+- The buffer is per-station: switching stations, stopping playback, or restarting NVDA clears it and starts fresh.
+- Time-shifted playback uses its own local buffer file and does not produce a saved recording — if you want to keep the audio permanently, use Instant Recording (`Ctrl+Win+E`) as well.
+
 ## Timer
 
 Open the Timer tab in the station browser (`Alt+4`). Two types of timer can be added:
@@ -246,6 +287,7 @@ The following options can be configured from NVDA Menu → Preferences → Setti
 | Resume last station on NVDA startup | When enabled, the last played station automatically restarts every time NVDA starts. |
 | Auto-announce track changes (ICY metadata) | When enabled, NVDA automatically reads the new track name each time it changes on a station that broadcasts ICY metadata. The first track is also announced immediately when switching to a new station. Disabled by default. |
 | Mute notifications | When enabled, NVDA does not announce station changes, playback state changes (play, pause, stop), or recording events (started, stopped, finished). Error messages, favourites feedback, music recognition results, and update notifications are not affected. Can also be toggled on the fly via an unassigned input gesture. Disabled by default. |
+| Enable time-shift buffer (rewind live radio, ~10 minutes) | Turns the time-shift feature on or off. When enabled, the currently playing station is continuously captured in the background so it can be rewound with `Ctrl+Win+J` and fast-forwarded with `Ctrl+Win+K`. Can also be toggled instantly with `Ctrl+Win+T`. Requires the BASS backend. Disabled by default — see the **Time-Shift** section below for full details. |
 | Save liked songs to a text file | When enabled, track info copied to the clipboard by pressing `Ctrl+Win+I` three times is also appended to `Documents\FreeRadio Recordings\likedSongs.txt`. If no ICY metadata is available, the Shazam recognition result is saved to the same file. Disabled by default. |
 | When Ctrl+Win+P is pressed with no active playback | Determines what happens when this shortcut is pressed and nothing is playing: start the last station or open the favourites list. |
 | When Ctrl+Win+P is pressed twice | Selects what happens when the shortcut is pressed twice in quick succession: do nothing, open the favourites list, open the recording tab or open the timer tab. When "do nothing" is selected, the first press responds instantly with no delay. |

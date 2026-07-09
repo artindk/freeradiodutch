@@ -219,6 +219,7 @@ def _init_config():
 		"disable_internet_check": "boolean(default=False)",
 		"crossfade":              "string(default='off')",
 		"result_limit":           "integer(default=1000, min=100, max=10000)",
+		"timeshift_enabled":      "boolean(default=False)",
 	}
 
 _init_config()
@@ -231,6 +232,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		disable_bass = config.conf["freeradio"].get("disable_bass", False)
 		self._player  = radioPlayer.RadioPlayer(disable_bass=disable_bass)
 		self._player.set_volume(config.conf["freeradio"]["volume"])
+		# Time-shift buffer (rewind/fast-forward live radio) - disabled by
+		# default, opt-in via the settings panel or config.
+		self._player.set_timeshift_enabled(
+			config.conf["freeradio"].get("timeshift_enabled", False)
+		)
 		# Apply saved audio output device (only if BASS is enabled)
 		if not disable_bass:
 			_saved_device = config.conf["freeradio"].get("audio_device", -1)
@@ -796,6 +802,85 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		self._current_index = (self._current_index - 1) % len(favs)
 		self._stations = favs
 		self._play_station(favs[self._current_index])
+
+	@script(
+		description=_("Time-shift: rewind 15 seconds (enters time-shift mode if not already active)"),
+		category=_("FreeRadio"),
+		gesture="kb:control+windows+j",
+	)
+	def script_timeshiftRewind(self, gesture):
+		if not config.conf["freeradio"].get("timeshift_enabled", False):
+			ui.message(_("Time-shift buffer is disabled. Enable it in FreeRadio settings."))
+			return
+		if not self._player.has_media():
+			gesture.send()
+			return
+
+		ok, position, buffered, reason = self._player.rewind_timeshift(15)
+		if not ok:
+			_TIMESHIFT_REASON_MESSAGES = {
+				"bass_disabled":   _("Time-shift requires the BASS audio backend, which is currently disabled."),
+				"feature_disabled": _("Time-shift buffer is disabled. Enable it in FreeRadio settings."),
+				"wrong_backend":   _("Time-shift is not available for the current playback backend."),
+				"hls_unsupported": _("Time-shift could not read this station's stream playlist."),
+				"no_buffer_yet":   _("Not enough buffered audio to rewind yet. Wait a few seconds after the station starts playing and try again."),
+				"no_buffer_file":  _("Time-shift buffer file is not ready yet."),
+				"engine_error":    _("Could not switch to time-shifted playback."),
+			}
+			ui.message(_TIMESHIFT_REASON_MESSAGES.get(reason, _("Could not rewind")))
+			return
+		ui.message(_("Rewound to %.0f seconds behind live") % (buffered - position))
+
+	@script(
+		description=_("Time-shift: fast-forward 15 seconds, or return to live if already caught up"),
+		category=_("FreeRadio"),
+		gesture="kb:control+windows+k",
+	)
+	def script_timeshiftForward(self, gesture):
+		if not config.conf["freeradio"].get("timeshift_enabled", False):
+			ui.message(_("Time-shift buffer is disabled. Enable it in FreeRadio settings."))
+			return
+		if not self._player.is_timeshifted():
+			ui.message(_("Already listening live"))
+			return
+
+		ok, position, at_live_edge = self._player.forward_timeshift(15)
+		if not ok:
+			ui.message(_("Could not fast-forward"))
+			return
+		if at_live_edge:
+			ui.message(_("Back to live"))
+		else:
+			buffered = self._player.get_timeshift_buffered_seconds()
+			ui.message(_("Fast-forwarded, still %.0f seconds behind live") %
+				(buffered - position))
+
+	@script(
+		description=_("Enable or disable the time-shift (rewind) buffer"),
+		category=_("FreeRadio"),
+		gesture="kb:control+windows+t",
+	)
+	def script_toggleTimeshift(self, gesture):
+		current = config.conf["freeradio"].get("timeshift_enabled", False)
+		new_value = not current
+		config.conf["freeradio"]["timeshift_enabled"] = new_value
+
+		if self._player is not None:
+			try:
+				self._player.set_timeshift_enabled(new_value)
+			except Exception as e:
+				log.warning("FreeRadio: could not apply timeshift_enabled change: %s", e, exc_info=True)
+
+		# Best-effort: keep the Settings panel's checkbox in sync if it
+		# happens to be open right now (mirrors script_toggleBassBackend's
+		# approach for its own checkbox).
+		if self._dialog is not None and hasattr(self._dialog, "_timeshift_enabled"):
+			try:
+				self._dialog._timeshift_enabled.SetValue(new_value)
+			except Exception:
+				pass
+
+		ui.message(_("Time-shift buffer %s") % (_("enabled") if new_value else _("disabled")))
 
 	@script(
 		description=_("Add currently playing station to favourites"),
@@ -2501,6 +2586,17 @@ class FreeRadioSettingsPanel(gui.settingsDialogs.SettingsPanel):
 		self._disable_bass.Bind(wx.EVT_CHECKBOX, self._on_disable_bass_changed)
 		sHelper.addItem(self._disable_bass)
 
+		# --- Time-shift buffer checkbox ---
+		# Off by default: keeps a rolling ~10 minute local buffer of the
+		# live stream so the user can rewind/fast-forward it like a
+		# cassette tape. Requires the BASS backend.
+		self._timeshift_enabled = wx.CheckBox(
+			self,
+			label=_("&Enable time-shift buffer (rewind live radio, ~10 minutes)")
+		)
+		self._timeshift_enabled.SetValue(config.conf["freeradio"].get("timeshift_enabled", False))
+		sHelper.addItem(self._timeshift_enabled)
+
 		# Hint text for BASS-dependent features
 		self._bass_hint = wx.StaticText(
 			self,
@@ -3132,9 +3228,14 @@ class FreeRadioSettingsPanel(gui.settingsDialogs.SettingsPanel):
 		_cf_val = self._cf_keys[_cf_sel] if 0 <= _cf_sel < len(self._cf_keys) else "off"
 		config.conf["freeradio"]["crossfade"] = _cf_val
 
+		# Time-shift buffer
+		new_timeshift_enabled = self._timeshift_enabled.GetValue()
+		config.conf["freeradio"]["timeshift_enabled"] = new_timeshift_enabled
+
 		for plugin in globalPluginHandler.runningPlugins:
 			if isinstance(plugin, GlobalPlugin):
 				plugin._player.set_volume(vol)
+				plugin._player.set_timeshift_enabled(new_timeshift_enabled)
 				
 				# Handle BASS disable change
 				if new_disable_bass != old_disable_bass:
@@ -3148,6 +3249,7 @@ class FreeRadioSettingsPanel(gui.settingsDialogs.SettingsPanel):
 					plugin._player.terminate()
 					plugin._player = radioPlayer.RadioPlayer(disable_bass=new_disable_bass)
 					plugin._player.set_volume(vol)
+					plugin._player.set_timeshift_enabled(new_timeshift_enabled)
 					plugin._player.on_device_lost = plugin._on_audio_device_lost
 					
 					if was_playing and current_url:

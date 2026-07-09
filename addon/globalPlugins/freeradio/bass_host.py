@@ -19,6 +19,11 @@ Supported commands:
   bass_boost {"cmd":"bass_boost", "value":0.0-1.0}
   ping       {"cmd":"ping"}
   quit       {"cmd":"quit"}
+
+Time-shift (local buffer file) commands:
+  timeshift_play     {"cmd":"timeshift_play", "path":"...", "volume":0.0-1.0, "start_seconds":0.0}
+  timeshift_seek     {"cmd":"timeshift_seek", "delta_seconds":-15.0}
+  timeshift_status   {"cmd":"timeshift_status"}
 """
 
 import ctypes
@@ -51,6 +56,7 @@ _BASS_ACTIVE_STALLED      = 2
 _BASS_ACTIVE_PAUSED       = 3
 _BASS_DATA_AVAILABLE      = 0   # flag for BASS_ChannelGetData — returns buffered bytes
 _BASS_POS_BYTE            = 0   # mode for BASS_ChannelGetPosition — byte position
+_BASS_UNICODE             = 0x80000000  # flag for BASS_StreamCreateFile — file path is a wide string
 
 # basshls.dll config constants
 _BASS_CONFIG_HLS_BANDWIDTH = 0x10400  # master playlist'te bitrate selection
@@ -390,6 +396,27 @@ class BassHost:
         try:
             dll.BASS_ChannelGetPosition.restype  = ctypes.c_int64
             dll.BASS_ChannelGetPosition.argtypes = [ctypes.c_uint32, ctypes.c_uint32]
+        except Exception:
+            pass
+
+        # Additional prototypes needed for time-shift (local file) playback:
+        # seeking and length/position queries all use 64-bit byte offsets or
+        # double-precision seconds, which ctypes would otherwise truncate to
+        # a 32-bit int if left unconfigured.
+        try:
+            dll.BASS_StreamCreateFile.restype  = ctypes.c_uint32
+            dll.BASS_StreamCreateFile.argtypes = [
+                ctypes.c_int32, ctypes.c_wchar_p,
+                ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32,
+            ]
+            dll.BASS_ChannelGetLength.restype  = ctypes.c_int64
+            dll.BASS_ChannelGetLength.argtypes = [ctypes.c_uint32, ctypes.c_uint32]
+            dll.BASS_ChannelBytes2Seconds.restype  = ctypes.c_double
+            dll.BASS_ChannelBytes2Seconds.argtypes = [ctypes.c_uint32, ctypes.c_int64]
+            dll.BASS_ChannelSeconds2Bytes.restype  = ctypes.c_int64
+            dll.BASS_ChannelSeconds2Bytes.argtypes = [ctypes.c_uint32, ctypes.c_double]
+            dll.BASS_ChannelSetPosition.restype  = ctypes.c_int32
+            dll.BASS_ChannelSetPosition.argtypes = [ctypes.c_uint32, ctypes.c_int64, ctypes.c_uint32]
         except Exception:
             pass
         return True, "ok"
@@ -1017,6 +1044,122 @@ class BassHost:
                 except Exception:
                     pass
 
+    # -- Time-shift (local buffer file) playback -------------------------
+    #
+    # These methods are independent of the live-URL play() path above: they
+    # open a local file created by timeshift.py via BASS_StreamCreateFile
+    # instead of BASS_StreamCreateURL, which is what makes real seeking
+    # (rewind/fast-forward) possible. Returning to live playback is just a
+    # normal play(live_url, ...) call - no special handling needed there.
+
+    def play_timeshift_file(self, path, volume_0_1=1.0, start_seconds=0.0):
+        """Open a local time-shift buffer file for seekable playback.
+
+        Any currently playing stream (live or time-shift) is stopped first.
+        Returns (ok, message).
+        """
+        self._cancel_pending_play()
+        self._stop_meta_thread()
+        if not self._dll:
+            return False, "BASS not loaded"
+
+        with self._lock:
+            if self._handle:
+                try:
+                    self._dll.BASS_ChannelStop(self._handle)
+                    self._dll.BASS_StreamFree(self._handle)
+                except Exception:
+                    pass
+                self._handle = 0
+                self._fx_handles = {}
+
+        try:
+            stream = self._dll.BASS_StreamCreateFile(
+                ctypes.c_int32(0),          # mem = False - read from disk
+                ctypes.c_wchar_p(path),
+                ctypes.c_uint64(0),         # offset
+                ctypes.c_uint64(0),         # length - 0 means "to end of file"
+                ctypes.c_uint32(_BASS_UNICODE),
+            )
+        except Exception as e:
+            return False, f"BASS_StreamCreateFile exception: {e}"
+
+        if not stream:
+            err = self._dll.BASS_ErrorGetCode()
+            return False, f"BASS_StreamCreateFile failed (err={err})"
+
+        with self._lock:
+            self._handle = stream
+
+        try:
+            gain = max(0.0, min(2.0, volume_0_1))
+            bass_vol = min(1.0, gain)
+            self._dll.BASS_ChannelSetAttribute(
+                stream, _BASS_ATTRIB_VOL, ctypes.c_float(bass_vol))
+            self._apply_gain_dsp(stream)
+            self._apply_fx(stream)
+        except Exception:
+            pass
+
+        if start_seconds > 0:
+            try:
+                pos_bytes = self._dll.BASS_ChannelSeconds2Bytes(
+                    stream, ctypes.c_double(start_seconds))
+                self._dll.BASS_ChannelSetPosition(stream, pos_bytes, _BASS_POS_BYTE)
+            except Exception:
+                pass
+
+        if not self._dll.BASS_ChannelPlay(stream, 0):
+            err = self._dll.BASS_ErrorGetCode()
+            try:
+                self._dll.BASS_StreamFree(stream)
+            except Exception:
+                pass
+            with self._lock:
+                self._handle = 0
+            return False, f"ChannelPlay failed (err={err})"
+
+        return True, "ok"
+
+    def timeshift_seek(self, delta_seconds):
+        """Seek by a relative number of seconds within the currently open
+        time-shift file stream, clamped to [0, stream length].
+
+        Returns (ok, position_seconds, length_seconds).
+        """
+        with self._lock:
+            handle, dll = self._handle, self._dll
+        if not handle or not dll:
+            return False, 0.0, 0.0
+        try:
+            length_bytes = dll.BASS_ChannelGetLength(handle, _BASS_POS_BYTE)
+            length_secs  = dll.BASS_ChannelBytes2Seconds(handle, length_bytes)
+            pos_bytes    = dll.BASS_ChannelGetPosition(handle, _BASS_POS_BYTE)
+            pos_secs     = dll.BASS_ChannelBytes2Seconds(handle, pos_bytes)
+
+            new_pos       = max(0.0, min(length_secs, pos_secs + delta_seconds))
+            new_pos_bytes = dll.BASS_ChannelSeconds2Bytes(handle, ctypes.c_double(new_pos))
+            dll.BASS_ChannelSetPosition(handle, new_pos_bytes, _BASS_POS_BYTE)
+            return True, new_pos, length_secs
+        except Exception:
+            return False, 0.0, 0.0
+
+    def timeshift_status(self):
+        """Return (position_seconds, length_seconds) for the currently open
+        time-shift file stream, or (0.0, 0.0) if none is open."""
+        with self._lock:
+            handle, dll = self._handle, self._dll
+        if not handle or not dll:
+            return 0.0, 0.0
+        try:
+            length_bytes = dll.BASS_ChannelGetLength(handle, _BASS_POS_BYTE)
+            length_secs  = dll.BASS_ChannelBytes2Seconds(handle, length_bytes)
+            pos_bytes    = dll.BASS_ChannelGetPosition(handle, _BASS_POS_BYTE)
+            pos_secs     = dll.BASS_ChannelBytes2Seconds(handle, pos_bytes)
+            return pos_secs, length_secs
+        except Exception:
+            return 0.0, 0.0
+
     def _apply_gain_dsp(self, handle):
         """Install or remove DSP gain + bass boost callback for stream.
 
@@ -1556,6 +1699,27 @@ def main():
             gain_db = float(cmd_obj.get("gain_db", 9.0))
             host.set_eq_gain(band, gain_db)
             _ok()
+
+        elif cmd == "timeshift_play":
+            path          = cmd_obj.get("path", "")
+            vol           = float(cmd_obj.get("volume", 1.0))
+            start_seconds = float(cmd_obj.get("start_seconds", 0.0))
+            ok, reason = host.play_timeshift_file(path, vol, start_seconds)
+            if ok:
+                _ok(cmd="timeshift_play")
+            else:
+                _send({"ok": False, "cmd": "timeshift_play", "error": reason})
+
+        elif cmd == "timeshift_seek":
+            delta = float(cmd_obj.get("delta_seconds", 0.0))
+            seeked, position_seconds, length_seconds = host.timeshift_seek(delta)
+            _ok(cmd="timeshift_seek", seeked=seeked,
+                position_seconds=position_seconds, length_seconds=length_seconds)
+
+        elif cmd == "timeshift_status":
+            position_seconds, length_seconds = host.timeshift_status()
+            _ok(cmd="timeshift_status",
+                position_seconds=position_seconds, length_seconds=length_seconds)
 
         elif cmd == "quit":
             _ok()
