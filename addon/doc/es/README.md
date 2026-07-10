@@ -49,6 +49,9 @@ Todos los atajos se pueden reasignar desde el Menú NVDA → Preferencias → Ge
 | `Ctrl+Win+M` | Espejo de audio | Poner en espejo el flujo actual hacia un dispositivo de salida de audio adicional simultáneamente. Pulsa nuevamente para detener la puesta en espejo. |
 | `Ctrl+Win+E` | Grabación instantánea | Pulsa una vez para comenzar a grabar la estación actual; pulsa nuevamente para detener. Pulsa **dos veces** para comenzar una **grabación de la canción**: El archivo lleva el nombre de la pista actual y la grabación se detiene automáticamente cuando cambia la pista. Pulsa nuevamente dos veces mientras la grabación de una canción está activa para detenerla antes de tiempo. La reproducción continúa sin interrupción en todos los modos de grabación. Solo disponible para estaciones que transmiten metadatos ICY. |
 | `Ctrl+Win+W` | Abrir la carpeta de grabaciones | Abre la carpeta que contiene los archivos guardados en el Explorador de archivos. |
+| `Ctrl+Win+J` | Retroceso del desplazamiento temporal | Retrocede la radio en directo 15 segundos. La primera pulsación entra en el modo de desplazamiento temporal; cada pulsación adicional retrocede 15 segundos más, hasta el límite del búfer (~10 minutos). Requiere que el búfer de desplazamiento temporal esté habilitado en Ajustes. |
+| `Ctrl+Win+K` | Avance rápido del desplazamiento temporal | Avanza 15 segundos mientras se está en modo de desplazamiento temporal. Una vez alcanzado el borde del directo, la reproducción vuelve automáticamente al directo y este comando no tiene efecto hasta que se retroceda de nuevo. |
+| `Ctrl+Win+T` | Alternar búfer de desplazamiento temporal | Habilita o deshabilita el búfer de desplazamiento temporal al instante, reflejando la casilla de Ajustes. Al deshabilitarlo, vuelve inmediatamente al directo si estaba en modo de desplazamiento temporal y detiene la captura en segundo plano. |
 | *((no asignado)* | Alternar notificaciones silenciosas | Alternar la configuración de Silenciar notificaciones sobre la marcha. Asignar una combinación de teclas a través del Menú NVDA → Preferencias → Gestos de Entrada → FreeRadio. |
 | *(no asignado)* | Reproducir estación favorita directamente | Cada estación de la lista de favoritos aparece como una entrada individual en el Menú NVDA → Preferencias → Gestos de Entrada → **FreeRadio Stations**. Asigna un atajo de teclado a cualquier estación para iniciarla al instante desde cualquier lugar, sin abrir el navegador. |
 
@@ -222,6 +225,44 @@ Las grabaciones se guardan de forma predeterminada en `Documentos\FreeRadio Reco
 
 NVDA anuncia cuándo comienza y cuándo termina una grabación. Si NVDA se reinicia mientras hay una grabación programada activa, la grabación se reanuda automáticamente al iniciar.
 
+## Desplazamiento temporal (rebobinar radio en directo)
+
+El desplazamiento temporal permite rebobinar la emisora que estás escuchando, como un DVR o una cinta de casete: pausa el momento, retrocede unos minutos y vuelve al directo cuando quieras. La reproducción no tiene que detenerse: rebobinar y avanzar ocurren al instante en el mismo flujo de audio.
+
+Esta función está **deshabilitada por defecto**. Actívala desde el Menú NVDA → Preferencias → Opciones → FreeRadio → **Activar búfer de desplazamiento temporal (rebobinar radio en directo, ~10 minutos)**, o actívala al instante en cualquier momento con `Ctrl+Win+T`.
+
+### Cómo funciona
+
+Una vez habilitado, FreeRadio captura continuamente la emisora en reproducción a un búfer local rotativo en segundo plano. El búfer almacena aproximadamente los **últimos 10 minutos** de audio; el audio más antiguo se descarta automáticamente por el frente a medida que llega audio nuevo, de modo que el búfer siempre representa el "pasado reciente" relativo al borde del directo.
+
+- **`Ctrl+Win+J`** — Retroceder 15 segundos. La primera pulsación te lleva de la reproducción en directo a la reproducción con desplazamiento temporal, comenzando 15 segundos detrás del borde del directo. Cada pulsación adicional retrocede 15 segundos más.
+- **`Ctrl+Win+K`** — Avanzar 15 segundos en modo desplazamiento temporal. Al alcanzar el borde del directo, la reproducción vuelve automáticamente al stream en directo y NVDA anuncia «Volver al directo».
+- **`Ctrl+Win+T`** — Activa o desactiva toda la función. Desactivarla mientras se está en modo de desplazamiento temporal vuelve inmediatamente al directo y detiene la captura en segundo plano de la emisora actual.
+
+La captura en segundo plano sigue funcionando todo el tiempo que se está en modo de desplazamiento temporal, de modo que el borde del directo sigue avanzando incluso mientras escuchas algo de hace unos minutos, exactamente como un DVR real.
+
+### Habilitación y calentamiento del búfer
+
+El búfer empieza a llenarse tan pronto como una emisora comienza a reproducirse (una vez habilitada la función), o en el momento en que habilitas la función mientras ya escuchas una emisora. Por ello, el retroceso solo es posible una vez que se hayan capturado realmente unos segundos de audio. Si pulsas `Ctrl+Win+J` inmediatamente después de cambiar de emisora, NVDA te avisará de que todavía no hay suficiente audio en el búfer. Espera unos segundos e inténtalo de nuevo.
+
+Cambiar a una emisora diferente siempre reinicia el búfer para la nueva emisora; el audio almacenado de la emisora anterior se descarta.
+
+### Flujos compatibles
+
+El desplazamiento temporal funciona con la misma gama de flujos que FreeRadio ya admite:
+
+- Flujos HTTP/HTTPS simples (MP3, AAC, OGG, etc.), incluidos servidores de tipo Shoutcast/Icecast.
+- **Flujos HLS (`.m3u8`)** — FreeRadio resuelve la lista de reproducción maestra de la emisora, sigue la lista de reproducción de medios y descarga segmentos en segundo plano para mantener el búfer lleno.
+
+En el raro caso de que la lista de reproducción de una emisora no pueda leerse en absoluto (por ejemplo, un manifiesto `.m3u8` roto o inalcanzable), NVDA te indicará que el retroceso no está disponible para esa emisora concreta.
+
+### Requisitos y limitaciones
+
+- **Requiere el backend BASS.** El desplazamiento temporal no está disponible cuando BASS está deshabilitado.
+- El búfer tiene aproximadamente 10 minutos; no se puede retroceder más allá de ese límite.
+- El búfer es por emisora: cambiar de emisora, detener la reproducción o reiniciar NVDA lo borra y empieza de nuevo.
+- La reproducción con desplazamiento temporal usa su propio archivo de búfer local y no produce una grabación guardada. Si quieres conservar el audio de forma permanente, usa también la Grabación instantánea (`Ctrl+Win+E`).
+
 ## Temporizador
 
 Abra la pestaña Temporizador en el navegador de estaciones (`Alt+4`). Se pueden añadir dos tipos de temporizador:
@@ -246,6 +287,7 @@ Las siguientes opciones se pueden configurar desde el Menú NVDA → Preferencia
 | Reanudar la última estación al iniciar NVDA | Cuando está habilitado, la última estación escuchada se reinicia automáticamente cada vez que se inicia NVDA. |
 | Anunciar automáticamente los cambios de pista (metadatos ICY) | Cuando está habilitado, NVDA lee automáticamente el nombre de la nueva pista cada vez que cambia en una estación que transmite metadatos ICY. La primera canción también se anuncia inmediatamente al cambiar a una nueva estación. Deshabilitado por defecto. |
 | Silenciar notificaciones | Cuando está habilitado, NVDA no anuncia cambios de estación, cambios de estado de reproducción (reproducir, pausar, detener) o eventos de grabación (iniciado, detenido, terminado). Mensajes de error, comentarios sobre favoritos, resultados de reconocimiento de música y notificaciones de las actualizaciones no se ven afectadas. También se puede activar sobre la marcha mediante un gesto de entrada no asignado. Deshabilitado por defecto. |
+| Activar búfer de desplazamiento temporal (rebobinar radio en directo, ~10 minutos) | Activa o desactiva la función de desplazamiento temporal. Cuando está habilitada, la emisora en reproducción se captura continuamente en segundo plano para poder rebobinarla con `Ctrl+Win+J` y avanzar con `Ctrl+Win+K`. También se puede alternar al instante con `Ctrl+Win+T`. Requiere el backend BASS. Deshabilitado por defecto. |
 | Guardar las canciones favoritas en un archivo de texto | Cuando está habilitado, la información de la pista se copia al portapapeles pulsando `Ctrl+Win+I` tres veces y también se añade a `Documentos\FreeRadio Recordings\likedSongs.txt`. Si no hay metadatos ICY disponibles, el resultado del reconocimiento de Shazam se guarda en el mismo archivo. Deshabilitado por defecto. |
 | Cuando Ctrl+Win+P se pulsa sin reproducción activa | Determina qué sucede cuando se pulsa este atajo y no hay nada  en reproducción: iniciar la última estación o abrir la lista de favoritos. |
 | Cuando Ctrl+Win+P se pulsa dos veces | Selecciona lo que sucede cuando se pulsa el atajo dos veces en sucesión rápida: no hacer nada, abrir la lista de favoritos, abrir la pestaña de grabación o abrir la pestaña del temporizador. Cuando "No hacer nada" es seleccionado, la primera pulsación responde instantáneamente sin demora. |

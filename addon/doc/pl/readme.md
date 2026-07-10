@@ -49,6 +49,9 @@ Wszystkie skróty można zmienić w menu NVDA -> Preferencje -> Zdarzenia wejśc
 | `Ctrl+Win+M` | Kopia dźwięku | Kopiuje bieżący strumień równolegle na dodatkowe urządzenie wyjściowe audio. Ponowne naciśnięcie zatrzymuje kopiowanie. |
 | `Ctrl+Win+E` | Nagrywanie natychmiastowe | Naciśnij raz, aby rozpocząć nagrywanie bieżącej stacji; naciśnij ponownie, aby zatrzymać. Naciśnij **dwa razy**, aby rozpocząć **nagrywanie utworu** - plik otrzyma nazwę bieżącego utworu, a nagrywanie zatrzyma się automatycznie po zmianie utworu. Dwukrotne naciśnięcie podczas aktywnego nagrywania utworu zatrzyma je wcześniej. Odtwarzanie trwa bez przerwy we wszystkich trybach nagrywania. Funkcja jest dostępna tylko dla stacji nadających metadane ICY. |
 | `Ctrl+Win+W` | Otwórz folder nagrań | Otwiera w Eksploratorze plików folder z nagraniami. |
+| `Ctrl+Win+J` | Cofnięcie (time-shift) | Cofa live radio o 15 sekund. Pierwsze naciśnięcie wchodzi w tryb time-shift; każde kolejne cofa o kolejne 15 sekund, do limitu bufora (~10 minut). Wymaga włączonego bufora time-shift w Ustawieniach. |
+| `Ctrl+Win+K` | Przewijanie do przodu (time-shift) | Przewija o 15 sekund do przodu w trybie time-shift. Po osiągnięciu krawędzi na żywo odtwarzanie automatycznie wraca do live i polecenie nie działa, dopóki ponownie nie cofniesz. |
+| `Ctrl+Win+T` | Przełącz bufor time-shift | Włącza lub wyłącza bufor time-shift na bieżąco, odzwierciedlając pole wyboru w Ustawieniach. Wyłączenie natychmiast wraca do live (jeśli w trybie time-shift) i zatrzymuje przechwytywanie w tle. |
 | *(nieprzypisane)* | Przełącz wyciszenie powiadomień | Przełącza ustawienie Wycisz powiadomienia w locie. Przypisz skrót w menu NVDA -> Preferencje -> Zdarzenia wejścia -> FreeRadio. |
 | *(nieprzypisane)* | Odtwórz ulubioną stację bezpośrednio | Każda stacja z listy ulubionych pojawia się jako osobna pozycja w menu NVDA -> Preferencje -> Zdarzenia wejścia -> **FreeRadio Stations**. Przypisz skrót klawiszowy dowolnej stacji i uruchamiaj ją natychmiast z dowolnego miejsca, bez otwierania przeglądarki. |
 
@@ -223,6 +226,44 @@ Nagrania są domyślnie zapisywane w `Documents\FreeRadio Recordings\`. Nazwa pl
 
 NVDA ogłasza rozpoczęcie i zakończenie nagrywania. Jeśli NVDA zostanie uruchomione ponownie podczas aktywnego zaplanowanego nagrywania, nagrywanie zostanie automatycznie wznowione po uruchomieniu.
 
+## Time-shift (cofanie radia na żywo)
+
+Time-shift pozwala cofnąć aktualnie słuchaną stację jak DVR lub kaseta magnetofonowa — zatrzymaj chwilę, cofnij się kilka minut i dogońcie live, kiedy chcesz. Odtwarzanie nie musi się zatrzymywać: cofanie i przewijanie do przodu odbywają się natychmiastowo na tym samym strumieniu audio.
+
+Funkcja jest **domyślnie wyłączona**. Włącz ją w Menu NVDA → Preferencje → Ustawienia → FreeRadio → **Włącz bufor time-shift (cofanie radia na żywo, ~10 minut)** lub przełącz natychmiast w dowolnym momencie za pomocą `Ctrl+Win+T`.
+
+### Jak to działa
+
+Po włączeniu FreeRadio ciągle przechwytuje aktualnie odtwarzaną stację do lokalnego, obracającego się bufora w tle. Bufor przechowuje mniej więcej **ostatnie 10 minut** audio; starsze audio jest automatycznie usuwane z przodu wraz z napływaniem nowego, dzięki czemu bufor zawsze reprezentuje „niedawną przeszłość" względem krawędzi na żywo.
+
+- **`Ctrl+Win+J`** — Cofnij o 15 sekund. Pierwsze naciśnięcie przełącza z odtwarzania na żywo na odtwarzanie z time-shiftem, zaczynając 15 sekund za krawędzią na żywo. Każde kolejne naciśnięcie cofa o kolejne 15 sekund.
+- **`Ctrl+Win+K`** — Przewiń do przodu o 15 sekund w trybie time-shift. Po osiągnięciu krawędzi na żywo odtwarzanie automatycznie przełącza się z powrotem do strumienia na żywo, a NVDA ogłasza „Powrót do transmisji na żywo".
+- **`Ctrl+Win+T`** — Włącza lub wyłącza całą funkcję. Wyłączenie w trybie time-shift natychmiast wraca do live i zatrzymuje przechwytywanie w tle dla bieżącej stacji.
+
+Przechwytywanie w tle działa przez cały czas, gdy jesteś w time-shifcie, więc krawędź na żywo przesuwa się do przodu, nawet gdy słuchasz czegoś sprzed kilku minut — dokładnie jak prawdziwy DVR.
+
+### Włączenie i rozgrzewanie bufora
+
+Bufor zaczyna się wypełniać, gdy tylko stacja zaczyna grać (po włączeniu funkcji) lub w momencie, gdy włączasz funkcję już podczas słuchania stacji. Dlatego cofanie jest możliwe dopiero po rzeczywistym przechwyceniu kilku sekund audio — jeśli naciśniesz `Ctrl+Win+J` natychmiast po przełączeniu stacji, NVDA poinformuje, że w buforze nie ma jeszcze wystarczająco dużo audio. Poczekaj kilka sekund i spróbuj ponownie.
+
+Przełączenie na inną stację zawsze restartuje bufor dla nowej stacji; zbuforowane audio poprzedniej stacji jest odrzucane.
+
+### Obsługiwane strumienie
+
+Time-shift działa z tą samą gamą strumieni, które FreeRadio już obsługuje:
+
+- Zwykłe strumienie HTTP/HTTPS (MP3, AAC, OGG itd.), w tym serwery w stylu Shoutcast/Icecast.
+- **Strumienie HLS (`.m3u8`)** — FreeRadio rozwiązuje główną playlistę stacji, śledzi playlistę mediów i pobiera segmenty w tle, aby bufor był stale wypełniony.
+
+W rzadkim przypadku, gdy playlista stacji nie może zostać w ogóle odczytana (np. uszkodzony lub niedostępny manifest `.m3u8`), NVDA poinformuje, że cofanie nie jest dostępne dla tej konkretnej stacji.
+
+### Wymagania i ograniczenia
+
+- **Wymaga backendu BASS.** Time-shift nie jest dostępny, gdy BASS jest wyłączony.
+- Bufor wynosi około 10 minut; nie można cofnąć się dalej.
+- Bufor jest per-stacja: zmiana stacji, zatrzymanie odtwarzania lub restart NVDA czyści go i zaczyna od nowa.
+- Odtwarzanie z time-shiftem używa własnego lokalnego pliku bufora i nie tworzy zapisanego nagrania — jeśli chcesz trwale zachować audio, użyj również Nagrywania natychmiastowego (`Ctrl+Win+E`).
+
 ## Timer
 
 Otwórz kartę Timer w przeglądarce stacji (`Alt+4`). Można dodać dwa typy timerów:
@@ -247,6 +288,7 @@ Poniższe opcje można skonfigurować w menu NVDA -> Preferencje -> Ustawienia -
 | Wznów ostatnią stację przy starcie NVDA | Gdy włączone, ostatnio odtwarzana stacja jest automatycznie uruchamiana przy każdym starcie NVDA. |
 | Automatycznie ogłaszaj zmiany utworów (metadane ICY) | Gdy włączone, NVDA automatycznie odczytuje nową nazwę utworu za każdym razem, gdy zmieni się na stacji nadającej metadane ICY. Pierwszy utwór jest ogłaszany również natychmiast po przełączeniu na nową stację. Domyślnie wyłączone. |
 | Wycisz powiadomienia | Gdy włączone, NVDA nie ogłasza zmian stacji, zmian stanu odtwarzania (odtwórz, pauza, stop) ani zdarzeń nagrywania (rozpoczęte, zatrzymane, zakończone). Komunikaty błędów, informacje o ulubionych, wyniki rozpoznawania muzyki i powiadomienia aktualizacji nie są wyciszane. Można też przełączać w locie przez nieprzypisane zdarzenie wejścia. Domyślnie wyłączone. |
+| Włącz bufor time-shift (cofanie radia na żywo, ~10 minut) | Włącza lub wyłącza funkcję time-shift. Po włączeniu aktualnie odtwarzana stacja jest stale przechwytywana w tle, dzięki czemu można ją cofnąć za pomocą `Ctrl+Win+J` i przewinąć do przodu za pomocą `Ctrl+Win+K`. Można też natychmiast przełączyć za pomocą `Ctrl+Win+T`. Wymaga backendu BASS. Domyślnie wyłączone. |
 | Zapisuj polubione utwory do pliku tekstowego | Gdy włączone, informacje o utworze skopiowane do schowka trzykrotnym naciśnięciem `Ctrl+Win+I` są też dopisywane do `Documents\FreeRadio Recordings\likedSongs.txt`. Jeśli metadane ICY nie są dostępne, do tego samego pliku zapisany zostaje wynik rozpoznawania przez Shazam. Domyślnie wyłączone. |
 | Gdy Ctrl+Win+P zostanie naciśnięty bez aktywnego odtwarzania | Określa, co stanie się po naciśnięciu skrótu, gdy nic nie gra: uruchomienie ostatniej stacji albo otwarcie listy ulubionych. |
 | Gdy Ctrl+Win+P zostanie naciśnięty dwa razy | Wybiera akcję po dwukrotnym szybkim naciśnięciu skrótu: nic nie rób, otwórz listę ulubionych, otwórz kartę nagrywania albo otwórz kartę timera. Gdy wybrane jest "nic nie rób", pierwsze naciśnięcie reaguje natychmiast, bez opóźnienia. |

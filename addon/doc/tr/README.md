@@ -49,6 +49,9 @@ NVDA Menüsü → Tercihler → Girdi Hareketleri → FreeRadio bölümünden ye
 | `Ctrl+Win+M` | Ses yansıtma | O an çalan akışı ek bir çıkış aygıtına yansıtır. Yansıtma zaten aktifse durdurur. |
 | `Ctrl+Win+E` | Anlık kayıt | Bir kez basıldığında çalan istasyonu kaydetmeye başlar; tekrar basıldığında durdurur. **İki kez** basıldığında **şarkı kaydı** başlar — dosya o anki parça adıyla adlandırılır ve parça değiştiğinde kayıt otomatik olarak durur. Şarkı kaydı aktifken tekrar iki kez basılması kaydı erken sonlandırır. Oynatma tüm kayıt modlarında kesintisiz sürer. Yalnızca ICY metadata yayınlayan istasyonlarda kullanılabilir. |
 | `Ctrl+Win+W` | Kayıt klasörünü aç | Kaydedilen dosyaların bulunduğu klasörü Dosya Gezgini'nde açar. |
+| `Ctrl+Win+J` | Zaman kaydırma geri sarma | Canlı radyoyu 15 saniye geri sarar. İlk basış zaman kaydırma moduna girer; her ek basış tamponu sınırına (~10 dakika) kadar 15 saniye daha geri gider. Zaman kaydırma tamponunun Ayarlar'dan etkinleştirilmesi gerekir. |
+| `Ctrl+Win+K` | Zaman kaydırma ileri sarma | Zaman kaydırma modundayken 15 saniye ileri sarar. Canlı yayın kenarına ulaşıldığında oynatma otomatik olarak canlıya döner ve yeniden geri sarılana kadar bu komut işlevsiz kalır. |
+| `Ctrl+Win+T` | Zaman kaydırma tamponunu aç/kapat | Zaman kaydırma tamponunu anında etkinleştirir veya devre dışı bırakır; Ayarlar'daki onay kutusunu yansıtır. Devre dışı bırakıldığında zaman kaydırma modundaysa hemen canlıya döner ve arka plan yakalamayı durdurur. |
 | *(atanmamış)* | Bildirimleri sessize al / aç | Bildirim sessize alma ayarını anlık olarak değiştirir. NVDA Menüsü → Tercihler → Girdi Hareketleri → FreeRadio bölümünden bir tuş kombinasyonu atanabilir. |
 | *(atanmamış)* | Favori istasyonu doğrudan çal | Favoriler listenizdeki her istasyon, NVDA Menüsü → Tercihler → Girdi Hareketleri → **FreeRadio Stations** kategorisinde ayrı bir girdi olarak görünür. Bir istasyona klavye kısayolu atayarak tarayıcıyı açmadan her yerden doğrudan çalmaya başlayabilirsiniz. |
 
@@ -222,6 +225,44 @@ Kayıtlar varsayılan olarak `Belgeler\FreeRadio Recordings\` klasörüne kayded
 
 NVDA kayıt başladığında ve bittiğinde bildirim verir. Zamanlanmış bir kayıt devam ederken NVDA yeniden başlatılırsa kayıt başlangıçta otomatik olarak devam eder.
 
+## Zaman Kaydırma (Canlı Radyoyu Geri Sarma)
+
+Zaman kaydırma, o an dinlediğiniz istasyonu bir DVR veya kaset gibi geri sarmanızı sağlar — anı durdurun, birkaç dakika geri gidin ve istediğinizde canlıya tekrar yetişin. Oynatmanın durması gerekmez: geri ve ileri sarma aynı ses akışında anında gerçekleşir.
+
+Bu özellik **varsayılan olarak devre dışıdır**. NVDA Menüsü → Tercihler → Ayarlar → FreeRadio → **Zaman kaydırma tamponunu etkinleştir (canlı radyoyu geri sar, ~10 dakika)** seçeneğiyle veya `Ctrl+Win+T` ile istediğiniz zaman anında etkinleştirebilirsiniz.
+
+### Nasıl Çalışır
+
+Etkinleştirildiğinde FreeRadio, çalan istasyonu arka planda yerel bir tampona sürekli olarak yakalar. Tampon yaklaşık **son 10 dakika** ses içerir; yeni ses geldikçe eski ses silinir, böylece tampon her zaman canlı kenarına göre "yakın geçmişi" temsil eder.
+
+- **`Ctrl+Win+J`** — 15 saniye geri sar. İlk basış sizi canlı oynatmadan zaman kaydırma oynatmasına geçirir; her ek basış tamponu sınırına kadar 15 saniye daha geri gider.
+- **`Ctrl+Win+K`** — Zaman kaydırma modundayken 15 saniye ileri sarar. Canlı yayın kenarına ulaşıldığında oynatma otomatik olarak canlıya döner ve NVDA "Canlıya dön" duyurusunu yapar.
+- **`Ctrl+Win+T`** — Özelliği tamamen açar veya kapatır. Zaman kaydırma modundayken kapatıldığında hemen canlıya döner ve arka plan yakalamayı durdurur.
+
+Arka plan yakalama zaman kaydırma sırasında çalışmaya devam eder; canlı kenar birkaç dakika öncesini dinlerken bile ilerlemeye devam eder — tıpkı gerçek bir DVR gibi.
+
+### Etkinleştirme ve Tampon Isınması
+
+Tampon, özellik etkinken bir istasyon çalmaya başlar başlamaz ya da bir istasyonu dinlerken özelliği etkinleştirdiğiniz anda dolmaya başlar. Bu nedenle geri sarma yalnızca birkaç saniyelik ses yakalandıktan sonra mümkündür — istasyon değiştirdikten hemen sonra `Ctrl+Win+J` tuşuna basarsanız NVDA henüz yeterli ses olmadığını bildirir. Birkaç saniye bekleyip tekrar deneyin.
+
+Farklı bir istasyona geçmek yeni istasyon için tamponu her zaman sıfırlar; önceki istasyonun tamponlanmış sesi silinir.
+
+### Desteklenen Akışlar
+
+Zaman kaydırma, FreeRadio'nun zaten desteklediği akış türleriyle çalışır:
+
+- Shoutcast/Icecast tarzı sunucular dahil düz HTTP/HTTPS akışları (MP3, AAC, OGG vb.).
+- **HLS (`.m3u8`) akışları** — FreeRadio istasyonun ana çalma listesini çözümler, medya çalma listesini takip eder ve tamponu doldurmak için arka planda segmentleri indirir.
+
+Bir istasyonun çalma listesi hiç okunamazsa (örneğin bozuk veya erişilemeyen bir `.m3u8` manifestosu) NVDA, o istasyon için geri sarmanın mevcut olmadığını bildirir.
+
+### Gereksinimler ve Sınırlamalar
+
+- **BASS arka ucunu gerektirir.** BASS devre dışıyken zaman kaydırma kullanılamaz.
+- Tampon yaklaşık 10 dakikadır; bundan daha geriye gidemezsiniz.
+- Tampon istasyona özgüdür: istasyon değiştirme, oynatmayı durdurma veya NVDA'yı yeniden başlatma tamponu sıfırlar.
+- Zaman kaydırmalı oynatma kendi yerel tampon dosyasını kullanır ve kayıtlı bir kayıt üretmez — sesi kalıcı olarak saklamak istiyorsanız Anlık Kayıt (`Ctrl+Win+E`) özelliğini de kullanın.
+
 ## Zamanlayıcı
 
 İstasyon tarayıcısında Zamanlayıcı sekmesini açın (`Alt+4`). İki tür zamanlayıcı eklenebilir:
@@ -246,6 +287,7 @@ NVDA Menüsü → Tercihler → Ayarlar → FreeRadio bölümünden aşağıdaki
 | NVDA başlangıcında devam ettir | Açıksa NVDA her başlatıldığında en son çalınan istasyon otomatik olarak yeniden başlar. |
 | Parça değişimlerini otomatik seslendir (ICY metadata) | Açıksa çalan istasyon ICY metadata yayınlıyorken parça her değiştiğinde NVDA yeni parça adını otomatik olarak okur. İstasyon değiştiğinde de ilk parça bilgisi anında seslendirilir. Varsayılan olarak kapalıdır. |
 | Bildirimleri sessize al | Açıksa NVDA; istasyon değişikliklerini, oynatma durumu değişikliklerini (çal, duraklat, durdur) ve kayıt olaylarını (başladı, durdu, bitti) anons etmez. Hata mesajları, favori geri bildirimleri, müzik tanıma sonuçları ve güncelleme bildirimleri bu kapsamın dışındadır. Atanmamış bir girdi hareketi aracılığıyla anlık olarak da değiştirilebilir. Varsayılan olarak kapalıdır. |
+| Zaman kaydırma tamponunu etkinleştir (canlı radyoyu geri sar, ~10 dakika) | Zaman kaydırma özelliğini açar veya kapatır. Etkinleştirildiğinde çalan istasyon arka planda sürekli yakalanır; `Ctrl+Win+J` ile geri sarılabilir ve `Ctrl+Win+K` ile ileri sarılabilir. `Ctrl+Win+T` ile de anında geçiş yapılabilir. BASS arka ucunu gerektirir. Varsayılan olarak devre dışıdır. |
 | Beğenilen şarkıları metin dosyasına kaydet | Açıksa `Ctrl+Win+İ` üç kez basıldığında panoya kopyalanan parça bilgisi, kayıt klasöründeki `likedSongs.txt` dosyasına da eklenir. ICY metadata yoksa Shazam tanıma sonucu da aynı dosyaya kaydedilir. Varsayılan olarak kapalıdır. |
 | Ctrl+Win+P hiç istasyon çalmıyorken: | Bu kısayola basıldığında aktif oynatma yoksa ne yapılacağını belirler: son çalınan istasyonu başlat veya favoriler listesini aç. |
 | Ctrl+Win+P iki kez basıldığında: | Kısayola art arda iki kez basıldığında gerçekleşecek işlemi seçer: hiçbir şey yapma, favoriler listesini aç, kayıt sekmesini aç veya zamanlayıcı sekmesini aç. "Hiçbir şey yapma" seçiliyken ilk basışta gecikme uygulanmaz ve yanıt anında gerçekleşir. |

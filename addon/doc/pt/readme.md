@@ -51,6 +51,9 @@ Todos os atalhos podem ser reatribuídos em Menu NVDA → Preferências → Defi
 | `Ctrl+Win+M` | Espelho de áudio | Espelha a transmissão atual para um dispositivo de saída de áudio adicional em simultâneo. Prima novamente para parar o espelhamento. |
 | `Ctrl+Win+E` | Gravação instantânea | Prima uma vez para iniciar a gravação da estação atual; prima novamente para parar. Prima **duas vezes** para iniciar uma **gravação de canção** — o ficheiro recebe o nome da faixa atual e a gravação para automaticamente quando a faixa muda. Prima duas vezes novamente enquanto uma gravação de canção está ativa para terminá-la antecipadamente. A reprodução continua sem interrupção em todos os modos de gravação. Disponível apenas em estações que difundem metadados ICY. |
 | `Ctrl+Win+W` | Abrir pasta de gravações | Abre a pasta com os ficheiros gravados no Explorador de Ficheiros. |
+| `Ctrl+Win+J` | Retrocesso do time-shift | Retrocede a rádio em direto 15 segundos. A primeira pressão entra no modo time-shift; cada pressão adicional retrocede mais 15 segundos, até ao limite do buffer (~10 minutos). Requer que o buffer de time-shift esteja ativado nas Definições. |
+| `Ctrl+Win+K` | Avanço rápido do time-shift | Avança 15 segundos enquanto está em modo time-shift. Ao atingir a margem do direto, a reprodução regressa automaticamente ao direto e este comando não tem efeito até retroceder novamente. |
+| `Ctrl+Win+T` | Alternar buffer de time-shift | Ativa ou desativa o buffer de time-shift instantaneamente, refletindo a caixa de verificação nas Definições. Ao desativar, regressa imediatamente ao direto se estiver em modo time-shift e interrompe a captura em segundo plano. |
 | *(não atribuído)* | Alternar silenciamento de notificações | Ativa ou desativa o silenciamento de notificações em tempo real. Pode atribuir uma combinação de teclas em Menu NVDA → Preferências → Definir comandos → FreeRadio. |
 | *(não atribuído)* | Reproduzir estação favorita diretamente | Cada estação da lista de favoritos aparece como uma entrada separada em Menu NVDA → Preferências → Definir comandos → **FreeRadio Stations**. Atribua um atalho de teclado a qualquer estação para a iniciar imediatamente a partir de qualquer lugar, sem abrir o navegador. |
 
@@ -224,6 +227,44 @@ As gravações são guardadas por predefinição em `Documents\FreeRadio Recordi
 
 O NVDA anuncia quando uma gravação inicia e quando termina. Se o NVDA for reiniciado enquanto uma gravação agendada estiver ativa, a gravação é retomada automaticamente no arranque.
 
+## Time-Shift (Recuar na Rádio em Direto)
+
+O time-shift permite recuar na estação que está a ouvir, como um DVR ou uma cassete — pause o momento, volte uns minutos atrás e recupere o direto quando quiser. A reprodução nunca precisa de parar: recuar e avançar acontecem instantaneamente no mesmo fluxo de áudio.
+
+Esta funcionalidade está **desativada por defeito**. Ative-a em Menu NVDA → Preferências → Definições → FreeRadio → **Ativar buffer de time-shift (recuar na rádio em direto, ~10 minutos)**, ou ative-a instantaneamente a qualquer momento com `Ctrl+Win+T`.
+
+### Como funciona
+
+Após ativação, o FreeRadio captura continuamente a estação em reprodução para um buffer local rotativo em segundo plano. O buffer contém aproximadamente os **últimos 10 minutos** de áudio; o áudio mais antigo é automaticamente descartado à frente à medida que o novo chega, de modo que o buffer representa sempre o "passado recente" relativamente à margem do direto.
+
+- **`Ctrl+Win+J`** — Recuar 15 segundos. A primeira pressão passa da reprodução em direto para a reprodução com time-shift, começando 15 segundos atrás da margem do direto. Cada pressão adicional recua mais 15 segundos.
+- **`Ctrl+Win+K`** — Avançar 15 segundos em modo time-shift. Ao atingir a margem do direto, a reprodução regressa automaticamente ao stream em direto e o NVDA anuncia «Voltar ao direto».
+- **`Ctrl+Win+T`** — Liga ou desliga toda a funcionalidade. Desligá-la em modo time-shift regressa imediatamente ao direto e interrompe a captura em segundo plano da estação atual.
+
+A captura em segundo plano continua a funcionar todo o tempo que está em time-shift, pelo que a margem do direto continua a avançar mesmo enquanto ouve algo de alguns minutos atrás — exatamente como um DVR real.
+
+### Ativação e aquecimento do buffer
+
+O buffer começa a preencher-se assim que uma estação começa a reproduzir (após ativar a funcionalidade) ou no momento em que ativa a funcionalidade enquanto já ouve uma estação. Por isso, recuar só é possível depois de alguns segundos de áudio terem sido realmente capturados — se premir `Ctrl+Win+J` imediatamente após mudar de estação, o NVDA avisará que ainda não há áudio suficiente no buffer. Aguarde alguns segundos e tente novamente.
+
+Mudar para uma estação diferente reinicia sempre o buffer para a nova estação; o áudio da estação anterior é descartado.
+
+### Streams suportados
+
+O time-shift funciona com a mesma gama de streams que o FreeRadio já suporta:
+
+- Streams HTTP/HTTPS simples (MP3, AAC, OGG, etc.), incluindo servidores de tipo Shoutcast/Icecast.
+- **Streams HLS (`.m3u8`)** — O FreeRadio resolve a playlist principal da estação, segue a playlist de multimédia e transfere segmentos em segundo plano para manter o buffer preenchido.
+
+No caso raro de a playlist de uma estação não poder ser lida de todo (por exemplo, um manifesto `.m3u8` danificado ou inacessível), o NVDA indicará que recuar não está disponível para essa estação em particular.
+
+### Requisitos e limitações
+
+- **Requer o backend BASS.** O time-shift não está disponível quando o BASS está desativado.
+- O buffer tem aproximadamente 10 minutos; não é possível recuar além disso.
+- O buffer é por estação: mudar de estação, parar a reprodução ou reiniciar o NVDA limpa-o e começa de novo.
+- A reprodução com time-shift usa o seu próprio ficheiro de buffer local e não produz uma gravação guardada — se quiser conservar o áudio permanentemente, use também a Gravação instantânea (`Ctrl+Win+E`).
+
 ## Temporizador
 
 Abra o separador Temporizador no navegador de estações (`Alt+4`). É possível adicionar dois tipos de temporizador:
@@ -248,6 +289,7 @@ As seguintes opções podem ser configuradas em Menu NVDA → Preferências → 
 | Retomar última estação ao iniciar o NVDA | Quando ativado, a última estação reproduzida reinicia automaticamente sempre que o NVDA inicia. |
 | Anunciar automaticamente mudanças de faixa (metadados ICY) | Quando ativado, o NVDA lê automaticamente o novo nome da faixa sempre que muda numa estação que difunde metadados ICY. A primeira faixa também é anunciada imediatamente ao mudar para uma nova estação. Desativado por predefinição. |
 | Silenciar notificações (mudanças de estação, reprodução, gravação) | Quando ativado, o NVDA deixa de anunciar mudanças de estação, alterações do estado de reprodução (reproduzir, pausar, parar) e eventos de gravação (iniciada, parada, concluída). Mensagens de erro, feedback de favoritos, resultados do reconhecimento musical e notificações de atualização não são afetados. Pode também ser alternado em tempo real através de um gesto de entrada não atribuído. Desativado por predefinição. |
+| Ativar buffer de time-shift (recuar na rádio em direto, ~10 minutos) | Ativa ou desativa a funcionalidade de time-shift. Quando ativada, a estação em reprodução é capturada continuamente em segundo plano para poder ser recuada com `Ctrl+Win+J` e avançada com `Ctrl+Win+K`. Também pode ser alternada instantaneamente com `Ctrl+Win+T`. Requer o backend BASS. Desativada por defeito. |
 | Guardar músicas gostadas em ficheiro de texto | Quando ativado, as informações de faixa copiadas para a área de transferência ao premir `Ctrl+Win+I` três vezes são também adicionadas a `Documents\FreeRadio Recordings\likedSongs.txt`. Se não existirem metadados ICY, o resultado do reconhecimento Shazam é guardado no mesmo ficheiro. Desativado por predefinição. |
 | Quando Ctrl+Win+P é premido sem reprodução ativa | Determina o que acontece quando este atalho é premido e nada está a reproduzir: iniciar a última estação ou abrir a lista de favoritos. |
 | Quando Ctrl+Win+P é premido duas vezes | Seleciona o que acontece quando o atalho é premido duas vezes rapidamente: não fazer nada, abrir a lista de favoritos, abrir o separador de gravação ou abrir o separador do temporizador. Quando "não fazer nada" está selecionado, a primeira pressão responde instantaneamente sem atraso. |

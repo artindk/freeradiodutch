@@ -49,6 +49,9 @@ Tous les raccourcis peuvent être réassignés depuis le Menu NVDA → Préfére
 | `Ctrl+Win+M` | Miroir audio | Mettre en miroir le flux actuel vers un périphérique de sortie audio supplémentaire simultanément. Appuyez à nouveau pour arrêter la mise en miroir. |
 | `Ctrl+Win+E` | Enregistrement instantané | Appuyez une fois pour commencer à enregistrer la station actuelle ; appuyez à nouveau pour arrêter. Appuyez **deux fois** pour démarrer un **enregistrement d'un morceau**: le fichier porte le nom de la piste actuelle et l'enregistrement s'arrête automatiquement lorsque la piste change. Appuyez à nouveau deux fois pendant qu'un enregistrement d'un morceau est actif pour l'arrêter plus tôt. La lecture continue sans interruption dans tous les modes d'enregistrement. Uniquement disponible pour les stations qui diffusent des métadonnées ICY. |
 | `Ctrl+Win+W` | Ouvrir le dossier des enregistrements | Ouvre le dossier contenant les fichiers enregistrés dans l'Explorateur de fichiers. |
+| `Ctrl+Win+J` | Retour en arrière (décalage temporel) | Recule la radio en direct de 15 secondes. La première pression entre en mode décalage temporel ; chaque pression supplémentaire recule de 15 secondes de plus, jusqu'à la limite de la mémoire tampon (~10 minutes). Nécessite que la mémoire tampon de décalage temporel soit activée dans les Paramètres. |
+| `Ctrl+Win+K` | Avance rapide (décalage temporel) | Avance de 15 secondes en mode décalage temporel. Une fois le bord du direct atteint, la lecture revient automatiquement au direct et cette commande est sans effet jusqu'au prochain retour en arrière. |
+| `Ctrl+Win+T` | Basculer la mémoire tampon de décalage temporel | Active ou désactive la mémoire tampon de décalage temporel instantanément, reflétant la case à cocher dans les Paramètres. La désactiver renvoie immédiatement au direct si vous étiez en mode décalage et arrête la capture en arrière-plan. |
 | *(non assigné)* | Activer/désactiver les notifications muettes | Active/désactive le paramètre Muet des notifications à la volée. Assigner une combinaison de touches via NVDA Menu → Préférences → Gestes de commandes → FreeRadio. |
 | *(non assigné)* | Lire une station favorite directement | Chaque station de la liste des favoris apparaît comme une entrée distincte dans le Menu NVDA → Préférences → Gestes de commandes → **FreeRadio Stations**. Assignez un raccourci clavier à n'importe quelle station pour la démarrer instantanément depuis n'importe où, sans ouvrir le navigateur. |
 
@@ -222,6 +225,44 @@ Les enregistrements sont enregistrés par défaut dans `Documents\FreeRadio Reco
 
 NVDA annonce quand un enregistrement commence et quand il se termine. Si NVDA est redémarré pendant qu'un enregistrement planifié est actif, l'enregistrement reprend automatiquement au démarrage.
 
+## Décalage temporel (retour en arrière sur la radio en direct)
+
+Le décalage temporel vous permet de rembobiner la station que vous écoutez, comme un DVR ou une cassette : suspendez le moment, revenez quelques minutes en arrière et rattrapez le direct quand vous le souhaitez. La lecture n'a pas besoin de s'arrêter : le retour en arrière et l'avance rapide se font instantanément sur le même flux audio.
+
+Cette fonctionnalité est **désactivée par défaut**. Activez-la depuis le Menu NVDA → Préférences → Paramètres → FreeRadio → **Activer la mémoire tampon de décalage temporel (retour en arrière sur la radio en direct, ~10 minutes)**, ou basculez-la instantanément à tout moment avec `Ctrl+Win+T`.
+
+### Comment ça fonctionne
+
+Une fois activé, FreeRadio capture en continu la station en cours de lecture dans une mémoire tampon locale tournante en arrière-plan. Celle-ci contient environ les **10 dernières minutes** d'audio ; l'audio le plus ancien est automatiquement supprimé à mesure que le nouveau arrive, de sorte que la mémoire tampon représente toujours le « passé récent » par rapport au bord du direct.
+
+- **`Ctrl+Win+J`** — Reculer de 15 secondes. La première pression vous fait passer de la lecture en direct à la lecture en décalage temporel, en commençant 15 secondes derrière le bord du direct. Chaque pression supplémentaire recule de 15 secondes supplémentaires.
+- **`Ctrl+Win+K`** — Avancer de 15 secondes en mode décalage temporel. Une fois le bord du direct atteint, la lecture revient automatiquement au flux en direct et NVDA annonce « Retour au direct ».
+- **`Ctrl+Win+T`** — Active ou désactive toute la fonctionnalité. La désactiver en mode décalage temporel vous renvoie immédiatement au direct et arrête la capture en arrière-plan pour la station actuelle.
+
+La capture en arrière-plan continue de fonctionner tout le temps que vous êtes en décalage temporel, de sorte que le bord du direct continue d'avancer même pendant que vous écoutez quelque chose de quelques minutes plus tôt — exactement comme un vrai DVR.
+
+### Activation et préchauffage de la mémoire tampon
+
+La mémoire tampon commence à se remplir dès qu'une station commence à jouer (une fois la fonctionnalité activée) ou au moment où vous activez la fonctionnalité tout en écoutant déjà une station. Pour cette raison, le retour en arrière n'est possible qu'une fois que quelques secondes d'audio ont réellement été capturées — si vous appuyez sur `Ctrl+Win+J` immédiatement après avoir changé de station, NVDA vous indique qu'il n'y a pas encore assez d'audio dans la mémoire tampon. Attendez simplement quelques secondes et réessayez.
+
+Passer à une station différente redémarre toujours la mémoire tampon pour la nouvelle station ; l'audio de la station précédente est supprimé.
+
+### Flux pris en charge
+
+Le décalage temporel fonctionne avec la même gamme de flux déjà prise en charge par FreeRadio :
+
+- Flux HTTP/HTTPS simples (MP3, AAC, OGG, etc.), y compris les serveurs de type Shoutcast/Icecast.
+- **Flux HLS (`.m3u8`)** — FreeRadio résout la liste de lecture principale de la station, suit la liste de lecture média et télécharge les segments en arrière-plan pour maintenir la mémoire tampon remplie.
+
+Dans le cas rare où la liste de lecture d'une station ne peut pas du tout être lue (par exemple un manifeste `.m3u8` cassé ou inaccessible), NVDA vous indique que le retour en arrière n'est pas disponible pour cette station particulière.
+
+### Exigences et limitations
+
+- **Nécessite le backend BASS.** Le décalage temporel n'est pas disponible lorsque BASS est désactivé.
+- La mémoire tampon dure environ 10 minutes ; vous ne pouvez pas rembobiner au-delà.
+- La mémoire tampon est par station : changer de station, arrêter la lecture ou redémarrer NVDA l'efface et repart de zéro.
+- La lecture en décalage temporel utilise son propre fichier de mémoire tampon local et ne produit pas d'enregistrement sauvegardé — si vous souhaitez conserver l'audio de façon permanente, utilisez également l'Enregistrement instantané (`Ctrl+Win+E`).
+
 ## Minuterie
 
 Ouvrez l'onglet Minuterie dans le navigateur de stations (`Alt+4`). Deux types de minuterie peuvent être ajoutés:
@@ -246,6 +287,7 @@ Les options suivantes peuvent être configurées à partir de NVDA Menu → Pré
 | Reprendre la dernière station au démarrage de NVDA | Lorsqu'elle est activée, la dernière station écoutée redémarre automatiquement à chaque démarrage de NVDA. |
 | Annoncer automatiquement les changements de piste (métadonnées ICY) | Lorsqu'il est activé, NVDA lit automatiquement le nouveau nom de la piste à chaque fois qu'il change sur une station qui diffuse des métadonnées ICY. Le premier morceau est également annoncé immédiatement lors du passage à une nouvelle station. Désactivé par défaut. |
 | Notifications muettes | Lorsqu'il est activé, NVDA n'annonce pas les changements de station, changements d'état de lecture (lecture, pause, arrêt) ou événements d'enregistrement (démarré, arrêté, terminé). Les messages d'erreur, les commentaires sur les favoris, les résultats de la reconnaissance musicale et les notifications de mise à jour ne sont pas affectés. Peut également être activé à la volée via un geste de commande non assigné. Désactivé par défaut. |
+| Activer la mémoire tampon de décalage temporel (retour en arrière sur la radio en direct, ~10 minutes) | Active ou désactive la fonctionnalité de décalage temporel. Lorsqu'elle est activée, la station en cours de lecture est capturée en continu en arrière-plan afin de pouvoir la rembobiner avec `Ctrl+Win+J` et avancer avec `Ctrl+Win+K`. Peut également être basculée instantanément avec `Ctrl+Win+T`. Nécessite le backend BASS. Désactivée par défaut. |
 | Enregistrer les morceaux aimés dans un fichier texte | Lorsqu'il est activé, les informations de piste sont copiées dans le presse-papiers en appuyant sur `Ctrl+Win+I` trois fois est également ajouté à `Documents\FreeRadio Recordings\likedSongs.txt`. Si aucune métadonnée ICY n'est disponible, le résultat de la reconnaissance Shazam est enregistré dans le même fichier. Désactivé par défaut. |
 | Lorsque Ctrl+Win+P est appuyé sans lecture active | Détermine ce qui se passe lorsque ce raccourci est appuyé et que rien n'est joué: démarrer la dernière station ou ouvrir la liste des favoris. |
 | Lorsque Ctrl+Win+P est appuyé deux fois | Sélectionne ce qui se passe lorsque le raccourci est appuyé deux fois de suite rapidement: ne rien faire, ouvrir la liste des favoris, ouvrir l'onglet d'enregistrement ou ouvrir l'onglet minuterie. Lorsque "Ne rien faire " est sélectionné, la première pulsation répond instantanément sans délai. |
