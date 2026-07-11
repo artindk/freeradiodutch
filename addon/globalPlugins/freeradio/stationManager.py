@@ -585,17 +585,20 @@ class StationManager:
 			url = item.get("url", "").strip()
 			if not url:
 				continue  # skip entries without a playback URL
+			# Start from a copy of the original item so that any extra fields
+			# (e.g. homepage, language, bitrate, codec, country, favicon)
+			# survive the import instead of being silently discarded.
+			station = dict(item)
 			# Ensure every required key exists so the rest of the add-on never
-			# has to guard against KeyError.
-			station = {
-				"stationuuid":   item.get("stationuuid", "custom-" + str(uuid.uuid4())),
-				"name":          item.get("name", url).strip(),
-				"url":           url,
-				"url_resolved":  item.get("url_resolved", url),
-				"countrycode":   item.get("countrycode", ""),
-				"tags":          item.get("tags", ""),
-				"votes":         item.get("votes", 0),
-			}
+			# has to guard against KeyError, without clobbering values that
+			# were already present in the imported file.
+			station["stationuuid"]  = item.get("stationuuid", "custom-" + str(uuid.uuid4()))
+			station["name"]         = item.get("name", url).strip()
+			station["url"]          = url
+			station["url_resolved"] = item.get("url_resolved", url)
+			station["countrycode"]  = item.get("countrycode", "")
+			station["tags"]         = item.get("tags", "")
+			station["votes"]        = item.get("votes", 0)
 			stations.append(station)
 		return stations
 

@@ -3,10 +3,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FreeRadio 2026.20.2\n"
+"Project-Id-Version: FreeRadio 2026.20.5\n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
-"POT-Creation-Date: 2026-07-09 22:59+0300\n"
-"PO-Revision-Date: 2026-07-09 22:59+0300\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2026-07-11 14:26+0300\n"
 "Last-Translator: Rémy Ruiz <remyruiz@gmail.com>\n"
 "Language-Team: Rémy Ruiz <remyruiz@gmail.com>\n"
 "Language: fr\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.9\n"
 "X-Poedit-Basepath: ../../../..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: buildVars.py\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 
 #: addon/globalPlugins/freeradio/__init__.py:273
 #: addon/globalPlugins/freeradio/__init__.py:1568
@@ -39,12 +39,12 @@ msgstr "Stations FreeRadio"
 #: addon/globalPlugins/freeradio/__init__.py:359
 #, python-format
 msgid "Station no longer in favourites: %s"
-msgstr "La station n'est plus dans les favoris : %s"
+msgstr "La station n'est plus dans les favoris: %s"
 
 #: addon/globalPlugins/freeradio/__init__.py:368
 #, python-format
 msgid "%s playback shortcut ()"
-msgstr "Raccourci de lecture de %s ()"
+msgstr "%s raccourci de lecture ()"
 
 #: addon/globalPlugins/freeradio/__init__.py:398
 msgid "Station &Browser...\tCtrl+Win+R"
@@ -105,8 +105,8 @@ msgstr "FreeRadio"
 #: addon/globalPlugins/freeradio/__init__.py:519
 msgid "Audio mirror requires BASS backend. Enable it in FreeRadio settings."
 msgstr ""
-"Le miroir audio nécessite le BASS backend. Activez-le dans les paramètres de"
-" FreeRadio."
+"Le miroir audio nécessite le BASS backend. Activez-le dans les paramètres de "
+"FreeRadio."
 
 #: addon/globalPlugins/freeradio/__init__.py:525
 msgid "Audio mirror stopped"
@@ -168,8 +168,7 @@ msgstr "En cours de lecture"
 msgid "Stop FreeRadio playback"
 msgstr "Arrêter la lecture de FreeRadio"
 
-# ── Kayıt sekmesi (radioDialog.py)
-# ───────────────────────────────────────────
+# ── Kayıt sekmesi (radioDialog.py) ───────────────────────────────────────────
 #: addon/globalPlugins/freeradio/__init__.py:696
 #: addon/globalPlugins/freeradio/__init__.py:1372
 #, python-format
@@ -224,14 +223,12 @@ msgstr "Lire la station précédente"
 msgid ""
 "Time-shift: rewind 15 seconds (enters time-shift mode if not already active)"
 msgstr ""
-"Décalage temporel : reculer de 15 secondes (active le mode décalage si ce "
-"n’est pas déjà le cas)"
+"Décalage temporel: reculer de 15 secondes (active le mode décalage si ce "
+"n'est pas déjà le cas)"
 
 #: addon/globalPlugins/freeradio/__init__.py:813
 #: addon/globalPlugins/freeradio/__init__.py:823
 #: addon/globalPlugins/freeradio/__init__.py:841
-#| msgid ""
-#| "Audio mirror requires BASS backend. Enable it in FreeRadio settings."
 msgid "Time-shift buffer is disabled. Enable it in FreeRadio settings."
 msgstr ""
 "La mémoire tampon de décalage temporel est désactivée. Activez-la dans les "
@@ -241,18 +238,18 @@ msgstr ""
 msgid ""
 "Time-shift requires the BASS audio backend, which is currently disabled."
 msgstr ""
-"Le décalage temporel nécessite le backend audio BASS, qui est actuellement "
+"Le décalage temporel nécessite le BASS audio backend, qui est actuellement "
 "désactivé."
 
 #: addon/globalPlugins/freeradio/__init__.py:824
 msgid "Time-shift is not available for the current playback backend."
 msgstr ""
-"Le décalage temporel n’est pas disponible pour le backend de lecture actuel."
+"Le décalage temporel n'est pas disponible pour le backend de lecture actuel."
 
 #: addon/globalPlugins/freeradio/__init__.py:825
 msgid "Time-shift could not read this station's stream playlist."
 msgstr ""
-"Le décalage temporel n’a pas pu lire la liste de lecture du flux de cette "
+"Le décalage temporel n'a pas pu lire la liste de lecture du flux de cette "
 "station."
 
 #: addon/globalPlugins/freeradio/__init__.py:826
@@ -260,22 +257,20 @@ msgid ""
 "Not enough buffered audio to rewind yet. Wait a few seconds after the "
 "station starts playing and try again."
 msgstr ""
-"Pas assez d’audio en mémoire tampon pour reculer. Attendez quelques secondes"
-" après le démarrage de la station et réessayez."
+"Pas assez d'audio en mémoire tampon pour reculer. Attendez quelques secondes "
+"après le démarrage de la station et réessayez."
 
 #: addon/globalPlugins/freeradio/__init__.py:827
 msgid "Time-shift buffer file is not ready yet."
 msgstr ""
-"Le fichier de mémoire tampon de décalage temporel n’est pas encore prêt."
+"Le fichier de mémoire tampon de décalage temporel n'est pas encore prêt."
 
 #: addon/globalPlugins/freeradio/__init__.py:828
 msgid "Could not switch to time-shifted playback."
 msgstr "Impossible de passer à la lecture en décalage temporel."
 
-# ── Kayıt sekmesi (radioDialog.py)
-# ───────────────────────────────────────────
+# ── Kayıt sekmesi (radioDialog.py) ───────────────────────────────────────────
 #: addon/globalPlugins/freeradio/__init__.py:830
-#| msgid "Could not start recording"
 msgid "Could not rewind"
 msgstr "Impossible de reculer"
 
@@ -288,17 +283,16 @@ msgstr "Reculé à %.0f secondes avant le direct"
 msgid ""
 "Time-shift: fast-forward 15 seconds, or return to live if already caught up"
 msgstr ""
-"Décalage temporel : avancer de 15 secondes, ou revenir au direct si vous "
-"avez rattrapé le flux"
+"Décalage temporel: avancer de 15 secondes, ou revenir au direct si vous avez "
+"rattrapé le flux"
 
 #: addon/globalPlugins/freeradio/__init__.py:844
 msgid "Already listening live"
 msgstr "Vous écoutez déjà le direct"
 
 #: addon/globalPlugins/freeradio/__init__.py:849
-#| msgid "Could not access clipboard"
 msgid "Could not fast-forward"
-msgstr "Impossible d’avancer rapidement"
+msgstr "Impossible d'avancer rapidement"
 
 #: addon/globalPlugins/freeradio/__init__.py:852
 msgid "Back to live"
@@ -310,7 +304,6 @@ msgid "Fast-forwarded, still %.0f seconds behind live"
 msgstr "Avancé, encore %.0f secondes avant le direct"
 
 #: addon/globalPlugins/freeradio/__init__.py:859
-#| msgid "Enable or disable the BASS audio backend"
 msgid "Enable or disable the time-shift (rewind) buffer"
 msgstr ""
 "Activer ou désactiver la mémoire tampon de décalage temporel (retour en "
@@ -364,8 +357,8 @@ msgid ""
 "Announce currently playing station. Press twice for full details, three "
 "times to copy track info, four times to force music recognition."
 msgstr ""
-"Annoncer la station en cours de lecture. Appuyer deux fois pour obtenir tous"
-" les détails, trois fois pour copier les informations sur la piste, quatre "
+"Annoncer la station en cours de lecture. Appuyer deux fois pour obtenir tous "
+"les détails, trois fois pour copier les informations sur la piste, quatre "
 "fois pour forcer la reconnaissance musicale."
 
 #: addon/globalPlugins/freeradio/__init__.py:915
@@ -444,8 +437,8 @@ msgid ""
 "Copy current track info to clipboard, or start music recognition if "
 "unavailable"
 msgstr ""
-"Copier les informations de la piste en cours dans le presse-papiers ou "
-"démarrer la reconnaissance musicale si elles ne sont pas disponibles"
+"Copier les informations de la piste actuelle dans le presse-papiers ou "
+"démarrer la reconnaissance musicale si elle n'est pas disponible"
 
 #: addon/globalPlugins/freeradio/__init__.py:1124
 msgid "Force music recognition for the currently playing stream"
@@ -473,8 +466,7 @@ msgstr "Diminuer le volume de FreeRadio de 5"
 msgid "Audio device disconnected. Switched to system default."
 msgstr "Périphérique audio déconnecté. Passé au valeur système par défaut."
 
-# ── Kayıt kısayolu (__init__.py)
-# ──────────────────────────────────────────────
+# ── Kayıt kısayolu (__init__.py) ──────────────────────────────────────────────
 #: addon/globalPlugins/freeradio/__init__.py:1468
 msgid "Start or stop instant recording"
 msgstr "Démarrer ou arrêter l'enregistrement instantané"
@@ -516,8 +508,7 @@ msgstr "Enregistrement arrêté: %s"
 msgid "Recording stopped"
 msgstr "Enregistrement arrêté"
 
-# ── Kayıt sekmesi (radioDialog.py)
-# ───────────────────────────────────────────
+# ── Kayıt sekmesi (radioDialog.py) ───────────────────────────────────────────
 #: addon/globalPlugins/freeradio/__init__.py:1571
 msgid "Could not start recording"
 msgstr "Impossible de démarrer l'enregistrement"
@@ -549,7 +540,7 @@ msgstr "Notifications réactivées"
 
 #: addon/globalPlugins/freeradio/__init__.py:1608
 msgid "Enable or disable the BASS audio backend"
-msgstr "Activer ou désactiver le backend audio BASS"
+msgstr "Activer ou désactiver le BASS audio backend"
 
 #: addon/globalPlugins/freeradio/__init__.py:1622
 #: addon/globalPlugins/freeradio/__init__.py:2583
@@ -570,11 +561,11 @@ msgstr "%(effect)s %(state)s"
 
 #: addon/globalPlugins/freeradio/__init__.py:1627
 msgid "Restart NVDA for this change to take effect."
-msgstr "Redémarrez NVDA pour que ce changement prenne effet."
+msgstr "Redémarrer NVDA pour que ces modifications soient prises en compte."
 
 #: addon/globalPlugins/freeradio/__init__.py:1630
 msgid "Toggle bass boost"
-msgstr "Activer ou désactiver l'amplification des basses"
+msgstr "Activer/désactiver bass boost"
 
 #: addon/globalPlugins/freeradio/__init__.py:1635
 #: addon/globalPlugins/freeradio/__init__.py:2641
@@ -584,7 +575,7 @@ msgstr "EQ: Bass Boost"
 
 #: addon/globalPlugins/freeradio/__init__.py:1638
 msgid "Toggle treble boost"
-msgstr "Activer ou désactiver l'amplification des aigus"
+msgstr "Activer/désactiver treble boost"
 
 #: addon/globalPlugins/freeradio/__init__.py:1643
 #: addon/globalPlugins/freeradio/__init__.py:2642
@@ -594,7 +585,7 @@ msgstr "EQ: Treble Boost"
 
 #: addon/globalPlugins/freeradio/__init__.py:1646
 msgid "Toggle vocal boost"
-msgstr "Activer ou désactiver l'amplification vocale"
+msgstr "Activer/désactiver vocal boost"
 
 #: addon/globalPlugins/freeradio/__init__.py:1651
 #: addon/globalPlugins/freeradio/__init__.py:2643
@@ -612,7 +603,8 @@ msgstr ""
 
 #: addon/globalPlugins/freeradio/__init__.py:1723
 msgid "Toggle station switch transition (crossfade)"
-msgstr "Activer ou désactiver la transition entre stations (fondu enchaîné)"
+msgstr ""
+"Activer/désactiver transition de changement de station (fondu enchaîné)"
 
 #: addon/globalPlugins/freeradio/__init__.py:1730
 #: addon/globalPlugins/freeradio/__init__.py:2678
@@ -632,7 +624,7 @@ msgstr "Fondu enchaîné normal (2 secondes)"
 #: addon/globalPlugins/freeradio/__init__.py:1760
 msgid "Enable or disable auto-announce track changes (ICY metadata)"
 msgstr ""
-"Activer ou désactiver l'annonce automatique des changements de piste "
+"Activer ou désactiver l'annonce automatique de changements de piste "
 "(métadonnées ICY)"
 
 #: addon/globalPlugins/freeradio/__init__.py:1778
@@ -642,12 +634,12 @@ msgstr "&Annoncer automatiquement les changements de piste (métadonnées ICY)"
 
 #: addon/globalPlugins/freeradio/__init__.py:1783
 msgid "Switch track change announcement voice"
-msgstr "Changer la voix d'annonce de changement de piste"
+msgstr "Basculer la voix de l'annonce de changement de piste"
 
 #: addon/globalPlugins/freeradio/__init__.py:1802
 msgid "Turn on or off saving liked songs to a text file"
 msgstr ""
-"Activer ou désactiver l'enregistrement des chansons aimées dans un fichier "
+"Activer ou désactiver l'enregistrement des morceaux aimés dans un fichier "
 "texte"
 
 #: addon/globalPlugins/freeradio/__init__.py:1818
@@ -683,9 +675,9 @@ msgid ""
 "Would you like to download and install it now?"
 msgstr ""
 "Une nouvelle version de FreeRadio est disponible: %(new)s.\n"
-"Vous avez la  version %(current)s.\n"
+"Vous avez la version %(current)s.\n"
 "\n"
-"Souhaitez-vous le télécharger et l’installer maintenant ?"
+"Souhaitez-vous le télécharger et l'installer maintenant ?"
 
 #: addon/globalPlugins/freeradio/__init__.py:2006
 #: addon/globalPlugins/freeradio/__init__.py:2014
@@ -804,8 +796,7 @@ msgstr "Flux URL"
 msgid "Votes"
 msgstr "Votes"
 
-# ── İstasyon detayları (__init__.py)
-# ─────────────────────────────────────────
+# ── İstasyon detayları (__init__.py) ─────────────────────────────────────────
 #: addon/globalPlugins/freeradio/__init__.py:2248
 #: addon/globalPlugins/freeradio/__init__.py:2367
 #: addon/globalPlugins/freeradio/radioDialog.py:2366
@@ -865,8 +856,8 @@ msgid ""
 "Could not play station: Windows Media Player is not available on this "
 "system. Please install VLC media player."
 msgstr ""
-"Impossible de lire la station: Windows Media Player n'est pas disponible sur"
-" ce système. Veuillez installer VLC media player."
+"Impossible de lire la station : Windows Media Player n'est pas disponible "
+"sur ce système. Veuillez installer VLC media player."
 
 #: addon/globalPlugins/freeradio/__init__.py:2569
 #: addon/globalPlugins/freeradio/__init__.py:2571
@@ -1154,7 +1145,7 @@ msgstr "Minuterie de mise en veille: radio arrêté"
 
 #: addon/globalPlugins/freeradio/__init__.py:3460
 msgid "Sleep timer: fading out…"
-msgstr "Minuterie de mise en veille: fondu enchaîné…"
+msgstr "Minuterie de mise en veille : fondu enchaîné…"
 
 #: addon/globalPlugins/freeradio/musicRecognizer.py:577
 msgid "No frequency peaks found — audio may be silence"
@@ -1170,9 +1161,9 @@ msgid ""
 "and place ffmpeg.exe in the FreeRadio addon folder, or set the path in "
 "settings."
 msgstr ""
-"ffmpeg.exe introuvable. Télécharger ffmpeg depuis "
-"https://ffmpeg.org/download.html et placez ffmpeg.exe dans le dossier de "
-"l'extension FreeRadio, ou définissez le chemin dans les paramètres."
+"ffmpeg.exe introuvable. Télécharger ffmpeg depuis https://ffmpeg.org/"
+"download.html et placez ffmpeg.exe dans le dossier de l'extension FreeRadio, "
+"ou définissez le chemin dans les paramètres."
 
 #: addon/globalPlugins/freeradio/radioDialog.py:85
 msgid "FreeRadio - Station Browser"
@@ -1261,7 +1252,7 @@ msgstr "&Fermer"
 #: addon/globalPlugins/freeradio/radioDialog.py:649
 #: addon/globalPlugins/freeradio/radioDialog.py:3143
 msgid "Filter:"
-msgstr "Filtre:"
+msgstr "Filtrer:"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:351
 msgid "Filter favourites"
@@ -1335,8 +1326,7 @@ msgstr "Chargement des stations..."
 msgid "Stations:"
 msgstr "Stations:"
 
-# ── Kayıt sekmesi (radioDialog.py)
-# ───────────────────────────────────────────
+# ── Kayıt sekmesi (radioDialog.py) ───────────────────────────────────────────
 #: addon/globalPlugins/freeradio/radioDialog.py:476
 msgid "Instant Recording"
 msgstr "Enregistrement instantané"
@@ -1389,12 +1379,12 @@ msgstr "Récurrence:"
 #: addon/globalPlugins/freeradio/radioDialog.py:529
 #: addon/globalPlugins/freeradio/radioDialog.py:3512
 msgid "Record &once"
-msgstr "Enregistrer une &fois"
+msgstr "Enregistrer &une fois"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:537
 #: addon/globalPlugins/freeradio/radioDialog.py:3517
 msgid "Repeat &weekly"
-msgstr "Répétition &hebdomadaire"
+msgstr "Répéter &chaque semaine"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:548
 #: addon/globalPlugins/freeradio/radioDialog.py:558
@@ -1474,7 +1464,7 @@ msgstr "Supp&rimer la sélection"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:590
 msgid "&Edit Selected"
-msgstr "&Éditer la sélection"
+msgstr "&Modifier la sélection"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:619
 msgid "Timer action:"
@@ -1540,7 +1530,7 @@ msgstr "Tous les jours"
 #: addon/globalPlugins/freeradio/radioDialog.py:1070
 #, python-format
 msgid "Every %s"
-msgstr "Chaque %s"
+msgstr "Tous les %s"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1103
 #: addon/globalPlugins/freeradio/radioDialog.py:3018
@@ -1607,7 +1597,7 @@ msgstr "Planification supprimée"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1329
 msgid "Schedule updated"
-msgstr "Planification mise à jour"
+msgstr "Planification mis à jour"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1392
 #, python-format
@@ -1643,8 +1633,7 @@ msgstr ""
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1508
 msgid "(limit reached — increase result limit to see more)"
-msgstr ""
-"(limite atteinte — augmenter la limite de résultats pour en voir plus)"
+msgstr "(limite atteinte — augmenter la limite de résultats pour en voir plus)"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:1591
 msgid "Could not connect to radio directory. Check your internet connection."
@@ -1666,7 +1655,7 @@ msgstr "Volume et effets"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2037
 msgid "What would you like to save in the audio profile?"
-msgstr "Que souhaitez-vous enregistrer dans le profil audio ?"
+msgstr "Que souhaitez-vous enregistrer dans le profil audio ?"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2039
 msgid "Save Audio Profile"
@@ -1693,11 +1682,11 @@ msgstr "Exporter les favoris"
 #: addon/globalPlugins/freeradio/radioDialog.py:2128
 #, python-format
 msgid "Export failed: %(error)s"
-msgstr "Échec de l’exportation : %(error)s"
+msgstr "Échec d'exportation: %(error)s"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2129
 msgid "Export Error"
-msgstr "Erreur d’exportation"
+msgstr "Échec d'exportation"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2138
 #, python-format
@@ -1708,10 +1697,10 @@ msgid_plural ""
 "Exported %(count)d stations to:\n"
 "%(path)s"
 msgstr[0] ""
-"%(count)d station exportée vers :\n"
+"Exporté %(count)d station vers:\n"
 "%(path)s"
 msgstr[1] ""
-"%(count)d stations exportées vers :\n"
+"Exporté %(count)d stations vers:\n"
 "%(path)s"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2142
@@ -1720,11 +1709,11 @@ msgstr "Exportation terminée"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2150
 msgid ""
-"Supported files (*.json;*.m3u)|*.json;*.m3u|JSON favourites "
-"(*.json)|*.json|M3U playlist (*.m3u)|*.m3u"
+"Supported files (*.json;*.m3u)|*.json;*.m3u|JSON favourites (*.json)|*.json|"
+"M3U playlist (*.m3u)|*.m3u"
 msgstr ""
-"Fichiers pris en charge (*.json;*.m3u)|*.json;*.m3u|Favoris JSON "
-"(*.json)|*.json|Liste M3U (*.m3u)|*.m3u"
+"Fichiers pris en charge (*.json;*.m3u)|*.json;*.m3u|Favoris JSON (*.json)|"
+"*.json|Liste de lecture M3U (*.m3u)|*.m3u"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2156
 #: addon/globalPlugins/freeradio/radioDialog.py:2173
@@ -1738,39 +1727,40 @@ msgid ""
 "Yes  — Merge: add new stations without removing existing ones.\n"
 "No   — Replace: clear the current list and load from file."
 msgstr ""
-"Comment souhaitez-vous ajouter les stations importées ?\n"
+"Comment les stations importées doivent-elles être ajoutées ?\n"
 "\n"
-"Oui  — Fusionner : ajouter les nouvelles stations sans supprimer les existantes.\n"
-"Non  — Remplacer : effacer la liste actuelle et charger depuis le fichier."
+"Oui — Fusionner: ajouter de nouvelles stations sans supprimer celles "
+"existantes.\n"
+"Non — Remplacer: efface la liste actuelle et charge à partir du fichier."
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2185
 #, python-format
 msgid "Import failed: %(error)s"
-msgstr "Échec de l’importation : %(error)s"
+msgstr "Échec d'importation: %(error)s"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2186
 #: addon/globalPlugins/freeradio/radioDialog.py:2194
 msgid "Import Error"
-msgstr "Erreur d’importation"
+msgstr "Échec d'importation"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2193
 #, python-format
 msgid "Could not read the file: %(error)s"
-msgstr "Impossible de lire le fichier : %(error)s"
+msgstr "Impossible de lire le fichier: %(error)s"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2206
 #, python-format
 msgid "Import complete: %(count)d new station added."
 msgid_plural "Import complete: %(count)d new stations added."
-msgstr[0] "Importation terminée : %(count)d nouvelle station ajoutée."
-msgstr[1] "Importation terminée : %(count)d nouvelles stations ajoutées."
+msgstr[0] "Importation terminée: %(count)d nouvelle station ajoutée."
+msgstr[1] "Importation terminée: %(count)d nouvelles stations ajoutées."
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2213
 #, python-format
 msgid "Favourites replaced with %(count)d station from the file."
 msgid_plural "Favourites replaced with %(count)d stations from the file."
-msgstr[0] "Favoris remplacés par %(count)d station du fichier."
-msgstr[1] "Favoris remplacés par %(count)d stations du fichier."
+msgstr[0] "Favoris remplacés par %(count)d station à partir du fichier."
+msgstr[1] "Favoris remplacés par %(count)d stations à partir du fichier."
 
 #: addon/globalPlugins/freeradio/radioDialog.py:2217
 msgid "Import Complete"
@@ -1889,7 +1879,7 @@ msgstr "Morceaux aimés:"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:3147
 msgid "Filter liked songs"
-msgstr "Filtrer les chansons aimées"
+msgstr "Filtrer les morceaux aimés"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:3157
 msgid "Play on &Spotify"
@@ -1901,7 +1891,7 @@ msgstr "Lire sur Y&ouTube"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:3163
 msgid "Show &Lyrics"
-msgstr "Afficher les &paroles"
+msgstr "Afficher les Paro&les"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:3166
 msgid "Re&move"
@@ -1941,8 +1931,8 @@ msgstr "Aucun résultat trouvé"
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
-msgstr[0] "%d chanson"
-msgstr[1] "%d chansons"
+msgstr[0] "%d morceau"
+msgstr[1] "%d morceaux"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:3330
 #, python-format
@@ -1974,7 +1964,7 @@ msgstr "Récupération des paroles…"
 #: addon/globalPlugins/freeradio/radioDialog.py:3394
 #, python-format
 msgid "Lyrics not found for: %s"
-msgstr "Paroles introuvables pour : %s"
+msgstr "Paroles introuvables pour: %s"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:3410
 #, python-format
@@ -1984,7 +1974,7 @@ msgstr "Paroles — %s"
 #: addon/globalPlugins/freeradio/radioDialog.py:3416
 #, python-format
 msgid "Lyrics for: %s"
-msgstr "Paroles de : %s"
+msgstr "Paroles pour: %s"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:3425
 msgid "Lyrics"
@@ -2009,7 +1999,7 @@ msgstr "&Ajouter"
 #: addon/globalPlugins/freeradio/radioDialog.py:3490
 #, python-format
 msgid "Edit Schedule — %s"
-msgstr "Éditer la planification — %s"
+msgstr "Modifier la planification — %s"
 
 #: addon/globalPlugins/freeradio/radioDialog.py:3553
 msgid "&Save"
@@ -2021,26 +2011,26 @@ msgstr "freeRadio"
 
 #: buildVars.py:19
 msgid ""
-"FreeRadio is an internet radio add-on for NVDA that provides seamless access"
-" to thousands of stations via the Radio Browser open directory. It features "
-"a fully accessible station browser with search, country filter, favourites "
+"FreeRadio is an internet radio add-on for NVDA that provides seamless access "
+"to thousands of stations via the Radio Browser open directory. It features a "
+"fully accessible station browser with search, country filter, favourites "
 "management, and per-station audio profiles. Playback is handled by a "
 "prioritised backend chain (BASS, VLC, PotPlayer, Windows Media Player) with "
 "support for volume control, audio effects, output device selection, and "
-"simultaneous audio mirroring to a second device. Additional features include"
-" instant and scheduled recording, sleep and alarm timers, automatic ICY "
+"simultaneous audio mirroring to a second device. Additional features include "
+"instant and scheduled recording, sleep and alarm timers, automatic ICY "
 "metadata announcements, Shazam-based music recognition, and a liked-songs "
 "log. All controls and shortcuts are designed for NVDA accessibility."
 msgstr ""
 "FreeRadio est une extension de radio Internet pour NVDA qui offre un accès "
 "continu à des milliers de stations via l'annuaire ouvert de Radio Browser. "
 "Il dispose d'un navigateur de stations entièrement accessible avec "
-"recherche, filtre de pays, gestion des favoris et profils audio par station."
-" La lecture est gérée par une chaîne backend prioritaire (BASS, VLC, "
-"PotPlayer, Windows Media Player) avec prise en charge du contrôle du volume,"
-" des effets audio, de la sélection du périphérique de sortie et de la mise "
-"en miroir audio simultanée sur un deuxième périphérique. Les fonctionnalités"
-" supplémentaires incluent l'enregistrement instantané et planifié, des "
+"recherche, filtre de pays, gestion des favoris et profils audio par station. "
+"La lecture est gérée par une chaîne backend prioritaire (BASS, VLC, "
+"PotPlayer, Windows Media Player) avec prise en charge du contrôle du volume, "
+"des effets audio, de la sélection du périphérique de sortie et de la mise en "
+"miroir audio simultanée sur un deuxième périphérique. Les fonctionnalités "
+"supplémentaires incluent l'enregistrement instantané et planifié, des "
 "minuteries de mise en veille et d'alarme, des annonces automatiques de "
 "métadonnées ICY, une reconnaissance musicale basée sur Shazam et un journal "
 "des morceaux aimés. Tous les contrôles et raccourcis sont conçus pour "
@@ -2051,80 +2041,368 @@ msgid ""
 "\n"
 "### New Features\n"
 "\n"
-"- **Time-shift buffer**: Rewind and fast-forward live radio like a DVR, using a rolling ~10-minute buffer. Enable it from Settings or toggle it instantly with `Ctrl+Win+T`. Rewind 15 seconds with `Ctrl+Win+J`; fast-forward 15 seconds with `Ctrl+Win+K` — reaching the live edge automatically returns you to normal live playback.\n"
-"- Time-shift now supports **HLS (`.m3u8`) stations** in addition to plain HTTP/HTTPS and Shoutcast/Icecast (ICY) streams — segments are downloaded and reassembled into the same rewindable buffer.\n"
+"- **Time-shift buffer**: Rewind and fast-forward live radio like a DVR, "
+"using a rolling ~10-minute buffer. Enable it from Settings or toggle it "
+"instantly with `Ctrl+Win+T`. Rewind 15 seconds with `Ctrl+Win+J`; fast-"
+"forward 15 seconds with `Ctrl+Win+K` — reaching the live edge automatically "
+"returns you to normal live playback.\n"
+"- Time-shift now supports **HLS (`.m3u8`) stations** in addition to plain "
+"HTTP/HTTPS and Shoutcast/Icecast (ICY) streams — segments are downloaded and "
+"reassembled into the same rewindable buffer.\n"
 "\n"
 "### Fixes\n"
 "\n"
-"- Fixed time-shift capture (and recording) failing with an SSL certificate error on stations whose server presents an expired or otherwise invalid TLS certificate.\n"
+"- Fixed time-shift capture (and recording) failing with an SSL certificate "
+"error on stations whose server presents an expired or otherwise invalid TLS "
+"certificate.\n"
 "\n"
 "### Documentation\n"
 "\n"
-"- Added a full \"Time-Shift (Rewind Live Radio)\" section to the README, plus new shortcut and settings table entries.\n"
+"- Added a full \"Time-Shift (Rewind Live Radio)\" section to the README, "
+"plus new shortcut and settings table entries.\n"
 msgstr ""
 "\n"
 "### Nouvelles fonctionnalités\n"
 "\n"
-"- **Mémoire tampon de décalage temporel** : rembobinez et avancez sur la radio en direct comme avec un DVR, grâce à une mémoire tampon tournante de ~10 minutes. Activez-la depuis les Paramètres ou basculez-la instantanément avec `Ctrl+Win+T`. Reculez de 15 secondes avec `Ctrl+Win+J` ; avancez de 15 secondes avec `Ctrl+Win+K` — atteindre le direct vous ramène automatiquement à la lecture normale.\n"
-"- Le décalage temporel prend désormais en charge les **stations HLS (`.m3u8`)** en plus des flux HTTP/HTTPS classiques et Shoutcast/Icecast (ICY) — les segments sont téléchargés et réassemblés dans la même mémoire tampon rembobinable.\n"
+"- **Mémoire tampon de décalage temporel** : rembobinez et avancez sur la "
+"radio en direct comme avec un DVR, grâce à une mémoire tampon tournante de "
+"~10 minutes. Activez-la depuis les Paramètres ou basculez-la instantanément "
+"avec `Ctrl+Win+T`. Reculez de 15 secondes avec `Ctrl+Win+J` ; avancez de 15 "
+"secondes avec `Ctrl+Win+K` — atteindre le direct vous ramène automatiquement "
+"à la lecture normale.\n"
+"- Le décalage temporel prend désormais en charge les **stations HLS "
+"(`.m3u8`)** en plus des flux HTTP/HTTPS classiques et Shoutcast/Icecast "
+"(ICY) — les segments sont téléchargés et réassemblés dans la même mémoire "
+"tampon rembobinable.\n"
 "\n"
 "### Corrections\n"
 "\n"
-"- Corrigé l’échec de la capture en décalage temporel (et de l’enregistrement) avec une erreur de certificat SSL sur les stations dont le serveur présente un certificat TLS expiré ou invalide.\n"
+"- Corrigé l'échec de la capture en décalage temporel (et de "
+"l'enregistrement) avec une erreur de certificat SSL sur les stations dont le "
+"serveur présente un certificat TLS expiré ou invalide.\n"
 "\n"
 "### Documentation\n"
 "\n"
-"- Ajout d’une section complète « Décalage temporel (retour en arrière sur la radio en direct) » au README, ainsi que de nouvelles entrées dans les tableaux de raccourcis et de paramètres.\n"
+"- Ajout d'une section complète « Décalage temporel (retour en arrière sur la "
+"radio en direct) » au README, ainsi que de nouvelles entrées dans les "
+"tableaux de raccourcis et de paramètres.\n"
 
 #~ msgid ""
 #~ "\n"
 #~ "**New features**\n"
-#~ "- Favourites can now be exported to JSON or M3U format and imported back from either format. Export and Import buttons appear at the bottom of the Favourites tab. When importing, you can choose to merge the file's stations into your existing list or replace the list entirely. Duplicate stations (matched by ID or stream URL) are skipped automatically during merge.\n"
-#~ "- The Recordings and Timer tabs now have a Filter field above their favourite station lists, matching the one already present in the Favourites tab. The Liked Songs tab also has a Filter field above the song list. In all cases, pressing the Down arrow from the filter field moves focus directly into the list, and the number of matching results is announced after each keystroke.\n"
+#~ "- Favourites can now be exported to JSON or M3U format and imported back "
+#~ "from either format. Export and Import buttons appear at the bottom of the "
+#~ "Favourites tab. When importing, you can choose to merge the file's "
+#~ "stations into your existing list or replace the list entirely. Duplicate "
+#~ "stations (matched by ID or stream URL) are skipped automatically during "
+#~ "merge.\n"
+#~ "- The Recordings and Timer tabs now have a Filter field above their "
+#~ "favourite station lists, matching the one already present in the "
+#~ "Favourites tab. The Liked Songs tab also has a Filter field above the "
+#~ "song list. In all cases, pressing the Down arrow from the filter field "
+#~ "moves focus directly into the list, and the number of matching results is "
+#~ "announced after each keystroke.\n"
 #~ "**Added a Lyrics Service**\n"
-#~ "Asynchronous lyrics fetcher for the Liked Songs tab using the lrclib.net API (free, no API key required).\n"
-#~ "- Fetches lyrics in the background via a daemon thread; the UI remains responsive during lookup.\n"
-#~ "- Prefers `plainLyrics`; falls back to `syncedLyrics` with LRC timestamps stripped when plain text is unavailable. Tracks marked as instrumental are silently skipped.\n"
+#~ "Asynchronous lyrics fetcher for the Liked Songs tab using the lrclib.net "
+#~ "API (free, no API key required).\n"
+#~ "- Fetches lyrics in the background via a daemon thread; the UI remains "
+#~ "responsive during lookup.\n"
+#~ "- Prefers `plainLyrics`; falls back to `syncedLyrics` with LRC timestamps "
+#~ "stripped when plain text is unavailable. Tracks marked as instrumental "
+#~ "are silently skipped.\n"
 #~ msgstr ""
 #~ "\n"
 #~ "**Nouvelles fonctionnalités**\n"
-#~ "- Les favoris peuvent désormais être exportés au format JSON ou M3U et réimportés depuis l'un ou l'autre format. Les boutons Exporter et Importer apparaissent en bas de l'onglet Favoris. Lors de l’importation, vous pouvez choisir de fusionner les stations du fichier avec votre liste existante ou de remplacer entièrement la liste. Les stations en double (identifiées par ID ou URL de flux) sont automatiquement ignorées lors de la fusion.\n"
-#~ "- Les onglets Enregistrements et Minuterie disposent désormais d’un champ Filtre au-dessus de leurs listes de stations favorites, à l’instar de celui déjà présent dans l’onglet Favoris. L’onglet Chansons aimées possède également un champ Filtre au-dessus de la liste de chansons. Dans tous les cas, appuyer sur la flèche vers le bas depuis le champ Filtre déplace le focus directement dans la liste, et le nombre de résultats correspondants est annoncé après chaque frappe.\n"
-#~ "**Ajout d’un service de paroles**\n"
-#~ "Téléchargeur de paroles asynchrone pour l’onglet Chansons aimées, utilisant l’API lrclib.net (gratuite, sans clé API requise).\n"
-#~ "- Télécharge les paroles en arrière-plan via un thread démon ; l’interface reste réactive pendant la recherche.\n"
-#~ "- Préfère `plainLyrics` ; bascule sur `syncedLyrics` en supprimant les horodatages LRC lorsque le texte brut est indisponible. Les pistes instrumentales sont ignorées silencieusement.\n"
+#~ "- Les favoris peuvent désormais être exportés au format JSON ou M3U et "
+#~ "réimportés depuis l'un ou l'autre format. Les boutons Exporter et "
+#~ "Importer apparaissent au bas de l'onglet Favoris. Lors de l'importation, "
+#~ "vous pouvez choisir de fusionner les stations du fichier dans votre liste "
+#~ "existante ou de remplacer entièrement la liste. Les stations en double "
+#~ "(correspondantes par ID ou flux URL) sont automatiquement ignorées lors "
+#~ "de la fusion.\n"
+#~ "- Les onglets Enregistrements et Minuterie disposent désormais d'un champ "
+#~ "Filtrer au-dessus de leurs listes de stations favorites, correspondant à "
+#~ "celui déjà présent dans l'onglet Favoris. L'onglet Morceaux aimés "
+#~ "comporte également un champ Filtrer au-dessus de la liste des morceaux. "
+#~ "Dans tous les cas, appuyer sur la flèche bas depuis le champ filtrer "
+#~ "déplace le focus directement vers la liste et le nombre de résultats "
+#~ "correspondants est annoncé après chaque frappe.\n"
+#~ "**Ajout d'un service de Paroles**\n"
+#~ "Outil de récupération de paroles asynchrone pour l'onglet Morceaux aimés "
+#~ "à l'aide de l'API lrclib.net (gratuite, aucune clé API requise).\n"
+#~ "- Récupère les paroles en arrière-plan via un thread démon ; l'interface "
+#~ "utilisateur reste réactive pendant la recherche.\n"
+#~ "- Préfère `plainLyrics` ; revient à `syncedLyrics` avec les horodatages "
+#~ "LRC supprimés lorsque le texte brut n'est pas disponible. Les pistes "
+#~ "marquées comme instrumentales sont ignorées en silence.\n"
+
+#~ msgid "record only"
+#~ msgstr "enregistrer seulement"
+
+#~ msgid "listen and record"
+#~ msgstr "écouter et enregistrer"
 
 #, python-format
-#~ msgid "%d favourites"
-#~ msgstr "%d favoris"
+#~ msgid ""
+#~ "Time has passed today. Schedule added for tomorrow: %(station)s at "
+#~ "%(time)s (%(mode)s)"
+#~ msgstr ""
+#~ "L'heure a passée aujourd'hui. Planification ajoutée pour demain: "
+#~ "%(station)s à %(time)s (%(mode)s)"
 
 #~ msgid ""
 #~ "\n"
-#~ "**Save Audio Profile dialog now offers three save options**\n"
-#~ "When saving an audio profile for a station, a dialog now appears asking what to save: volume only, effects only, or both. Cancelling the dialog leaves the existing profile unchanged. If only one option is selected, the other part of the profile is kept as-is.\n"
+#~ "- Fixed playback of HTTPS Icecast streams that caused BASS to fail with\n"
+#~ "  BASS_ERROR_FILEFORM (err=40). Affected streams sent ICY response "
+#~ "headers\n"
+#~ "  immediately after the TLS handshake, before a standard HTTP status "
+#~ "line,\n"
+#~ "  which BASS's SSL layer could not parse.\n"
+#~ "- Implemented a local loopback proxy in bass_host.py to work around the\n"
+#~ "  issue: urllib opens the HTTPS connection (which tolerates ICY quirks),\n"
+#~ "  and BASS reads plain HTTP audio from a localhost socket instead.\n"
+#~ "- The remote HTTPS connection and BASS's local connect now happen in\n"
+#~ "  parallel, keeping startup latency close to that of a normal stream.\n"
+#~ "- ICY headers (content-type, icy-metaint, icy-br, icy-sr, etc.) are\n"
+#~ "  forwarded accurately from the remote server to BASS. Previously "
+#~ "sending\n"
+#~ "  icy-metaint: 0 caused garbled audio and a phaser/chorus-like artifact.\n"
+#~ "- Removed the _BASS_SKIP_HOSTS workaround in radioPlayer.py that\n"
+#~ "  bypassed BASS entirely for icecast.walmradio.com, restoring full BASS\n"
+#~ "  features (ICY metadata, bass boost, FX, volume mixer entry) for that\n"
+#~ "  station.\n"
+#~ "---\n"
+#~ "**New: Adjustable EQ Effect Levels**\n"
+#~ "The Bass Boost, Treble Boost, and Vocal Boost effects now include "
+#~ "individual gain controls. When one of these effects is enabled, a dB "
+#~ "slider appears next to it, letting you fine-tune the intensity from −15 "
+#~ "dB to +15 dB.\n"
+#~ "Previously, each EQ effect had a fixed strength (Bass: +9 dB, Treble: +9 "
+#~ "dB, Vocal: +6 dB). These defaults are unchanged — the controls simply let "
+#~ "you go lower or higher as needed.\n"
+#~ "**What's new:**\n"
+#~ "- Gain controls appear automatically when an EQ effect is turned on, and "
+#~ "hide when it is turned off.\n"
+#~ "- Values are saved globally and restored when the add-on starts.\n"
+#~ "- If you save an audio profile for a favourite station, the EQ gain "
+#~ "levels are included in that profile and restored whenever you tune to "
+#~ "that station.\n"
 #~ msgstr ""
 #~ "\n"
-#~ "**La boîte de dialogue Enregistrer le profil audio propose désormais trois options de sauvegarde**\n"
-#~ "Lors de l'enregistrement d'un profil audio pour une station, une boîte de dialogue s'affiche maintenant pour demander ce que vous souhaitez enregistrer : le volume uniquement, les effets uniquement, ou les deux. Annuler la boîte de dialogue laisse le profil existant inchangé. Si une seule option est sélectionnée, l'autre partie du profil est conservée telle quelle.\n"
+#~ "- Correction de la lecture des flux HTTPS Icecast qui provoquait l'échec "
+#~ "de BASS avec\n"
+#~ "  BASS_ERROR_FILEFORM (erreur=40). Les flux concernés ont envoyé des en-"
+#~ "têtes de réponse ICY\n"
+#~ "  immédiatement après la prise de contact TLS, avant une ligne d'état "
+#~ "HTTP standard,\n"
+#~ "  que la couche SSL de BASS n'a pas pu analyser.\n"
+#~ "- Implémentation d'un proxy de bouclage local dans bass_host.py pour "
+#~ "contourner le\n"
+#~ "  problème : urllib ouvre la connexion HTTPS (qui tolère les bizarreries "
+#~ "ICY),\n"
+#~ "  et BASS lit à la place l'audio HTTP brut à partir d'un socket "
+#~ "localhost.\n"
+#~ "- La connexion HTTPS à distance et la connexion locale de BASS "
+#~ "s'effectuent désormais dans\n"
+#~ "  en parallèle, gardant la latence de démarrage proche de celle d'un flux "
+#~ "normal.\n"
+#~ "- Les en-têtes ICY (content-type, icy-metaint, icy-br, icy-sr, etc.) "
+#~ "sont\n"
+#~ "  transmis avec précision du serveur distant à BASS. Envoi précédent\n"
+#~ "  icy-metaint : 0 provoquait un son brouillé et un artefact de type "
+#~ "phaser/chorus.\n"
+#~ "- Suppression de la solution de contournement _BASS_SKIP_HOSTS dans "
+#~ "radioPlayer.py qui\n"
+#~ "  contourné entièrement BASS pour icecast.walmradio.com, restaurant ainsi "
+#~ "la totalité des BASS\n"
+#~ "  fonctionnalités (métadonnées ICY, amplification des basses, effets, "
+#~ "entrée du mixeur de volume) pour cela\n"
+#~ "  gare.\n"
+#~ "---\n"
+#~ "**Nouveau : niveaux d'effet d'égalisation réglables**\n"
+#~ "Les effets Bass Boost, Treble Boost et Vocal Boost incluent désormais des "
+#~ "commandes de gain individuelles. Lorsque l'un de ces effets est activé, "
+#~ "un curseur dB apparaît à côté, vous permettant d'ajuster l'intensité de "
+#~ "-15 dB à +15 dB.\n"
+#~ "Auparavant, chaque effet d'égalisation avait une force fixe (Basses : +9 "
+#~ "dB, Aigus : +9 dB, Voix : +6 dB). Ces valeurs par défaut restent "
+#~ "inchangées : les commandes vous permettent simplement de descendre ou de "
+#~ "monter selon vos besoins.\n"
+#~ "**Quoi de neuf :**\n"
+#~ "- Les commandes de gain apparaissent automatiquement lorsqu'un effet "
+#~ "d'égalisation est activé et se cachent lorsqu'il est désactivé.\n"
+#~ "- Les valeurs sont enregistrées globalement et restaurées au démarrage de "
+#~ "l'extension.\n"
+#~ "- Si vous enregistrez un profil audio pour une station favorite, les "
+#~ "niveaux de gain d'égalisation sont inclus dans ce profil et restaurés "
+#~ "chaque fois que vous syntonisez cette station.\n"
 
 #~ msgid ""
 #~ "\n"
-#~ "**Scheduler and Timer Fixes**\n"
-#~ "**Scheduled Recordings**\n"
-#~ "- Day selection is now available in single-recording mode as well as recurring mode. Selecting multiple days creates a separate scheduled entry for each day, with each entry automatically placed on the next upcoming occurrence of that day.\n"
-#~ "- Removed the \"time has passed today\" warning; entries are now silently moved to the correct future date when the selected time has already passed.\n"
-#~ "- Fixed a bug where restarting NVDA during an active weekly recording would create an additional duplicate entry in both the schedule list and the JSON file on every restart. The next recurrence is now only queued after the current recording has fully completed.\n"
-#~ "- Removed misplaced code that was incorrectly rebuilding the station list on every keystroke in the favourites filter field.\n"
-#~ "**Timers**\n"
-#~ "- Adding a new timer is now blocked if another timer already exists at the same time, regardless of whether it is a start alarm or a sleep timer. The user is informed of the conflict and prompted to remove the existing entry first.\n"
+#~ "**New Languages for Freeradio**\n"
+#~ "- Czech by jiri Holzinger.\n"
+#~ "- Arabic by ALI ALOMARI\n"
+#~ "- French and Spanish by Rémy Ruiz\n"
+#~ "- Khmer by Phearith\n"
+#~ "- Russian by Валентин Куприянов\n"
+#~ "**Station Manager: resilient mirror selection**\n"
+#~ "- The Radio Browser server list is now fetched dynamically via DNS lookup "
+#~ "(`all.api.radio-browser.info`) at startup, following the approach "
+#~ "recommended by the Radio Browser API. Servers are shuffled before use so "
+#~ "load is distributed across the network. When DNS discovery fails, the "
+#~ "previous hardcoded mirror list is used as a fallback. Temporary HTTP 5xx "
+#~ "errors (e.g. 503 Service Unavailable) are now retried once after a short "
+#~ "delay before moving on to the next mirror, reducing failed loads during "
+#~ "brief server outages.\n"
+#~ "**Search: multi-token filtering for All Stations and Favourites**\n"
+#~ "- Local filtering in both the All Stations tab and the Favourites tab now "
+#~ "splits the search query into individual tokens and requires all of them "
+#~ "to match (AND logic). For example, searching \"jazz france\" returns only "
+#~ "stations whose metadata contains both \"jazz\" and \"france\". The last "
+#~ "token is matched as a prefix so that results remain visible while the "
+#~ "user is still typing a word. The status label in the All Stations tab now "
+#~ "always reflects the actual number of visible stations after filtering, "
+#~ "rather than the raw count returned by the API.\n"
+#~ "- Added a \"Result limit\" setting to the All Stations tab to control the "
+#~ "maximum number of results fetched for searches and country filters.\n"
 #~ msgstr ""
 #~ "\n"
-#~ "**Corrections du planificateur et des minuteries**\n"
-#~ "**Enregistrements planifiés**\n"
-#~ "- La sélection des jours est désormais disponible en mode d'enregistrement unique ainsi qu'en mode récurrent. La sélection de plusieurs jours crée une entrée planifiée distincte pour chaque jour, chaque entrée étant automatiquement placée sur la prochaine occurrence de ce jour.\n"
-#~ "- L'avertissement « l'heure est déjà passée aujourd'hui » a été supprimé ; les entrées sont désormais déplacées silencieusement à la bonne date future lorsque l'heure sélectionnée est déjà passée.\n"
-#~ "- Correction d'un bug où le redémarrage de NVDA pendant un enregistrement hebdomadaire actif créait une entrée en double supplémentaire à la fois dans la liste de planification et dans le fichier JSON à chaque redémarrage. La prochaine occurrence n'est désormais mise en file d'attente qu'une fois l'enregistrement en cours entièrement terminé.\n"
-#~ "- Suppression d'un code mal placé qui reconstruisait incorrectement la liste des stations à chaque frappe dans le champ de filtre des favoris.\n"
-#~ "**Minuteries**\n"
-#~ "- L'ajout d'une nouvelle minuterie est désormais bloqué si une autre minuterie existe déjà à la même heure, qu'il s'agisse d'une alarme de démarrage ou d'une minuterie de mise en veille. L'utilisateur est informé du conflit et invité à supprimer d'abord l'entrée existante.\n"
+#~ "**Nouvelles langues pour Freeradio**\n"
+#~ "- Tchèque par Jiri Holzinger.\n"
+#~ "- Arabe par ALI ALOMARI\n"
+#~ "- Français et Espagnol par Rémy Ruiz\n"
+#~ "- Khmer par Phearith\n"
+#~ "- Russe par Валентин Куприянов\n"
+#~ "**Station Manager : sélection de miroirs résilients**\n"
+#~ "- La liste des serveurs Radio Browser est désormais récupérée "
+#~ "dynamiquement via la recherche DNS (`all.api.radio-browser.info`) au "
+#~ "démarrage, suivant l'approche recommandée par l'API Radio Browser. Les "
+#~ "serveurs sont mélangés avant utilisation afin que la charge soit répartie "
+#~ "sur le réseau. Lorsque la découverte DNS échoue, la liste de miroirs "
+#~ "codée en dur précédente est utilisée comme solution de secours. Les "
+#~ "erreurs HTTP 5xx temporaires (par exemple, 503 Service indisponible) sont "
+#~ "désormais réessayées une fois après un court délai avant de passer au "
+#~ "miroir suivant, réduisant ainsi les échecs de chargement lors de brèves "
+#~ "pannes de serveur.\n"
+#~ "**Recherche : filtrage multi-jetons pour toutes les stations et "
+#~ "favoris**\n"
+#~ "- Le filtrage local dans les onglets Toutes les stations et Favoris "
+#~ "divise désormais la requête de recherche en jetons individuels et exige "
+#~ "qu'ils correspondent tous (logique ET). Par exemple, la recherche « jazz "
+#~ "france » renvoie uniquement les stations dont les métadonnées contiennent "
+#~ "à la fois « jazz » et « france ». Le dernier jeton correspond à un "
+#~ "préfixe afin que les résultats restent visibles pendant que l'utilisateur "
+#~ "est encore en train de taper un mot. L'étiquette d'état dans l'onglet "
+#~ "Toutes les stations reflète désormais toujours le nombre réel de stations "
+#~ "visibles après le filtrage, plutôt que le nombre brut renvoyé par l'API.\n"
+#~ "- Ajout d'un paramètre \"Limite de résultats\" à l'onglet Toutes les "
+#~ "stations pour contrôler le nombre maximum de résultats récupérés pour les "
+#~ "recherches et les filtres de pays.\n"
+
+#, python-format
+#~ msgid "%s in %s"
+#~ msgstr "%s dans %s"
+
+#, python-format
+#~ msgid "\"%s\": %d"
+#~ msgstr "\"%s\": %d"
+
+#~ msgid ""
+#~ "\n"
+#~ "**Liked Songs: duplicate detection**\n"
+#~ "- Before adding a track to `likedSongs.txt`, the file is now read and "
+#~ "checked for an existing entry with the same text. If the track is already "
+#~ "present, it is not written again and NVDA announces \"Already in liked "
+#~ "songs: [track]\" instead. This prevents the list from accumulating "
+#~ "repeated entries when the same track is recognised or copied multiple "
+#~ "times during a session.\n"
+#~ "**F2 in station browser: 4-press behaviour now mirrors Ctrl+Win+I**\n"
+#~ "- The in-dialog F2 handler (`_whats_playing_from_dialog`) has been "
+#~ "rewritten to match `script_whatsPlaying` press-for-press:\n"
+#~ "- **1×** — announce the currently playing station and track\n"
+#~ "- **2×** — open the station details dialog (delayed 350 ms so a 3rd press "
+#~ "can cancel it)\n"
+#~ "- **3×** — copy ICY track title to clipboard; fall back to Shazam if no "
+#~ "metadata is available\n"
+#~ "- **4×** — force Shazam music recognition regardless of ICY metadata, "
+#~ "then reset the counter\n"
+#~ "- Previously the handler merged the 3rd and all subsequent presses into a "
+#~ "single `elif count >= 2` branch, so the 4th press was never reached. A "
+#~ "cancellation token is now also passed into the 3rd-press background "
+#~ "thread so that a 4th press arriving while the thread is still running "
+#~ "correctly aborts the clipboard/Shazam action before the forced-"
+#~ "recognition path takes over.\n"
+#~ "**Music Recognizer: improved recognition of non-mainstream tracks**\n"
+#~ "- Previously, the signature generator stopped processing audio after ~3.1 "
+#~ "seconds or 255 peaks, whichever came first. The full 12-second audio "
+#~ "sample is now used to build the fingerprint, sending significantly richer "
+#~ "data to Shazam. This hopefully improves recognition accuracy for folk, "
+#~ "regional, and other non-mainstream music.\n"
+#~ "**All Stations tab: Sort combo box**\n"
+#~ "- Added a *Sort* combo box to the All Stations tab, placed before the "
+#~ "Country filter. Options are **Alphabetical** (default) and **By Rating** "
+#~ "(sorted by vote count, highest first). Changing the sort order instantly "
+#~ "re-sorts the current station list without triggering a new network "
+#~ "request.\n"
+#~ "**Settings: SAPI5 voice selector for track change announcements**\n"
+#~ "- Added a *SAPI5 voice* dropdown to the settings panel, appearing below "
+#~ "the existing *Track change voice* option. - When SAPI5 is selected as the "
+#~ "announcement voice, users can now choose which installed SAPI5 voice to "
+#~ "use. The list is populated automatically from the system's available "
+#~ "voices. Selecting *Default (system)* uses whatever voice Windows has set "
+#~ "as the default. The dropdown is disabled when NVDA is selected as the "
+#~ "announcement voice, or when auto-announce is turned off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "**Chansons aimées : détection des doublons**\n"
+#~ "- Avant d'ajouter une piste à `likedSongs.txt`, le fichier est maintenant "
+#~ "lu et vérifié pour une entrée existante avec le même texte. Si le morceau "
+#~ "est déjà présent, il n'est pas réécrit et NVDA annonce à la place \"Déjà "
+#~ "dans les chansons aimées : [piste]\". Cela empêche la liste d'accumuler "
+#~ "des entrées répétées lorsque la même piste est reconnue ou copiée "
+#~ "plusieurs fois au cours d'une session.\n"
+#~ "**F2 dans le navigateur de station : le comportement de 4 pulsations les "
+#~ "miroirs  désormais Ctrl+Win+I**\n"
+#~ "- Le gestionnaire F2 dans la boîte de dialogue "
+#~ "(`_whats_playing_from_dialog`) a été réécrit pour correspondre à "
+#~ "`script_whatsPlaying` press-for-press :\n"
+#~ "- **1×** — annonce la station et la piste en cours de lecture\n"
+#~ "- **2×** — ouvre la boîte de dialogue des détails de la station (retardée "
+#~ "de 350 ms pour qu'une troisième pulsation puisse l'annuler)\n"
+#~ "- **3×** — copie le titre de la piste ICY dans le presse-papiers ; "
+#~ "revenez à Shazam si aucune métadonnée n'est disponible\n"
+#~ "- **4×** — force la reconnaissance musicale Shazam quelles que soient les "
+#~ "métadonnées ICY, puis réinitialise le compteur\n"
+#~ "- Auparavant, le gestionnaire fusionnait la 3ème pulsation et toutes les "
+#~ "pulsations suivantes en une seule branche `elif count >= 2`, donc la 4ème "
+#~ "pulsation n'était jamais atteinte. Un jeton d'annulation est désormais "
+#~ "également transmis au fil d'arrière-plan de la troisième pulsation, de "
+#~ "sorte qu'une quatrième pulsation arrivant alors que le fil s'exécute "
+#~ "toujours correctement annule l'action du presse-papiers/Shazam avant que "
+#~ "le chemin de reconnaissance forcée ne prenne le relais.\n"
+#~ "**Reconnaissance de musique : reconnaissance améliorée des morceaux non "
+#~ "traditionnels**\n"
+#~ "- Auparavant, le générateur de signatures arrêtait le traitement de "
+#~ "l'audio après environ 3,1 secondes ou 255 pics, selon la première "
+#~ "éventualité. L'échantillon audio complet de 12 secondes est désormais "
+#~ "utilisé pour créer l'empreinte digitale, envoyant ainsi des données "
+#~ "beaucoup plus riches à Shazam. Nous espérons que cela améliorera la "
+#~ "précision de la reconnaissance pour la musique folk, régionale et autres "
+#~ "musiques non grand public.\n"
+#~ "**Onglet Toutes les stations : liste déroulante Trier**\n"
+#~ "- Ajout d'une liste déroulante*Trier* à l'onglet Toutes les stations, "
+#~ "placée avant le filtre Pays. Les options sont **Alphabétique** (par "
+#~ "défaut) et **Par Notation** (triées par nombre de votes, le plus élevé en "
+#~ "premier). La modification de l'ordre de tri trie instantanément la liste "
+#~ "actuelle des stations sans déclencher une nouvelle requête réseau.\n"
+#~ "**Paramètres : sélecteur de voix  SAPI5 pour l'annonce de Voix de "
+#~ "changement de pistes**\n"
+#~ "- Ajout d'une liste déroulante *Voix SAPI5* au panneau des paramètres, "
+#~ "apparaissant sous l'option existante *Voix de changement de piste*. - "
+#~ "Lorsque SAPI5 est sélectionné comme voix d'annonce, les utilisateurs "
+#~ "peuvent désormais choisir la voix SAPI5 installée à utiliser. La liste "
+#~ "est remplie automatiquement à partir des voix disponibles du système. La "
+#~ "sélection de *Par défaut (système)* utilise la voix définie par Windows "
+#~ "par défaut. La liste déroulante est désactivée lorsque NVDA est "
+#~ "sélectionné comme voix d'annonce ou lorsque l'annonce automatique est "
+#~ "désactivée.\n"

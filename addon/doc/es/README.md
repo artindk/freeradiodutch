@@ -53,7 +53,7 @@ Todos los atajos se pueden reasignar desde el Menú NVDA → Preferencias → Ge
 | `Ctrl+Win+K` | Avance rápido del desplazamiento temporal | Avanza 15 segundos mientras se está en modo de desplazamiento temporal. Una vez alcanzado el borde del directo, la reproducción vuelve automáticamente al directo y este comando no tiene efecto hasta que se retroceda de nuevo. |
 | `Ctrl+Win+T` | Alternar búfer de desplazamiento temporal | Habilita o deshabilita el búfer de desplazamiento temporal al instante, reflejando la casilla de Ajustes. Al deshabilitarlo, vuelve inmediatamente al directo si estaba en modo de desplazamiento temporal y detiene la captura en segundo plano. |
 | *((no asignado)* | Alternar notificaciones silenciosas | Alternar la configuración de Silenciar notificaciones sobre la marcha. Asignar una combinación de teclas a través del Menú NVDA → Preferencias → Gestos de Entrada → FreeRadio. |
-| *(no asignado)* | Reproducir estación favorita directamente | Cada estación de la lista de favoritos aparece como una entrada individual en el Menú NVDA → Preferencias → Gestos de Entrada → **FreeRadio Stations**. Asigna un atajo de teclado a cualquier estación para iniciarla al instante desde cualquier lugar, sin abrir el navegador. |
+| *(no asignado)* | Reproducir estación favorita directamente | Cada estación de la lista de favoritos aparece como una entrada individual en el Menú NVDA → Preferencias → Gestos de Entrada → **Estaciones FreeRadio**. Asigna un atajo de teclado a cualquier estación para iniciarla al instante desde cualquier lugar, sin abrir el navegador. |
 
 Los atajos siguientes/anteriores sólo recorren la lista de favoritos; No funcionan con la lista de todas las estaciones. Cuando una lista tiene el foco en la ventana del navegador, las teclas de flecha izquierda y derecha tienen el mismo propósito — ver la sección de Atajos en el cuadro de diálogo.
 
@@ -137,12 +137,12 @@ Para eliminar una emisora ​​de la lista de favoritos, selecciónela y pulse 
 
 La pestaña Favoritos incluye dos botones para hacer copias de seguridad y restaurar tu lista de estaciones:
 
-**Exportar Favoritos…** — guarda toda tu lista de favoritos en un archivo. Un cuadro de diálogo te permite elegir entre dos formatos:
-- **JSON** (`.json`) — una copia de seguridad completa que conserva los nombres de las estaciones, las URLs de transmisión y todos los metadatos. Recomendado para restaurar tu lista más adelante o moverla a otro equipo.
+**Exportar favoritos…** — guarda toda tu lista de favoritos en un archivo. Un cuadro de diálogo te permite elegir entre dos formatos:
+- **JSON** (`.json`) — una copia de seguridad completa que conserva los nombres de las estaciones, las URLs del Stream de transmisión y todos los metadatos. Recomendado para restaurar tu lista más adelante o moverla a otro equipo.
 - **Lista de reproducción M3U** (`.m3u`) — un formato de lista de reproducción estándar compatible con la mayoría de reproductores multimedia y aplicaciones de radio. Ten en cuenta que M3U no almacena todos los metadatos de la estación, por lo que restaurar desde M3U puede resultar en menos detalles que una copia de seguridad JSON.
 
-**Importar Favoritos…** — carga estaciones desde un archivo JSON o M3U exportado previamente. Después de seleccionar el archivo, se te pregunta cómo agregar las estaciones:
-- **Sí (Combinar)** — añade las estaciones importadas a tu lista existente sin eliminar ningún favorito actual. Las estaciones duplicadas no se añaden dos veces.
+**Importar favoritos…** — carga estaciones desde un archivo JSON o M3U exportado previamente. Después de seleccionar el archivo, se te pregunta cómo agregar las estaciones:
+- **Sí (Fusionar)** — añade las estaciones importadas a tu lista existente sin eliminar ningún favorito actual. Las estaciones duplicadas no se añaden dos veces.
 - **No (Reemplazar)** — borra completamente tu lista de favoritos actual y la reemplaza con el contenido del archivo importado.
 - **Cancelar** — regresa al navegador sin realizar ningún cambio.
 
@@ -154,12 +154,12 @@ Con una estación seleccionada en la pestaña Favoritos, pulse la `coma` para en
 
 ### Atajos de Teclado Directos para Estaciones Favoritas
 
-Cada estación de la lista de favoritos está registrada como un script independiente en el cuadro de diálogo Gestos de Entrada de NVDA, dentro de la categoría **FreeRadio Stations**. Puedes asignar cualquier atajo de teclado a cualquier estación y pulsarlo desde cualquier lugar — sin necesidad de abrir la ventana del navegador.
+Cada estación de la lista de favoritos está registrada como un script independiente en el cuadro de diálogo Gestos de Entrada de NVDA, dentro de la categoría **Estaciones FreeRadio**. Puedes asignar cualquier atajo de teclado a cualquier estación y pulsarlo desde cualquier lugar — sin necesidad de abrir la ventana del navegador.
 
 Para asignar un atajo:
 
 1. Abre el Menú NVDA → Preferencias → Gestos de Entrada.
-2. Expande la categoría **FreeRadio Stations**.
+2. Expande la categoría **Estaciones FreeRadio**.
 3. Busca la estación por nombre, selecciónala y pulsa **Añadir**.
 4. Pulsa la combinación de teclas deseada y confirma.
 
@@ -211,17 +211,17 @@ Las grabaciones se guardan de forma predeterminada en `Documentos\FreeRadio Reco
 
 **Grabación de la canción:** Pulse `Ctrl+Win+E` **dos veces** en sucesión rápida mientras se reproduce una estación que transmite metadatos ICY. La grabación comienza inmediatamente y lleva el nombre del título de la pista actual. Cuando cambia la pista, la grabación se detiene automáticamente y NVDA anuncia el nombre del archivo grabado. Si desea terminar la grabación antes del final de la pista, ppulse `Ctrl+Win+E` dos veces nuevamente. Si la estación actual no transmite metadatos ICY, la grabación de la canción no está disponible y NVDA te lo notificará.
 
-**Grabación programada:** Abra la pestaña Grabación en el navegador. Seleccione una estación de sus favoritos, ingrese la hora de inicio en formato HH:MM y la duración en minutos, seleccione uno o más días activos y, a continuación, elija el modo de repetición y el modo de grabación:
+**Grabación programada:** Abra la pestaña Grabación en el navegador. Seleccione una estación de sus favoritos, ingrese la hora de inicio en formato HH:MM y la duración en minutos, seleccione uno o más días activos y, luego elige el modo de recurrencia y el modo de grabación:
 
-**Días activos:** Marque uno o más días de la semana. En el modo de grabación única, se crea una entrada separada para cada día seleccionado, colocada en la próxima ocurrencia de ese día. En el modo recurrente, la grabación se repite únicamente en los días marcados. Si no se selecciona ningún día, la grabación no se restringe a días concretos.
+**Días activos:** Marque uno o más días de la semana. En el modo de Solo grabación, se crea una entrada separada para cada día seleccionado, colocada en la próxima ocurrencia de ese día. En el modo de Recurrencia, la grabación se repite únicamente en los días marcados. Si no se selecciona ningún día, la grabación no se restringe a días concretos.
 
-**Modo de repetición:**
+**Modo de recurrencia:**
 - **Grabar una vez** — crea una grabación única para cada día seleccionado. Cada entrada se coloca en la próxima ocurrencia de ese día; si la hora de hoy ya pasó, la entrada se traslada automáticamente a la semana siguiente.
 - **Repetir semanalmente** — se repite cada semana en los días activos seleccionados hasta que se elimine de la lista de programación.
 
 **Modo de grabación:**
 - **Grabar mientras escuchas** — reproduce y graba simultáneamente. Se inicia un backend de reproducción usando el orden de prioridad BASS → VLC → PotPlayer → Windows Media Player.
-- **Solo grabación** — graba silenciosamente en segundo plano sin ninguna salida de audio; el motor de grabación se conecta directamente al flujo de transmisión.
+- **Solo grabación** — Graba silenciosamente en segundo plano sin ninguna salida de audio; El motor de grabación se conecta directamente al flujo de  transmisión.
 
 NVDA anuncia cuándo comienza y cuándo termina una grabación. Si NVDA se reinicia mientras hay una grabación programada activa, la grabación se reanuda automáticamente al iniciar.
 
@@ -258,7 +258,7 @@ En el raro caso de que la lista de reproducción de una emisora no pueda leerse 
 
 ### Requisitos y limitaciones
 
-- **Requiere el backend BASS.** El desplazamiento temporal no está disponible cuando BASS está deshabilitado.
+- **Requiere el BASS backend.** El desplazamiento temporal no está disponible cuando el BASS está deshabilitado.
 - El búfer tiene aproximadamente 10 minutos; no se puede retroceder más allá de ese límite.
 - El búfer es por emisora: cambiar de emisora, detener la reproducción o reiniciar NVDA lo borra y empieza de nuevo.
 - La reproducción con desplazamiento temporal usa su propio archivo de búfer local y no produce una grabación guardada. Si quieres conservar el audio de forma permanente, usa también la Grabación instantánea (`Ctrl+Win+E`).
@@ -287,7 +287,7 @@ Las siguientes opciones se pueden configurar desde el Menú NVDA → Preferencia
 | Reanudar la última estación al iniciar NVDA | Cuando está habilitado, la última estación escuchada se reinicia automáticamente cada vez que se inicia NVDA. |
 | Anunciar automáticamente los cambios de pista (metadatos ICY) | Cuando está habilitado, NVDA lee automáticamente el nombre de la nueva pista cada vez que cambia en una estación que transmite metadatos ICY. La primera canción también se anuncia inmediatamente al cambiar a una nueva estación. Deshabilitado por defecto. |
 | Silenciar notificaciones | Cuando está habilitado, NVDA no anuncia cambios de estación, cambios de estado de reproducción (reproducir, pausar, detener) o eventos de grabación (iniciado, detenido, terminado). Mensajes de error, comentarios sobre favoritos, resultados de reconocimiento de música y notificaciones de las actualizaciones no se ven afectadas. También se puede activar sobre la marcha mediante un gesto de entrada no asignado. Deshabilitado por defecto. |
-| Activar búfer de desplazamiento temporal (rebobinar radio en directo, ~10 minutos) | Activa o desactiva la función de desplazamiento temporal. Cuando está habilitada, la emisora en reproducción se captura continuamente en segundo plano para poder rebobinarla con `Ctrl+Win+J` y avanzar con `Ctrl+Win+K`. También se puede alternar al instante con `Ctrl+Win+T`. Requiere el backend BASS. Deshabilitado por defecto. |
+| Activar búfer de desplazamiento temporal (rebobinar radio en directo, ~10 minutos) | Activa o desactiva la función de desplazamiento temporal. Cuando está habilitada, la emisora en reproducción se captura continuamente en segundo plano para poder rebobinarla con `Ctrl+Win+J` y avanzar con `Ctrl+Win+K`. También se puede alternar al instante con `Ctrl+Win+T`. Requiere el BASS backend. Deshabilitado por defecto. |
 | Guardar las canciones favoritas en un archivo de texto | Cuando está habilitado, la información de la pista se copia al portapapeles pulsando `Ctrl+Win+I` tres veces y también se añade a `Documentos\FreeRadio Recordings\likedSongs.txt`. Si no hay metadatos ICY disponibles, el resultado del reconocimiento de Shazam se guarda en el mismo archivo. Deshabilitado por defecto. |
 | Cuando Ctrl+Win+P se pulsa sin reproducción activa | Determina qué sucede cuando se pulsa este atajo y no hay nada  en reproducción: iniciar la última estación o abrir la lista de favoritos. |
 | Cuando Ctrl+Win+P se pulsa dos veces | Selecciona lo que sucede cuando se pulsa el atajo dos veces en sucesión rápida: no hacer nada, abrir la lista de favoritos, abrir la pestaña de grabación o abrir la pestaña del temporizador. Cuando "No hacer nada" es seleccionado, la primera pulsación responde instantáneamente sin demora. |
@@ -329,19 +329,19 @@ En las estaciones que transmiten metadatos ICY, el título de la pista y el arti
 
 ## Pestaña de Canciones favoritas
 
-La pestaña **Canciones favoritas** del navegador de estaciones muestra todas las pistas guardadas en `likedSongs.txt`. La lista se recarga automáticamente desde el archivo cada vez que se abre la pestaña.
+La pestaña **Canciones favoritas** en el navegador de estaciones se muestran todas las pistas guardadas en `likedSongs.txt`. La lista se recarga automáticamente desde el archivo cada vez que se abre la pestaña.
 
-Un campo de **Filtro** sobre la lista permite limitar las pistas mostradas en tiempo real. Escribe cualquier parte del título de una canción o nombre del artista y la lista se actualiza instantáneamente en cada pulsación. NVDA anuncia el número de resultados coincidentes tras cada cambio. Pulsa la flecha `Abajo` desde el campo de filtro para mover el foco directamente a la lista.
+Un campo **Filtrar** encima de la lista permite limitar las pistas mostradas en tiempo real. Escribe cualquier parte del título de una canción o nombre del artista y la lista se actualiza instantáneamente a cada pulsación. NVDA anuncia el número de resultados coincidentes tras cada cambio. Pulsa la flecha `Abajo` desde el campo Filtrar para mover el foco directamente a la lista.
 
-Al seleccionar una pista de la lista se habilitan las siguientes acciones:
+Seleccionar una pista de la lista permite las siguientes acciones:
 
-- **Reproducir en Spotify:** Intenta abrir directamente la aplicación de escritorio de Spotify. Si la aplicación no está instalada, abre el sitio web de Spotify y reproduce automáticamente el primer resultado.
-- **Reproducir en YouTube (`Alt+O`):** Busca la pista seleccionada en YouTube y abre los resultados en el navegador predeterminado.
+- **Reproducir en Spotify:** Intenta abrir la aplicación de escritorio de Spotify directamente. Si la aplicación no está instalada, vuelve al sitio web de Spotify y automáticamente comienza a reproducir el primer resultado.
+- **Reproducir en YouTube (`Alt+O`):** Busca en YouTube la pista seleccionada y abre los resultados en el navegador predeterminado.
 - **Mostrar letra:** Obtiene y muestra la letra de la pista seleccionada. Las letras se obtienen de [lrclib.net](https://lrclib.net) (gratuito, sin cuenta requerida). Se anuncia un breve mensaje "Obteniendo letra…" mientras la búsqueda se ejecuta en segundo plano. Si se encuentran letras, se abren en un cuadro de diálogo de solo lectura donde puedes leerlas con NVDA y copiarlas al portapapeles. Si no se encuentran letras, NVDA lo anuncia. El botón se desactiva temporalmente mientras se realiza una búsqueda para evitar solicitudes duplicadas.
-- **Eliminar (`Alt+M`):** Elimina la pista seleccionada de `likedSongs.txt` y actualiza la lista. La tecla `Suprimir` también activa este botón cuando la lista está enfocada.
-- **Actualizar (`Alt+E`):** Recarga la lista desde el archivo.
+- **Eliminar (`Alt+M`):** Elimina la pista seleccionada de `likedSongs.txt` y  actualiza la lista. La tecla `Suprimir` también activa este botón cuando la lista está enfocada.
+- **Refrescar (`Alt+E`):** Vuelve a cargar la lista desde el archivo.
 
-Los botones de Spotify, YouTube, Mostrar letra y Eliminar solo están habilitados cuando se selecciona una pista real en la lista.
+Los botones Spotify, YouTube, Mostrar letra y Eliminar sólo se activan cuando se selecciona una pista real en la lista.
 
 ### Servicio de letras
 
